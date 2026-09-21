@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<!--
+varian: 11
+nama: papan-penempatan
+palet: 2d
+grid: 12 kolom
+lebar: 1440
+hero: teks kiri, papan flip kanan
+font: Schibsted Grotesk + Atkinson Hyperlegible
+sudut: 4px
+segmen: strip horizontal (baris papan)
+nav: bar dengan topbar kanal resmi
+irama: padat
+elemen-khas: papan flip penempatan
+skala: kontras ukuran ekstrem
+gerak: bilah membalik saat masuk layar dan saat kotak cek kode dijawab
+
+Design Read: beranda company profile B2B alih daya, bahasa visual papan
+pengumuman penempatan, light-only (token-warna melarang dark mode).
+Dials: ENERGY 3, RHYTHM 3, MOTION 2. Berani.
+Alasan keputusan (R-31): papan flip dipakai karena penempatan adalah inti
+bisnis dan membalik jadi bukti alat verifikasi hidup, bukan hiasan. Schibsted
+Grotesk untuk judul karena dirancang untuk media berita, cocok nada papan
+pengumuman. Atkinson untuk kode karena membedakan O dan 0 yang diketik ulang
+pelamar dari poster. Sudut 4px kecil menegaskan kesan panel mekanis.
+-->
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PT Nusa Era Pradana, Papan Penempatan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:       #14332A;
+    --utama:     #2C6A55;
+    --sekunder:  #4A6FA5;
+    --meta:      #667069;
+    --latar:     #EAF3EE;
+    --tint-biru: #EDF1F7;
+    --garis:     #E5EAE7;
+    --permukaan: #FFFFFF;
+
+    --judul: "Schibsted Grotesk", system-ui, sans-serif;
+    --isi: "Atkinson Hyperlegible", system-ui, sans-serif;
+
+    --r: 4px;
+    --pita: 1200px;
+    --gutter: clamp(16px, 4vw, 48px);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--latar);
+    color: var(--ink);
+    font-family: var(--isi);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 0;
+  }
+  h1, h2, h3 { font-family: var(--judul); line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
+  p { margin: 0; }
+  a { color: var(--utama); }
+
+  .wrap { max-width: var(--pita); margin: 0 auto; padding-inline: var(--gutter); }
+
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* fokus terlihat */
+  a:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  /* ===== Tombol ===== */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 44px; padding: 0 20px; border-radius: var(--r);
+    font-family: var(--isi); font-weight: 700; font-size: 16px;
+    text-decoration: none; cursor: pointer; border: 2px solid transparent;
+    transition: transform .12s ease;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn--utama { background: var(--utama); color: #FFFFFF; }
+  .btn--garis { background: transparent; color: var(--utama); border-color: var(--utama); }
+  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+
+  /* ===== Topbar + Header ===== */
+  .topbar {
+    background: var(--ink); color: var(--latar);
+    font-size: 14px; padding: 8px 0;
+  }
+  .topbar .wrap { display: flex; gap: 8px 20px; flex-wrap: wrap; align-items: center; }
+  .topbar span { display: inline-flex; align-items: center; gap: 6px; }
+  .topbar .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--utama); }
+
+  header.site { position: sticky; top: 0; z-index: 40; background: var(--permukaan); border-bottom: 1px solid var(--garis); }
+  .nav { display: flex; align-items: center; justify-content: space-between; min-height: 64px; }
+  .brand { font-family: var(--judul); font-weight: 700; font-size: 22px; letter-spacing: -0.03em; color: var(--ink); text-decoration: none; }
+  .brand b { color: var(--utama); }
+  .nav ul { display: flex; gap: 24px; list-style: none; margin: 0; padding: 0; }
+  .nav a.link { color: var(--ink); text-decoration: none; font-size: 16px; }
+  .nav a.link:hover { color: var(--utama); }
+  .nav .actions { display: flex; align-items: center; gap: 12px; }
+  .menu-toggle { display: none; background: none; border: 2px solid var(--garis); border-radius: var(--r); min-height: 44px; min-width: 44px; align-items: center; justify-content: center; }
+  .menu-toggle svg { width: 22px; height: 22px; }
+
+  /* ===== Section umum ===== */
+  section { padding-block: clamp(40px, 7vw, 88px); }
+  .kicker { color: var(--sekunder); font-weight: 700; font-size: 15px; margin-bottom: 12px; }
+  .h-sec { font-size: clamp(24px, 4vw, 36px); font-weight: 700; }
+  .lead { color: var(--meta); max-width: 60ch; margin-top: 12px; }
+
+  /* ===== Hero ===== */
+  .hero { padding-top: clamp(28px, 5vw, 56px); }
+  .hero-grid { display: grid; grid-template-columns: 1fr; gap: 32px; }
+  @media (min-width: 900px) { .hero-grid { grid-template-columns: 6fr 6fr; align-items: center; } }
+  .hero h1 { font-size: clamp(32px, 3vw + 1rem, 56px); }
+  .hero .sub { color: var(--meta); margin-top: 16px; max-width: 52ch; }
+  .hero .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+  .pintu { margin-top: 20px; padding-top: 16px; border-top: 1px dashed var(--garis); }
+  .pintu span { color: var(--meta); font-size: 15px; display: block; margin-bottom: 8px; }
+
+  /* ===== Papan flip ===== */
+  .papan { background: var(--ink); border-radius: var(--r); padding: 16px; }
+  .papan-cap { color: var(--latar); font-family: var(--judul); font-weight: 700; font-size: 14px; letter-spacing: 0.02em; opacity: .8; margin-bottom: 12px; }
+  .papan-row { display: grid; grid-template-columns: 1.4fr 1fr .9fr; gap: 8px; margin-bottom: 8px; }
+  .papan-row:last-child { margin-bottom: 0; }
+  .flap {
+    background: color-mix(in srgb, var(--ink) 82%, black); color: var(--latar); border-radius: 3px;
+    padding: 10px 12px; font-weight: 700; font-size: clamp(16px, 2.4vw, 21px);
+    transform-origin: top center; will-change: transform;
+  }
+  .flap small { display: block; font-weight: 400; font-size: 12px; color: color-mix(in srgb, var(--latar) 62%, var(--ink)); margin-top: 2px; }
+  .flap.kode { color: #FFFFFF; }
+  .in .flap { animation: flap-in .5s cubic-bezier(.2,.7,.2,1) both; }
+  .in .papan-row:nth-child(2) .flap { animation-delay: .08s; }
+  .in .papan-row:nth-child(3) .flap { animation-delay: .16s; }
+  .in .papan-row:nth-child(4) .flap { animation-delay: .24s; }
+  @keyframes flap-in {
+    from { transform: rotateX(-90deg); opacity: 0; }
+    to   { transform: rotateX(0);      opacity: 1; }
+  }
+
+  /* ===== Strip segmen (baris papan) ===== */
+  .strip { display: grid; grid-template-columns: 1fr; gap: 0; border: 1px solid var(--garis); border-radius: var(--r); overflow: hidden; background: var(--permukaan); }
+  .seg-row { display: grid; grid-template-columns: 48px 1fr; gap: 16px; padding: 18px 16px; border-bottom: 1px solid var(--garis); align-items: start; }
+  .seg-row:last-child { border-bottom: 0; }
+  @media (min-width: 720px) { .seg-row { grid-template-columns: 56px 1.1fr 1.4fr; align-items: center; } }
+  .seg-ic { width: 40px; height: 40px; color: var(--utama); }
+  .seg-row h3 { font-size: 20px; }
+  .seg-row .pos { color: var(--sekunder); font-weight: 700; font-size: 14px; margin-top: 4px; }
+  .seg-row .desc { color: var(--meta); font-size: 16px; }
+
+  /* ===== Alur ===== */
+  .alur { counter-reset: step; display: grid; gap: 16px; }
+  @media (min-width: 820px) { .alur { grid-template-columns: repeat(4, 1fr); } }
+  .alur li { list-style: none; background: var(--permukaan); border: 1px solid var(--garis); border-top: 3px solid var(--utama); border-radius: var(--r); padding: 20px 16px; }
+  .alur li b { display: block; font-family: var(--judul); font-size: 15px; color: var(--sekunder); margin-bottom: 6px; }
+  .alur li .no { font-family: var(--judul); font-weight: 700; font-size: 28px; color: var(--ink); }
+
+  /* ===== Kapasitas ===== */
+  .kap { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+  @media (min-width: 820px) { .kap { grid-template-columns: repeat(4, 1fr); } }
+  .angka { background: var(--permukaan); border: 1px solid var(--garis); border-radius: var(--r); padding: 20px 16px; }
+  .angka .n { font-family: var(--judul); font-weight: 700; font-size: clamp(36px, 6vw, 56px); color: var(--utama); }
+  .angka .l { color: var(--meta); font-size: 15px; margin-top: 4px; }
+  .angka.kosong { border-style: dashed; border-color: var(--meta); }
+  .angka.kosong .n { color: var(--meta); font-size: 18px; font-family: var(--isi); font-weight: 700; }
+  .area { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .area span { background: var(--tint-biru); color: var(--ink); border-radius: var(--r); padding: 8px 12px; font-size: 15px; font-weight: 700; }
+
+  /* ===== Legalitas ===== */
+  .legal-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+  @media (min-width: 820px) { .legal-grid { grid-template-columns: 1fr 1fr; } }
+  .kartu { background: var(--permukaan); border: 1px solid var(--garis); border-radius: var(--r); padding: 20px; }
+  .baris { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--garis); }
+  .baris:last-child { border-bottom: 0; }
+  .baris .k { color: var(--meta); }
+  .baris .v { font-weight: 700; text-align: right; }
+  .tunggu { color: var(--meta); font-style: normal; border: 1px dashed var(--meta); border-radius: 3px; padding: 2px 8px; font-size: 14px; }
+  ol.langkah { margin: 12px 0 0; padding-left: 20px; color: var(--meta); }
+  ol.langkah li { margin-bottom: 6px; }
+
+  /* ===== Lowongan ===== */
+  .low-grid { display: grid; gap: 20px; grid-template-columns: 1fr; }
+  @media (min-width: 900px) { .low-grid { grid-template-columns: 1.1fr 1fr; } }
+  .lk { background: var(--permukaan); border: 1px solid var(--garis); border-radius: var(--r); padding: 18px; }
+  .lk .kode { font-weight: 700; font-size: 21px; letter-spacing: .04em; }
+  .badge-contoh { display: inline-block; background: var(--tint-biru); color: var(--ink); border-radius: 3px; padding: 4px 10px; font-size: 13px; font-weight: 700; margin-top: 8px; }
+  .nofee { background: var(--ink); color: var(--latar); border-radius: var(--r); padding: 18px; margin-top: 16px; }
+  .nofee b { font-family: var(--judul); }
+  .cek label { display: block; font-weight: 700; margin-bottom: 6px; }
+  .cek .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cek input { flex: 1 1 200px; min-height: 44px; padding: 0 12px; border: 2px solid var(--meta); border-radius: var(--r); font-family: var(--isi); font-size: 16px; }
+  .cek .hint { color: var(--meta); font-size: 14px; margin-top: 6px; }
+  .hasil { margin-top: 14px; border-radius: var(--r); padding: 14px; display: none; }
+  .hasil.on { display: block; }
+  .hasil .ico { width: 22px; height: 22px; vertical-align: -4px; margin-right: 6px; }
+  .hasil.ok { border: 2px solid var(--utama); color: var(--utama); background: #FFFFFF; }
+  .hasil.no { border: 2px solid var(--sekunder); color: var(--ink); background: #FFFFFF; }
+  .hasil.ok .in-flap { color: var(--utama); font-weight: 700; }
+  .kanal { list-style: none; margin: 12px 0 0; padding: 0; }
+  .kanal li { padding: 8px 0; border-bottom: 1px solid var(--garis); display: flex; justify-content: space-between; gap: 12px; }
+  .kanal li:last-child { border-bottom: 0; }
+  .kanal .v { color: var(--meta); }
+
+  /* ===== Kontak + footer ===== */
+  .kontak-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .kontak-grid { grid-template-columns: 1fr 1fr; } }
+  .foto { background: var(--tint-biru); border-radius: var(--r); aspect-ratio: 16 / 9; display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; color: var(--meta); }
+  .foto b { color: var(--ink); font-weight: 700; }
+  footer.site { background: var(--ink); color: var(--latar); padding-block: 40px; margin-top: 20px; }
+  footer.site a { color: var(--latar); text-decoration: none; opacity: .85; }
+  footer.site a:hover { opacity: 1; text-decoration: underline; }
+  .foot-grid { display: grid; gap: 24px; grid-template-columns: 1fr 1fr; }
+  @media (min-width: 820px) { .foot-grid { grid-template-columns: 2fr 1fr 1fr 1fr; } }
+  .foot-grid h4 { font-family: var(--judul); font-size: 15px; margin: 0 0 10px; }
+  .foot-grid ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 15px; }
+  .foot-bawah { border-top: 1px solid rgba(255,255,255,.15); margin-top: 24px; padding-top: 16px; font-size: 14px; opacity: .8; }
+
+  /* ===== Bar bawah mobile ===== */
+  .barbawah { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: none; gap: 8px; padding: 8px; background: var(--permukaan); border-top: 1px solid var(--garis); }
+  .barbawah .btn { flex: 1; }
+
+  @media (max-width: 860px) {
+    .nav ul { display: none; }
+    .nav .actions .btn--utama { display: none; }
+    .menu-toggle { display: inline-flex; }
+    .nav.open ul { display: grid; position: absolute; left: 0; right: 0; top: 100%; background: var(--permukaan); border-bottom: 1px solid var(--garis); padding: 12px var(--gutter); gap: 4px; }
+    .nav.open ul a.link { display: block; padding: 12px 0; }
+    .barbawah { display: flex; }
+    body { padding-bottom: 68px; }
+  }
+
+  /* reveal umum */
+  .reveal { opacity: 0; transform: translateY(12px); transition: opacity .5s ease, transform .5s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .in .flap { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <span><i class="dot"></i> Situs resmi menunggu domain</span>
+    <span>Instagram @ptnusaerapradana</span>
+    <span>WhatsApp resmi menunggu data</span>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <nav class="nav" id="nav" aria-label="Navigasi utama">
+      <a class="brand" href="#hero">NEP<b>.</b></a>
+      <ul>
+        <li><a class="link" href="#segmen">Layanan</a></li>
+        <li><a class="link" href="#alur">Cara Kerja</a></li>
+        <li><a class="link" href="#legalitas">Legalitas</a></li>
+        <li><a class="link" href="#lowongan">Lowongan</a></li>
+        <li><a class="link" href="#kontak">Kontak</a></li>
+      </ul>
+      <div class="actions">
+        <a class="btn btn--utama" href="#kontak">Ajukan Kebutuhan</a>
+        <button class="menu-toggle" id="mt" aria-label="Buka menu" aria-expanded="false" aria-controls="nav">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="kicker">Penyedia tenaga kerja alih daya, Sumatera Utara</p>
+        <h1>Satu vendor untuk tenaga lapangan Anda</h1>
+        <p class="sub">Kami merekrut dan menempatkan, lalu memegang kontrak dan payroll-nya.</p>
+        <div class="cta">
+          <a class="btn btn--utama" href="#kontak">Ajukan Kebutuhan</a>
+        </div>
+        <div class="pintu">
+          <span>Sedang cari kerja?</span>
+          <a class="btn btn--garis" href="#lowongan">Lihat Lowongan</a>
+        </div>
+      </div>
+      <div class="papan reveal" id="papan-hero" aria-label="Papan contoh penempatan" role="img">
+        <p class="papan-cap">PAPAN PENEMPATAN, CONTOH</p>
+        <div class="papan-row"><div class="flap">Satpam<small>Medan, ritel</small></div><div class="flap">Aktif</div><div class="flap kode tnum">NEP-...01</div></div>
+        <div class="papan-row"><div class="flap">Kurir<small>Binjai, logistik</small></div><div class="flap">Aktif</div><div class="flap kode tnum">NEP-...02</div></div>
+        <div class="papan-row"><div class="flap">Kasir<small>Medan, ritel</small></div><div class="flap">Aktif</div><div class="flap kode tnum">NEP-...03</div></div>
+        <div class="papan-row"><div class="flap">Cleaning<small>Deli Serdang</small></div><div class="flap">Aktif</div><div class="flap kode tnum">NEP-...04</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEGMEN -->
+  <section id="segmen">
+    <div class="wrap">
+      <h2 class="h-sec reveal">Lima segmen tenaga kerja</h2>
+      <p class="lead reveal">Kami menempatkan orang, lalu memegang kontrak dan payroll-nya, di lima bidang.</p>
+      <div class="strip reveal" style="margin-top:24px">
+        <div class="seg-row">
+          <svg class="seg-ic" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 34V14l12-6 12 6v20"/><path d="M8 22h24"/><path d="M20 22v12"/></svg>
+          <div><h3>Keamanan dan Fasilitas</h3><p class="pos">Satpam, cleaning service, petugas kebersihan</p></div>
+          <p class="desc">Penjagaan dan kebersihan untuk gedung, kawasan, dan gerai.</p>
+        </div>
+        <div class="seg-row">
+          <svg class="seg-ic" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="16" width="16" height="12"/><path d="M22 20h7l5 5v3h-12z"/><circle cx="13" cy="30" r="3"/><circle cx="29" cy="30" r="3"/></svg>
+          <div><h3>Transportasi dan Logistik</h3><p class="pos">Pengemudi, kurir, sprinter last-mile</p></div>
+          <p class="desc">Pengemudi dan kurir untuk distribusi dan pengiriman last-mile.</p>
+        </div>
+        <div class="seg-row">
+          <svg class="seg-ic" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 16l3-6h18l3 6"/><path d="M8 16c0 3 6 3 6 0 0 3 6 3 6 0 0 3 6 3 6 0 0 3 6 3 6 0"/><path d="M10 20v14h20V20"/><path d="M18 34v-8h4v8"/></svg>
+          <div><h3>Ritel dan Operasional Toko</h3><p class="pos">Kasir, crew store, head store, kitchen crew</p></div>
+          <p class="desc">Staf garis depan untuk toko, gerai, dan dapur.</p>
+        </div>
+        <div class="seg-row">
+          <svg class="seg-ic" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="14" cy="20" r="4"/><path d="M14 24v10"/><path d="M22 12c4 3 4 13 0 16"/><path d="M27 8c7 5 7 19 0 24"/></svg>
+          <div><h3>Pemasaran dan Promosi</h3><p class="pos">Brand ambassador, social media content specialist</p></div>
+          <p class="desc">Tenaga promosi untuk aktivasi merek dan kanal digital.</p>
+        </div>
+        <div class="seg-row">
+          <svg class="seg-ic" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="6" width="20" height="26"/><path d="M12 12H8v26h20v-4"/><path d="M17 14h10M17 20h10M17 26h6"/></svg>
+          <div><h3>Fungsi Internal HRD</h3><p class="pos">Administrasi kontrak, payroll, kepatuhan ketenagakerjaan</p></div>
+          <p class="desc">Pengelolaan kontrak, payroll, dan kepatuhan untuk pekerja yang ditempatkan.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALUR -->
+  <section id="alur" style="background:var(--permukaan)">
+    <div class="wrap">
+      <h2 class="h-sec reveal">Cara kerja sama</h2>
+      <ol class="alur reveal" style="margin-top:24px">
+        <li><span class="no tnum">1</span><b>Ajukan kebutuhan</b>Sampaikan posisi, jumlah, lokasi, dan periode penempatan.</li>
+        <li><span class="no tnum">2</span><b>Penyesuaian kualifikasi</b>Kami susun kriteria seleksi sesuai kebutuhan operasional Anda.</li>
+        <li><span class="no tnum">3</span><b>Rekrutmen dan seleksi</b>Kami cari, saring, dan siapkan kandidat dari kolam pelamar kami.</li>
+        <li><span class="no tnum">4</span><b>Penempatan dan pengelolaan</b>Pekerja masuk, kontrak dan payroll kami yang pegang.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- KAPASITAS -->
+  <section id="kapasitas">
+    <div class="wrap">
+      <h2 class="h-sec reveal">Kapasitas dan area operasional</h2>
+      <div class="kap reveal" style="margin-top:24px">
+        <div class="angka"><div class="n tnum">4</div><div class="l">wilayah penempatan di Sumatera Utara</div></div>
+        <div class="angka kosong"><div class="n">Menunggu data</div><div class="l">pekerja ditempatkan</div></div>
+        <div class="angka kosong"><div class="n">Menunggu data</div><div class="l">klien aktif</div></div>
+        <div class="angka kosong"><div class="n">Menunggu data</div><div class="l">tahun beroperasi</div></div>
+      </div>
+      <p class="lead reveal" style="margin-top:20px">Penempatan aktif di empat wilayah Sumatera Utara.</p>
+      <div class="area reveal">
+        <span>Kota Medan</span><span>Kota Binjai</span><span>Kabupaten Deli Serdang</span><span>Pematangsiantar dan Simalungun</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEGALITAS -->
+  <section id="legalitas" style="background:var(--permukaan)">
+    <div class="wrap">
+      <h2 class="h-sec reveal">Legalitas yang bisa Anda cek</h2>
+      <div class="legal-grid reveal" style="margin-top:24px">
+        <div class="kartu">
+          <div class="baris"><span class="k">Bentuk badan hukum</span><span class="v">Perseroan Terbatas</span></div>
+          <div class="baris"><span class="k">Status</span><span class="v">Aktif</span></div>
+          <div class="baris"><span class="k">Nomor SK pengesahan</span><span class="v"><i class="tunggu">Menunggu data</i></span></div>
+          <div class="baris"><span class="k">Tanggal pengesahan</span><span class="v"><i class="tunggu">Menunggu data</i></span></div>
+          <div class="baris"><span class="k">NIB dan KBLI</span><span class="v"><i class="tunggu">Menunggu data</i></span></div>
+          <div class="baris"><span class="k">Izin berusaha alih daya</span><span class="v"><i class="tunggu">Menunggu data</i></span></div>
+          <div class="baris"><span class="k">NPWP</span><span class="v"><i class="tunggu">Menunggu data</i></span></div>
+        </div>
+        <div class="kartu">
+          <h3 style="font-size:18px">Langkah verifikasi mandiri</h3>
+          <ol class="langkah">
+            <li>Buka ahu.go.id.</li>
+            <li>Pilih menu Perseroan.</li>
+            <li>Ketik nama perusahaan.</li>
+            <li>Cocokkan nomor SK dan tanggal pengesahan.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOWONGAN -->
+  <section id="lowongan">
+    <div class="wrap">
+      <h2 class="h-sec reveal">Lowongan dan cara memastikan keasliannya</h2>
+      <div class="low-grid reveal" style="margin-top:24px">
+        <div>
+          <div class="lk">
+            <div class="kode tnum">Satpam, Medan</div>
+            <p style="color:var(--meta);margin-top:4px">Penempatan ritel. Kode <span class="tnum">NEP-2026-0001</span>.</p>
+            <span class="badge-contoh">Contoh, bukan lowongan asli</span>
+          </div>
+          <div class="nofee">
+            <b>Rekrutmen kami tidak memungut biaya dalam bentuk apa pun.</b>
+            <p style="margin-top:8px">Tidak ada biaya administrasi, biaya seragam, biaya pelatihan, atau biaya ID Card.</p>
+            <p style="margin-top:8px">Kalau ada yang meminta uang dengan mengatasnamakan PT Nusa Era Pradana, itu penipuan. Laporkan ke kami lewat kanal resmi di samping.</p>
+          </div>
+        </div>
+        <div class="lk">
+          <div class="cek">
+            <label for="kode">Cek keaslian lowongan</label>
+            <p class="hint" style="margin:0 0 8px">Setiap lowongan resmi kami punya kode verifikasi yang tercantum di poster. Masukkan kodenya untuk memastikan lowongan itu asli.</p>
+            <div class="row">
+              <input id="kode" type="text" inputmode="latin" autocomplete="off" placeholder="Kode lowongan" aria-describedby="kode-hint">
+              <button class="btn btn--utama" id="cekbtn" type="button">Cek</button>
+            </div>
+            <p class="hint" id="kode-hint">Contoh format: NEP-2026-0001</p>
+            <div class="hasil" id="hasil" aria-live="polite"></div>
+          </div>
+          <h3 style="font-size:18px;margin-top:20px">Kanal resmi</h3>
+          <ul class="kanal">
+            <li><span>Situs resmi</span><span class="v">Menunggu domain</span></li>
+            <li><span>Instagram</span><span class="v">@ptnusaerapradana</span></li>
+            <li><span>WhatsApp pelamar</span><span class="v">Menunggu data</span></li>
+            <li><span>Telepon kantor</span><span class="v">Menunggu data</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KONTAK -->
+  <section id="kontak" style="background:var(--permukaan)">
+    <div class="wrap">
+      <h2 class="h-sec reveal">Kontak</h2>
+      <div class="kontak-grid reveal" style="margin-top:24px">
+        <div class="kartu">
+          <div class="baris"><span class="k">Instagram</span><span class="v">@ptnusaerapradana</span></div>
+          <div class="baris"><span class="k">Alamat kantor</span><span class="v"><i class="tunggu">Menunggu data</i></span></div>
+          <div class="baris"><span class="k">Telepon</span><span class="v"><i class="tunggu">Menunggu data</i></span></div>
+          <div class="baris"><span class="k">Email</span><span class="v"><i class="tunggu">Menunggu data</i></span></div>
+          <div class="baris"><span class="k">Jam operasional</span><span class="v"><i class="tunggu">Menunggu data</i></span></div>
+        </div>
+        <div class="foto" role="img" aria-label="Slot foto kantor tampak depan, belum tersedia">
+          <b>Foto belum tersedia</b>
+          <span>kantor tampak depan, rasio 16:9, lebar minimal 1600px</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand" style="color:var(--latar)">NEP<b style="color:var(--latar)">.</b></div>
+        <p style="opacity:.8;margin-top:8px;max-width:36ch">Penyedia tenaga kerja alih daya di Sumatera Utara. Rekrutmen kami tidak memungut biaya.</p>
+      </div>
+      <div><h4>Perusahaan</h4><ul><li><a href="#hero">Tentang</a></li><li><a href="#legalitas">Legalitas</a></li><li><a href="#kontak">Kontak</a></li></ul></div>
+      <div><h4>Karier</h4><ul><li><a href="#lowongan">Lowongan</a></li><li><a href="#lowongan">Cara Melamar</a></li><li><a href="#lowongan">Verifikasi Lowongan</a></li><li><a href="#kontak">Lapor Penipuan</a></li></ul></div>
+      <div><h4>Legal</h4><ul><li><a href="#legalitas">Kebijakan Privasi</a></li><li><a href="#legalitas">Syarat dan Ketentuan</a></li></ul></div>
+    </div>
+    <div class="foot-bawah">PT Nusa Era Pradana. Perseroan Terbatas terdaftar di Indonesia.</div>
+  </div>
+</footer>
+
+<div class="barbawah" aria-label="Aksi cepat">
+  <a class="btn btn--utama" href="#kontak">Ajukan Kebutuhan</a>
+  <a class="btn btn--garis" href="#lowongan">Lihat Lowongan</a>
+</div>
+
+<script>
+  // Menu mobile
+  var mt = document.getElementById('mt'), nav = document.getElementById('nav');
+  mt.addEventListener('click', function () {
+    var open = nav.classList.toggle('open');
+    mt.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  nav.querySelectorAll('a.link').forEach(function (a) {
+    a.addEventListener('click', function () { nav.classList.remove('open'); mt.setAttribute('aria-expanded', 'false'); });
+  });
+
+  // Reveal + papan flip saat masuk layar
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+  // Kotak cek kode
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var btn = document.getElementById('cekbtn'), input = document.getElementById('kode'), hasil = document.getElementById('hasil');
+  function cek() {
+    var v = (input.value || '').trim().toUpperCase();
+    hasil.className = 'hasil on';
+    if (v === 'NEP-2026-0001') {
+      hasil.classList.add('ok');
+      hasil.innerHTML = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="in-flap">Kode ditemukan.</span> Satpam, Medan, ditutup 30 September 2026. Contoh, bukan lowongan asli.';
+    } else if (v === '') {
+      hasil.classList.add('no');
+      hasil.textContent = 'Masukkan kode lowongan lebih dulu.';
+    } else {
+      hasil.classList.add('no');
+      hasil.innerHTML = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 8v5"/><circle cx="12" cy="17" r=".6" fill="currentColor"/><path d="M12 3 2 20h20z"/></svg>Kode ini tidak terdaftar. Lowongan yang Anda lihat kemungkinan bukan dari kami. Mohon jangan mengirim uang atau dokumen pribadi ke pihak tersebut. <a href="#kontak" style="display:inline-block;margin-top:8px;font-weight:700">Laporkan lowongan ini</a>';
+    }
+    if (!reduce) { hasil.animate([{transform:'rotateX(-70deg)',opacity:0},{transform:'rotateX(0)',opacity:1}], {duration:360, easing:'cubic-bezier(.2,.7,.2,1)'}); }
+  }
+  btn.addEventListener('click', cek);
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') cek(); });
+</script>
+<noscript><style>.reveal,.folder,.tok,.checklist li,.kit .tool.snap{opacity:1;transform:none}</style></noscript>
+</body>
+</html>
