@@ -17,7 +17,8 @@ def norm(t):
 
 pdf, entri_path, out_path = sys.argv[1:4]
 doc = pymupdf.open(pdf)
-teks = [norm(p.get_text()) for p in doc]
+# buang nomor halaman di kepala halaman (angka di baris pertama)
+teks = [re.sub(r'^\d+ ', '', norm(p.get_text())) for p in doc]
 data = json.load(open(entri_path))
 
 # halaman PDF (0-based) awal bagian depan dan bagian inti

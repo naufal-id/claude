@@ -5,11 +5,11 @@
 const fs = require('fs');
 const path = require('path');
 const D = require('docx');
-const { judul, inti, tim, jadwal, fitur } = require('./isi');
+const { judul, inti, tim, jadwal, fitur, lampiran5 } = require('./isi');
 const { hitung, rpAngka } = require('./anggaran');
 
 const OUT_DIR = path.join(__dirname, '..');
-const NAMA = '2026-09-27_proposal-pkm-kc-presensi_draft-ke-1';
+const NAMA = '2026-09-27_proposal-pkm-kc-presensi_draft-ke-2';
 const halaman = process.argv[2] && fs.existsSync(process.argv[2]) ? JSON.parse(fs.readFileSync(process.argv[2], 'utf8')) : {};
 
 // ---------- ukuran (DXA) ----------
@@ -75,7 +75,7 @@ const P = (text, opt = {}) =>
 function heading(text, level, key, opt = {}) {
   daftarIsi.push({ key, text, level });
   return new D.Paragraph({
-    heading: level === 1 ? D.HeadingLevel.HEADING_1 : D.HeadingLevel.HEADING_2,
+    heading: level === 1 ? D.HeadingLevel.HEADING_1 : level === 2 ? D.HeadingLevel.HEADING_2 : D.HeadingLevel.HEADING_3,
     alignment: level === 1 ? D.AlignmentType.CENTER : D.AlignmentType.LEFT,
     spacing: { ...LINE, before: level === 1 ? (opt.first ? 0 : 240) : 120, after: level === 1 ? 120 : 60 },
     keepNext: true,
@@ -290,6 +290,10 @@ function renderBlocks(blocks) {
         out.push(heading(b.text, 1, 'h:' + b.text, { first: firstBab }));
         firstBab = false;
         break;
+      case 'subsub':
+        konteks = b.text;
+        out.push(heading(b.text, 3, 'h:' + b.text));
+        break;
       case 'sub':
         konteks = b.text;
         out.push(heading(b.text, 2, 'h:' + b.text));
@@ -481,14 +485,8 @@ function lampiran() {
 
   // Lampiran 5
   out.push(lampiranJudul(5, 'Gambaran Teknologi yang akan Dikembangkan'));
-  out.push(
-    P(
-      'Hadirku terdiri atas tiga bagian. Titik presensi di gerbang membaca kartu dan memotret siswa. Server menyimpan data, menjalankan aturan anomali, dan mengirim notifikasi. Aplikasi web dan bot Telegram melayani sekolah dan orang tua. Gambar L5.1 memperlihatkan arsitektur, Gambar L5.2 alur presensi berlapis, dan Gambar L5.3 susunan perangkat keras.'
-    )
-  );
-  out.push(...figure('arsitektur.png', 'Gambar L5.1 Arsitektur sistem Hadirku', 14));
-  out.push(...figure('berlapis.png', 'Gambar L5.2 Alur presensi berlapis', 14));
-  out.push(...figure('perangkat.png', 'Gambar L5.3 Diagram blok titik presensi', 14));
+  out.push(P(lampiran5.pengantar));
+  for (const [f, c] of lampiran5.gambar) out.push(...figure(f, c, 14));
   out.push(caption('Tabel L5.1 Fitur per peran pengguna', daftarTabel));
   out.push(table([0.25, 0.75], ['Peran', 'Fitur'], fitur));
   out.push(spacer());
@@ -497,12 +495,7 @@ function lampiran() {
     table(
       [0.26, 0.37, 0.37],
       ['Data', 'Tujuan', 'Pengamanan dan retensi'],
-      [
-        ['Nama, NIS, rombel, UID kartu', 'Identifikasi siswa dan rekap', 'Akses berbasis peran; dihapus atau dianonimkan saat siswa lulus/pindah'],
-        ['Foto saat penempelan kartu', 'Bukti kehadiran untuk audit', 'Hanya wali kelas, BK, admin; dihapus otomatis setelah 30 hari; tidak diproses pengenalan wajah'],
-        ['Waktu masuk, pulang, status kelas', 'Presensi dan ringkasan orang tua', 'Log audit untuk setiap perubahan; cadangan terenkripsi'],
-        ['ID Telegram orang tua', 'Pengiriman notifikasi', 'Hanya dihubungkan setelah orang tua memberi persetujuan dan kode tautan'],
-      ]
+      lampiran5.data
     )
   );
 
@@ -514,7 +507,7 @@ function lampiran() {
   out.push(lampiranJudul(7, 'Surat Kesediaan Sekolah Mitra Uji Coba'));
   out.push(
     P(
-      'Tidak wajib untuk PKM-KC, tetapi menguatkan bukti bahwa masalah dan lokasi uji coba nyata. Surat memuat kesediaan SMA Santa Maria 1 Bandung menjadi lokasi pengembangan dan uji coba, rombel yang terlibat, serta izin pemasangan perangkat di gerbang. [[V: tempel surat bertanda tangan kepala sekolah]]',
+      'Tidak wajib untuk PKM-KC, tetapi menguatkan bukti bahwa masalah dan lokasi uji coba nyata. Surat memuat kesediaan SMA Santa Maria 1 Bandung menjadi lokasi pengembangan dan uji coba, rombel yang terlibat, izin penggunaan ponsel dan Wi-Fi sekolah untuk presensi, serta akses ke pengelola jaringan sekolah. [[V: tempel surat bertanda tangan kepala sekolah]]',
       { noIndent: true }
     )
   );
@@ -525,7 +518,7 @@ function lampiran() {
 function entri(text, pg, level = 1) {
   return new D.Paragraph({
     spacing: { ...LINE, before: 0, after: 40 },
-    indent: { left: level === 2 ? 426 : 0 },
+    indent: { left: level === 2 ? 426 : level === 3 ? 852 : 0 },
     tabStops: [{ type: D.TabStopType.RIGHT, position: TEXT_W, leader: 'dot' }],
     children: [
       new D.TextRun({ text, font: FONT, size: 24, bold: level === 1 && /^(BAB|DAFTAR|LAMPIRAN)/.test(text) }),
@@ -588,15 +581,14 @@ const isiLampiran = lampiran();
 const halamanDepan = frontMatter();
 const lembar = lembarKerja();
 
-const footer = (fmt) =>
-  new D.Footer({
-    children: [
-      new D.Paragraph({
-        alignment: D.AlignmentType.CENTER,
-        children: [new D.TextRun({ children: [D.PageNumber.CURRENT], font: FONT, size: 24 })],
-      }),
-    ],
+// Panduan PKM: nomor romawi di kanan bawah (mulai Daftar Isi), angka Arab di kanan atas (bagian inti dan lampiran).
+const nomorHalaman = () =>
+  new D.Paragraph({
+    alignment: D.AlignmentType.RIGHT,
+    children: [new D.TextRun({ children: [D.PageNumber.CURRENT], font: FONT, size: 24 })],
   });
+const footer = () => new D.Footer({ children: [nomorHalaman()] });
+const header = () => new D.Header({ children: [nomorHalaman()] });
 
 const pageProps = (fmt, start) => ({
   page: {
@@ -614,6 +606,7 @@ const doc = new D.Document({
     default: { document: { run: { font: FONT, size: 24 }, paragraph: { spacing: LINE } } },
     paragraphStyles: [
       { id: 'Heading1', name: 'Heading 1', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { font: FONT, size: 24, bold: true, color: '000000' }, paragraph: { outlineLevel: 0 } },
+      { id: 'Heading3', name: 'Heading 3', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { font: FONT, size: 24, bold: true, color: '000000' }, paragraph: { outlineLevel: 2 } },
       { id: 'Heading2', name: 'Heading 2', basedOn: 'Normal', next: 'Normal', quickFormat: true, run: { font: FONT, size: 24, bold: true, color: '000000' }, paragraph: { outlineLevel: 1 } },
     ],
   },
@@ -621,7 +614,7 @@ const doc = new D.Document({
   sections: [
     { properties: pageProps(), children: lembar },
     { properties: pageProps(D.NumberFormat.LOWER_ROMAN, 1), footers: { default: footer() }, children: halamanDepan },
-    { properties: pageProps(D.NumberFormat.DECIMAL, 1), footers: { default: footer() }, children: [...isiInti, ...isiLampiran] },
+    { properties: pageProps(D.NumberFormat.DECIMAL, 1), headers: { default: header() }, footers: { default: new D.Footer({ children: [new D.Paragraph({ children: [] })] }) }, children: [...isiInti, ...isiLampiran] },
   ],
 });
 
@@ -659,6 +652,7 @@ function toMarkdown() {
   for (const b of inti) {
     if (b.t === 'bab') L.push(`## ${b.text}`, '');
     else if (b.t === 'sub') L.push(`### ${b.text}`, '');
+    else if (b.t === 'subsub') L.push(`#### ${b.text}`, '');
     else if (b.t === 'p') L.push(md(b.text), '');
     else if (b.t === 'ol') {
       b.items.forEach((it, i) => L.push(`${i + 1}. ${md(it)}`));
@@ -701,15 +695,11 @@ function toMarkdown() {
   L.push('### Lampiran 3. Susunan Tim Pengusul dan Pembagian Tugas', '');
   mdTable(['No', 'Nama / NIM', 'Program Studi', 'Bidang Ilmu', 'Jam/minggu', 'Uraian Tugas'], tim.map((r, i) => [i + 1, `${r[0]}: ${r[1]}`, r[2], r[3], r[4], r[5]]));
   L.push('### Lampiran 5. Gambaran Teknologi', '');
-  for (const [f, c] of [
-    ['arsitektur.png', 'Gambar L5.1 Arsitektur sistem Hadirku'],
-    ['berlapis.png', 'Gambar L5.2 Alur presensi berlapis'],
-    ['perangkat.png', 'Gambar L5.3 Diagram blok titik presensi'],
-  ])
+  for (const [f, c] of lampiran5.gambar)
     L.push(`![${c}](sumber/gambar/${f})`, '', `*${c}*`, '');
   L.push('**Tabel L5.1 Fitur per peran pengguna**', '');
   mdTable(['Peran', 'Fitur'], fitur);
   L.push('Lampiran 1 (biodata), 4 (surat pernyataan), 6 (uji similaritas), dan 7 (surat kesediaan sekolah) berupa formulir; lihat berkas .docx.', '');
-  fs.writeFileSync(path.join(OUT_DIR, '2026-09-27_isi-proposal_draft-ke-1.md'), L.join('\n'));
+  fs.writeFileSync(path.join(OUT_DIR, '2026-09-27_isi-proposal_draft-ke-2.md'), L.join('\n'));
 }
 toMarkdown();

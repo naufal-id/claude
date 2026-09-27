@@ -1,12 +1,14 @@
 # Analisis Kerangka Berpikir dan Rencana Penyusunan Proposal PKM Presensi Digital
 
-Draft ke-1, 27 September 2026
+Draft ke-2, 27 September 2026
+
+**Perubahan dari draft ke-1:** sistem tidak lagi memakai kartu RFID dan perangkat di gerbang. Sesuai keputusan tim, presensi berbentuk **website yang siswa buka di ponsel**, dengan validasi **lokasi GPS** dan **jaringan Wi-Fi sekolah**. Judul, Bab 1 sampai 4, anggaran, diagram, dan Lampiran 5 sudah menyesuaikan.
 
 Dokumen ini membedah kerangka berpikir yang kamu kirim, mencatat apa yang sudah kuat, apa yang perlu diubah agar sesuai panduan PKM, lalu menjabarkan rencana dan keputusan yang saya ambil saat menulis isi proposal. Isi proposal lengkap ada di dua berkas pendamping:
 
-- `2026-09-27_proposal-pkm-kc-presensi_draft-ke-1.docx` (siap sunting di Word, format PKM)
-- `2026-09-27_proposal-pkm-kc-presensi_draft-ke-1.pdf` (pratinjau hasil render)
-- `2026-09-27_isi-proposal_draft-ke-1.md` (teks yang sama dalam Markdown, untuk ditinjau cepat)
+- `2026-09-27_proposal-pkm-kc-presensi_draft-ke-2.docx` (siap sunting di Word, format PKM)
+- `2026-09-27_proposal-pkm-kc-presensi_draft-ke-2.pdf` (pratinjau hasil render)
+- `2026-09-27_isi-proposal_draft-ke-2.md` (teks yang sama dalam Markdown, untuk ditinjau cepat)
 - `sumber/` (isi, anggaran, diagram, dan skrip pembangun .docx)
 
 Semua penanda **[VERIFIKASI: ...]** di proposal adalah data yang belum bisa saya pastikan dari sumber publik, atau data primer yang hanya bisa kalian dapat dari sekolah. Jangan kirim proposal sebelum semua penanda itu terisi.
@@ -55,7 +57,7 @@ Alur kamu sudah benar: digitalisasi pendidikan, lalu mengerucut ke absensi, lalu
    - Kehadiran berhubungan dengan prestasi (Gottfried, 2010; Credé dkk., 2010).
    - Informasi kehadiran yang dikirim ke orang tua menurunkan ketidakhadiran: pesan otomatis mingguan menaikkan kehadiran kelas 12% (Bergman dan Chan, 2021), dan surat berisi total absen anak menurunkan absensi kronis sekitar 10% atau lebih (Rogers dan Feller, 2018).
    Ini memberi alasan ilmiah untuk fitur notifikasi orang tua, bukan sekadar fitur tambahan.
-3. **Kebaruan harus eksplisit.** Sistem RFID + notifikasi sudah banyak dibuat di Indonesia (lihat Bab 2). Reviewer akan bertanya "apa bedanya?". Kebaruan yang saya rumuskan: presensi **berlapis** (gerbang + kelas), bukti foto yang diaudit, deteksi anomali berbasis aturan, laporan kumulatif ke orang tua sesuai temuan Rogers dan Feller, dan desain sesuai UU Pelindungan Data Pribadi untuk data anak.
+3. **Kebaruan harus eksplisit.** Presensi berbasis GPS/*geofencing* sudah diteliti di sekolah Indonesia (Sudirman dkk., 2025; Al Ma'ruf dan Aryanto, 2025; Tehamen dkk., 2026). Reviewer akan bertanya "apa bedanya?". Kebaruan yang saya rumuskan: **validasi ganda GPS + jaringan Wi-Fi sekolah** (koordinat palsu saja tidak cukup), satu akun terikat satu perangkat, pencocokan silang presensi datang dengan presensi kelas, ringkasan kumulatif ke orang tua sesuai temuan Rogers dan Feller, dan lokasi diambil hanya saat presensi sesuai UU Pelindungan Data Pribadi.
 4. **Temuan yang perlu kalian cek: sekolah tampaknya sudah memakai AIMSIS.** Ada subdomain `cbtsmasantamaria.aimsis.com`. AIMSIS adalah sistem informasi sekolah yang punya modul nilai dan absensi. Kalau modul absensinya sudah dipakai, proposal harus memposisikan sistem kalian sebagai **lapisan penangkap dan verifikasi kehadiran** yang hasilnya bisa diekspor ke sistem sekolah, bukan pengganti. Saya menulis proposal dengan posisi itu. Tanyakan ke sekolah modul AIMSIS apa yang aktif.
 
 ### 3.2 Rumusan Masalah
@@ -87,42 +89,50 @@ Alur kamu sudah benar: digitalisasi pendidikan, lalu mengerucut ke absensi, lalu
 
 Dua poin kamu (sistem konvensional, sistem digital terdahulu) sudah benar. Saya tambahkan dua subbab supaya reviewer melihat dasar ilmiah desain:
 
-1. **2.1 Kehadiran siswa dan dampaknya** (Gottfried; Credé dkk.; Balfanz dan Byrnes).
-2. **2.2 Presensi konvensional dan kendalanya** (beban administrasi guru: Haeri dan Afriansyah, 2024; titip absen).
-3. **2.3 Sistem presensi digital terdahulu** dengan tabel pembanding teknologi dan penelitian (Azmi dan Ujianto, 2025; Nugraha dan Allaami, 2025; Pramesti dan Febrianto, 2024; Winata dkk., 2021) serta celah yang diisi proposal ini.
-4. **2.4 Keterlibatan orang tua dan pelindungan data anak** (Bergman dan Chan; Rogers dan Feller; UU 27/2022 Pasal 4, 25, 34; UNESCO 2023; kerentanan kartu MIFARE Classic menurut Garcia dkk., 2008).
+1. **2.1 Kehadiran siswa dan hasil belajar** (Gottfried, 2010; Balfanz dan Byrnes, 2012).
+2. **2.2 Presensi konvensional dan kendalanya** (Pramesti dan Febrianto, 2024; Nugraha dan Allaami, 2025).
+3. **2.3 Presensi berbasis lokasi dan sistem terdahulu**: Geolocation API (W3C, 2024), akurasi GPS ponsel ±4,9 m di ruang terbuka dan menurun dekat gedung (GPS.gov), *geofencing* dan rumus Haversine, kelemahan pemalsu lokasi, serta tabel pembanding penelitian.
+4. **2.4 Keterlibatan orang tua** (Bergman dan Chan, 2021; Rogers dan Feller, 2018; Telegram Bot API).
+5. **2.5 Pelindungan data lokasi dan data anak** (UU 27/2022 Pasal 4, 25, 34; UNESCO, 2023).
+
+Rujukan Credé dkk. (2010) dan Winata dkk. (2021) saya keluarkan di draft ke-2 supaya bagian inti tetap 10 halaman.
 
 ### 3.7 Tahap Pelaksanaan
 
 Lima tahap kamu (analisis kebutuhan, perancangan, implementasi, pengujian dan evaluasi, pemeliharaan) cocok dengan model *prototyping* iteratif (Pressman dan Maxim, 2020). Saya tambahkan:
 
+- Bab 3 dibagi menjadi **3.1 Tahap Pengajuan Proposal** dan **3.2 Tahap Setelah Proposal Diterima** (3.2.1 sampai 3.2.7), sesuai saran template PKM-KC. Peta lengkapnya ada di `2026-09-27_struktur-pengajuan-dan-pelaksanaan_draft-ke-1.md`.
 - **Tahap 0: persiapan dan perizinan** (surat kesediaan sekolah, persetujuan orang tua sesuai UU PDP Pasal 25).
 - Uji coba lapangan sebagai tahap tersendiri, dengan desain **sebelum-sesudah** di rombel uji coba.
-- Tabel indikator dan target: waktu presensi per sesi, akurasi data, waktu tanggap perangkat, keberhasilan pembacaan kartu, keterlambatan notifikasi, skor SUS (acuan rata-rata 68 menurut Lewis dan Sauro, 2018), dan deteksi skenario kecurangan.
+- Survei lapangan di tahap analisis: batas area sekolah, akurasi GPS di gerbang/lorong/kelas dengan beberapa merek ponsel, alamat IP publik Wi-Fi sekolah, serta cakupan dan kapasitas Wi-Fi saat jam kedatangan. Hasilnya menentukan radius dan ambang akurasi.
+- Tabel indikator dan target: waktu presensi, presensi sah yang diterima (≥95%), presensi dari luar sekolah yang ditolak (100%), skenario kecurangan terdeteksi (pemalsu lokasi, data seluler, akun teman), keterlambatan notifikasi, waktu presensi per sesi, akurasi data, skor SUS (acuan 68 menurut Lewis dan Sauro, 2018).
 - "Pemeliharaan" di PKM 4 bulan realistisnya berupa masa pendampingan dan serah terima, plus rencana keberlanjutan.
 
 ### 3.8 Biaya dan Jadwal
 
-- Saya susun anggaran Rp6.300.000 dari Belmawa dan Rp2.000.000 dari perguruan tinggi (total Rp8.300.000). Porsi dana Belmawa: bahan habis pakai 51,3%, sewa dan jasa 13,5%, transportasi lokal 21%, lain-lain 14,3%. Skrip `sumber/anggaran.js` menolak membangun dokumen kalau ada pos yang melewati batas.
-- **Harga satuan adalah estimasi** dari penelusuran harga pasar daring September 2026 (misalnya kartu MIFARE S50 cetak Rp6.500 sampai Rp12.000 per keping tergantung jumlah; VPS lokal mulai sekitar Rp87.000 per bulan). Ganti dengan harga toko yang kalian pilih, lalu simpan tangkapan layarnya sebagai bukti.
+- Anggaran draft ke-2: Rp5.930.000 dari Belmawa dan Rp2.000.000 dari perguruan tinggi (total Rp7.930.000). Porsi dana Belmawa: bahan habis pakai 48,1%, sewa dan jasa 14,3%, transportasi lokal 23,3%, lain-lain 14,3%. Tanpa kartu dan perangkat gerbang, pos bahan berisi 2 access point (dipasang hanya bila survei menemukan titik sinyal lemah), 1 ponsel Android kelas bawah untuk uji kompatibilitas yang kemudian dipakai guru piket, poster panduan, dan ATK. **Cek di panduan apakah pembelian ponsel dan access point diperbolehkan**; kalau tidak, hapus dan pastikan total Belmawa tetap di atas Rp5 juta. Skrip `sumber/anggaran.js` menolak membangun dokumen kalau ada pos yang melewati batas.
+- **Harga satuan adalah estimasi** dari penelusuran harga pasar daring September 2026 (misalnya VPS lokal mulai sekitar Rp87.000 per bulan). Ganti dengan harga toko yang kalian pilih, lalu simpan tangkapan layarnya sebagai bukti.
 - Jadwal 4 bulan dalam bentuk *bar chart*, sesuai template.
 
 ## 4. Keputusan desain yang saya ambil (boleh kalian ubah)
 
 | Keputusan | Pilihan | Alasan | Alternatif yang ditolak |
 |---|---|---|---|
-| Identitas siswa di gerbang | Kartu RFID 13,56 MHz (MIFARE) | Murah (±Rp8.000 per kartu), cepat, tidak memerlukan ponsel siswa | QR di ponsel: bergantung aturan ponsel di sekolah. Sidik jari/wajah: data biometrik termasuk data pribadi spesifik (UU PDP Pasal 4), butuh penilaian dampak dan biaya lebih tinggi |
-| Anti titip kartu | Foto otomatis saat kartu ditempel + audit acak + verifikasi silang di kelas | Kartu MIFARE Classic bisa dikloning (Garcia dkk., 2008) dan bisa dipinjamkan, jadi kartu saja tidak cukup | Pengenalan wajah otomatis: ditunda ke tahap lanjut karena risiko privasi anak |
-| Presensi di kelas | Daftar kelas terisi otomatis dari data gerbang, guru hanya mengoreksi pengecualian | Inti pengurangan beban guru; menangkap siswa yang hadir di sekolah tapi bolos jam pelajaran | Pembaca kartu di setiap kelas: biaya 15 rombel terlalu besar untuk dana PKM |
+| Media presensi | Website responsif di ponsel siswa, bisa dipasang ke layar utama, tanpa toko aplikasi | Keputusan tim; tanpa perangkat keras per titik, mudah diperluas | Aplikasi Android native: lebih kuat mendeteksi *mock location*, tetapi perlu distribusi APK dan tidak menjangkau iPhone |
+| Validasi lokasi | Geolocation API + *geofence* area sekolah + ambang akurasi dari survei lapangan | Akurasi GPS menurun di dalam gedung, jadi angka harus diukur | Radius tetap tanpa survei: rawan menolak siswa yang sah |
+| Anti pemalsuan lokasi | Wajib dari IP publik Wi-Fi sekolah | Peramban tidak bisa mendeteksi aplikasi pemalsu lokasi; syarat jaringan memaksa siswa berada dalam jangkauan Wi-Fi | QR dinamis di kelas (Tehamen dkk., 2026): menambah pekerjaan guru |
+| Anti titip absen | Satu akun terikat satu perangkat + pencocokan silang di kelas | Akun teman di ponsel lain ditolak; titip ponsel tertangkap saat guru mengoreksi daftar kelas | Swafoto: menambah data wajah anak |
+| Presensi di kelas | Daftar kelas terisi otomatis dari presensi datang, guru hanya mengoreksi pengecualian | Inti pengurangan beban guru; menangkap bolos jam pelajaran | Presensi GPS di setiap sesi: akurasi GPS di dalam kelas tidak cukup membedakan ruang |
+| Siswa tanpa ponsel | Presensi manual oleh guru piket, tercatat di log audit | Tidak semua siswa membawa ponsel; sekolah bisa membatasi ponsel | Mewajibkan ponsel: berisiko ditolak sekolah |
 | Notifikasi orang tua | Bot Telegram (API resmi, gratis) + ringkasan mingguan | Tanpa biaya per pesan; ringkasan kumulatif mengikuti temuan Rogers dan Feller (2018) | WhatsApp Business API: berbayar per percakapan. Gateway WhatsApp tidak resmi: melanggar ketentuan layanan dan rawan diblokir |
 | Server | VPS lokal (pusat data di Indonesia) | Data anak tetap di Indonesia, biaya rendah | Server di sekolah: bergantung listrik dan jaringan sekolah |
-| Cakupan uji coba | 3 rombel (±100 siswa) | Sesuai dana; tetap cukup untuk desain sebelum-sesudah | Seluruh sekolah: kartu saja ±Rp3,5 juta |
+| Cakupan uji coba | 3 rombel (±100 siswa) | Cukup untuk desain sebelum-sesudah dan mudah didampingi tim | Seluruh sekolah: beban Wi-Fi dan pendampingan terlalu besar untuk uji pertama |
 
 ## 5. Rencana kerja penyusunan (yang sudah saya lakukan)
 
 1. Menelusuri panduan PKM 2025 dan 2026: sistematika, format, dana, batas pos, luaran.
 2. Memilih skema (KC) dan menyesuaikan kerangka.
-3. Menelusuri literatur: kehadiran dan prestasi, notifikasi orang tua, beban administrasi guru, sistem presensi RFID/QR/wajah di Indonesia, kerentanan MIFARE, UU PDP, metode uji kebergunaan.
+3. Menelusuri literatur: kehadiran dan prestasi, notifikasi orang tua, beban administrasi guru, sistem presensi RFID/QR/GPS di Indonesia, akurasi GPS ponsel, Geolocation API, UU PDP, metode uji kebergunaan.
 4. Menelusuri profil mitra (Dapodik, situs sekolah).
 5. Menulis isi proposal lengkap, termasuk anggaran, jadwal, dan lampiran 2, 3, 5.
 6. Membangun berkas .docx sesuai format, lalu memeriksa tampilannya.
@@ -139,10 +149,10 @@ Tanyakan ke wakasek kurikulum/kesiswaan, 3 sampai 5 guru, 2 wali kelas, guru BK,
 4. Seberapa sering terjadi titip absen, bolos jam pelajaran, atau selisih data antara guru mapel dan wali kelas? Ada catatan kasus?
 5. Bagaimana orang tua diberi tahu jika anaknya tidak hadir? Berapa lama jeda informasinya?
 6. Modul AIMSIS apa yang aktif? Apakah bisa impor data kehadiran (CSV/Excel)?
-7. Apakah siswa boleh membawa ponsel? Apakah sudah ada kartu pelajar, dan jenis apa?
-8. Ada Wi-Fi di area gerbang? Ada stopkontak?
+7. Apakah siswa boleh membawa dan memakai ponsel di sekolah? Berapa persen siswa punya ponsel dengan GPS?
+8. Apakah siswa boleh memakai Wi-Fi sekolah? Berapa alamat IP publiknya, statis atau berubah-ubah? Apakah cakupan Wi-Fi sampai ke gerbang dan semua kelas? Siapa pengelola jaringannya?
 9. Jumlah siswa dan rombel terkini per tingkat.
-10. Kebijakan sekolah soal foto siswa dan data pribadi.
+10. Kebijakan sekolah soal data lokasi siswa dan data pribadi.
 
 ### 6.2 Data yang saya temukan tapi perlu dicek ulang
 
@@ -169,9 +179,11 @@ Template PKM 2025 menyebut surat pernyataan ketua memuat butir kepatuhan terhada
 
 | Risiko | Mitigasi di proposal |
 |---|---|
-| Reviewer menilai "sistem RFID sudah banyak" | Tabel pembanding di Bab 2 dan paragraf kebaruan di 1.1 |
-| Melebihi 10 halaman | Hasil render LibreOffice: inti ±9,5 halaman (Bab 1 di halaman 1, daftar pustaka berakhir di tengah halaman 10). Word bisa sedikit berbeda; cek ulang setelah penanda terisi. Kalau lebih, pindahkan Tabel 2.1 atau Tabel 3.1 ke lampiran |
-| Data anak dan foto | Persetujuan orang tua, retensi foto 30 hari, akses berbasis peran, tanpa pengenalan wajah otomatis |
+| Reviewer menilai "presensi GPS sudah banyak" | Tabel pembanding di Bab 2 dan paragraf kebaruan di 1.1 (validasi ganda GPS + jaringan) |
+| Siswa memalsukan GPS di dalam jangkauan Wi-Fi | Siswa itu memang berada di sekolah; bolos jam pelajaran tertangkap oleh pencocokan silang di kelas |
+| IP publik sekolah berubah atau Wi-Fi padat saat jam datang | Survei di tahap analisis; admin bisa memperbarui daftar IP; access point tambahan; guru piket sebagai jalur cadangan |
+| Melebihi 10 halaman | Hasil render LibreOffice: inti ±9,8 halaman (daftar pustaka berakhir di bagian bawah halaman 10, ruang cadangan tipis). Word bisa sedikit berbeda; cek ulang setelah penanda terisi. Kalau lebih, pindahkan Tabel 2.1 atau Tabel 3.1 ke lampiran |
+| Data lokasi anak | Persetujuan orang tua, lokasi diambil hanya saat presensi, koordinat mentah dihapus setelah 30 hari, akses berbasis peran |
 | Sekolah sudah punya AIMSIS | Posisi sebagai lapisan penangkap + ekspor data |
 | Harga berubah | Harga satuan ditandai estimasi; siapkan bukti harga |
 | Panduan berubah | Tabel ketentuan di bagian 2 menjadi daftar cek |
@@ -184,4 +196,4 @@ Template PKM 2025 menyebut surat pernyataan ketua memuat butir kepatuhan terhada
 - Profil sekolah (Dapodik Kota Bandung): https://simdik.bandung.go.id/npsn/20219265
 - Situs sekolah, Sejarah: https://smasantamaria1.sch.id/?page_id=3434
 - AIMSIS: https://aimsis.com/
-- Daftar pustaka lengkap dengan DOI/URL ada di akhir `2026-09-27_isi-proposal_draft-ke-1.md`.
+- Daftar pustaka lengkap dengan DOI/URL ada di akhir `2026-09-27_isi-proposal_draft-ke-2.md`.

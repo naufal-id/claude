@@ -37,20 +37,20 @@
   <rect class="box" x="170" y="20" width="140" height="70" rx="6"/>
   <text class="tn" x="180" y="38">TAHAP 2 · Bulan 1</text>
   <text class="tb" x="180" y="56">Analisis kebutuhan</text>
-  <text class="ts" x="180" y="71">observasi, wawancara,</text>
-  <text class="ts" x="180" y="84">pengukuran awal</text>
+  <text class="ts" x="180" y="71">wawancara, pengukuran</text>
+  <text class="ts" x="180" y="84">awal, survei Wi-Fi/GPS</text>
 
   <rect class="acc" x="330" y="20" width="140" height="70" rx="6"/>
   <text class="tn" x="340" y="38">TAHAP 3 · Bulan 1–2</text>
   <text class="tb" x="340" y="56">Perancangan</text>
-  <text class="ts" x="340" y="71">arsitektur, basis data,</text>
-  <text class="ts" x="340" y="84">antarmuka, perangkat</text>
+  <text class="ts" x="340" y="71">arsitektur, alur validasi,</text>
+  <text class="ts" x="340" y="84">basis data, antarmuka</text>
 
   <rect class="acc" x="490" y="20" width="140" height="70" rx="6"/>
   <text class="tn" x="500" y="38">TAHAP 4 · Bulan 2–3</text>
   <text class="tb" x="500" y="56">Implementasi</text>
-  <text class="ts" x="500" y="71">titik presensi, aplikasi</text>
-  <text class="ts" x="500" y="84">web, bot Telegram</text>
+  <text class="ts" x="500" y="71">halaman presensi siswa,</text>
+  <text class="ts" x="500" y="84">modul sekolah, bot</text>
 
   <line class="ln" x1="150" y1="55" x2="168" y2="55"/>
   <line class="ln" x1="310" y1="55" x2="328" y2="55"/>
@@ -60,7 +60,7 @@
   <rect class="acc" x="490" y="170" width="140" height="70" rx="6"/>
   <text class="tn" x="500" y="188">TAHAP 5 · Bulan 3</text>
   <text class="tb" x="500" y="206">Pengujian</text>
-  <text class="ts" x="500" y="221">fungsional, kinerja,</text>
+  <text class="ts" x="500" y="221">fungsional, beban,</text>
   <text class="ts" x="500" y="234">skenario kecurangan</text>
 
   <rect class="box" x="330" y="170" width="140" height="70" rx="6"/>
@@ -96,83 +96,82 @@
 
 <!-- Lampiran: Arsitektur -->
 <svg id="arsitektur" width="640" height="340" viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg">
-  <rect class="box" x="10" y="30" width="170" height="150" rx="6"/>
-  <text class="tb" x="22" y="50">Titik presensi gerbang</text>
-  <text class="ts" x="22" y="66">(2 unit + 1 cadangan)</text>
-  <text class="ts" x="22" y="88">• ESP32-S3 + kamera OV2640</text>
-  <text class="ts" x="22" y="104">• Pembaca RFID 13,56 MHz</text>
-  <text class="ts" x="22" y="120">• Layar TFT, buzzer, LED</text>
-  <text class="ts" x="22" y="136">• microSD: antrean luring</text>
-  <text class="ts" x="22" y="152">  bila Wi-Fi terputus</text>
-  <text class="ts" x="22" y="170">Siswa menempelkan kartu</text>
+  <rect class="box" x="10" y="20" width="175" height="160" rx="6"/>
+  <text class="tb" x="22" y="40">Ponsel siswa</text>
+  <text class="ts" x="22" y="56">(peramban, tanpa instal aplikasi)</text>
+  <text class="ts" x="22" y="78">• Halaman presensi responsif</text>
+  <text class="ts" x="22" y="94">• Geolocation API: koordinat</text>
+  <text class="ts" x="22" y="108">  + akurasi (izin pengguna)</text>
+  <text class="ts" x="22" y="126">• Token perangkat terdaftar</text>
+  <text class="ts" x="22" y="144">• Terhubung ke Wi-Fi sekolah</text>
+  <text class="ts" x="22" y="168">Siswa menekan "Presensi"</text>
 
-  <rect class="acc" x="235" y="30" width="190" height="230" rx="6"/>
-  <text class="tb" x="247" y="50">Server (VPS, pusat data</text>
-  <text class="tb" x="247" y="65">di Indonesia)</text>
-  <text class="ts" x="247" y="88">• API presensi (HTTPS + token</text>
-  <text class="ts" x="247" y="102">  perangkat)</text>
-  <text class="ts" x="247" y="120">• Basis data siswa, jadwal,</text>
-  <text class="ts" x="247" y="134">  presensi, log audit</text>
-  <text class="ts" x="247" y="152">• Penyimpanan foto (retensi</text>
-  <text class="ts" x="247" y="166">  30 hari, lalu dihapus)</text>
-  <text class="ts" x="247" y="184">• Mesin aturan anomali</text>
-  <text class="ts" x="247" y="202">• Penjadwal notifikasi dan</text>
-  <text class="ts" x="247" y="216">  ringkasan mingguan</text>
-  <text class="ts" x="247" y="234">• Ekspor CSV/Excel</text>
+  <rect class="soft" x="10" y="200" width="175" height="60" rx="6"/>
+  <text class="tb" x="22" y="222">Wi-Fi sekolah</text>
+  <text class="ts" x="22" y="240">HTTPS keluar lewat IP publik</text>
+  <text class="ts" x="22" y="254">sekolah (+ access point)</text>
+  <line class="ln" x1="97" y1="180" x2="97" y2="198"/>
+  <path class="ln" d="M 185 230 L 210 230 L 210 120 L 233 120"/>
 
-  <rect class="box" x="470" y="20" width="160" height="110" rx="6"/>
-  <text class="tb" x="482" y="40">Aplikasi web</text>
-  <text class="ts" x="482" y="60">• Guru mata pelajaran</text>
+  <rect class="acc" x="235" y="20" width="200" height="250" rx="6"/>
+  <text class="tb" x="247" y="40">Server (VPS, pusat data</text>
+  <text class="tb" x="247" y="55">di Indonesia)</text>
+  <text class="ts" x="247" y="78">• Layanan validasi: perangkat,</text>
+  <text class="ts" x="247" y="92">  geofence + akurasi, IP</text>
+  <text class="ts" x="247" y="106">  jaringan sekolah, jendela waktu</text>
+  <text class="ts" x="247" y="124">• Basis data siswa, jadwal,</text>
+  <text class="ts" x="247" y="138">  presensi, log audit</text>
+  <text class="ts" x="247" y="156">• Mesin aturan anomali</text>
+  <text class="ts" x="247" y="174">• Penjadwal notifikasi dan</text>
+  <text class="ts" x="247" y="188">  ringkasan mingguan</text>
+  <text class="ts" x="247" y="206">• Penghapusan otomatis</text>
+  <text class="ts" x="247" y="220">  koordinat setelah 30 hari</text>
+  <text class="ts" x="247" y="238">• Ekspor CSV/Excel</text>
+
+  <rect class="box" x="470" y="20" width="160" height="120" rx="6"/>
+  <text class="tb" x="482" y="40">Aplikasi web sekolah</text>
+  <text class="ts" x="482" y="60">• Guru mapel dan piket</text>
   <text class="ts" x="482" y="76">• Wali kelas dan BK</text>
   <text class="ts" x="482" y="92">• Kepala sekolah</text>
   <text class="ts" x="482" y="108">• Admin tata usaha</text>
-  <text class="ts" x="482" y="124">Akses berbasis peran</text>
+  <text class="ts" x="482" y="128">Akses berbasis peran</text>
 
-  <rect class="box" x="470" y="150" width="160" height="80" rx="6"/>
-  <text class="tb" x="482" y="170">Bot Telegram</text>
-  <text class="ts" x="482" y="190">• Notifikasi masuk/pulang</text>
-  <text class="ts" x="482" y="206">• Ringkasan mingguan</text>
-  <text class="ts" x="482" y="222">• Pengajuan izin/sakit</text>
+  <rect class="box" x="470" y="160" width="160" height="80" rx="6"/>
+  <text class="tb" x="482" y="180">Bot Telegram</text>
+  <text class="ts" x="482" y="200">• Notifikasi masuk/pulang</text>
+  <text class="ts" x="482" y="216">• Ringkasan mingguan</text>
+  <text class="ts" x="482" y="232">• Pengajuan izin/sakit</text>
 
-  <rect class="box" x="470" y="260" width="160" height="50" rx="6"/>
-  <text class="tb" x="482" y="282">Orang tua / wali</text>
-  <text class="ts" x="482" y="300">ponsel dengan Telegram</text>
-  <line class="ln" x1="550" y1="230" x2="550" y2="258"/>
+  <rect class="box" x="470" y="265" width="160" height="45" rx="6"/>
+  <text class="tb" x="482" y="285">Orang tua / wali</text>
+  <text class="ts" x="482" y="301">ponsel dengan Telegram</text>
+  <line class="ln" x1="550" y1="240" x2="550" y2="263"/>
 
-  <rect class="soft" x="10" y="220" width="170" height="60" rx="6"/>
-  <text class="tb" x="22" y="242">Sistem informasi sekolah</text>
-  <text class="ts" x="22" y="260">(mis. AIMSIS, rapor)</text>
-  <text class="ts" x="22" y="274">impor berkas rekap</text>
-  <line class="ln" x1="233" y1="245" x2="182" y2="250"/>
-  <text class="ts" x="186" y="238">CSV</text>
+  <line class="ln" x1="435" y1="75" x2="468" y2="75"/>
+  <line class="ln" x1="468" y1="95" x2="437" y2="95"/>
+  <line class="ln" x1="435" y1="200" x2="468" y2="200"/>
 
-  <line class="ln" x1="180" y1="105" x2="233" y2="105"/>
-  <text class="ts" x="186" y="98">UID + foto</text>
-  <line class="ln" x1="233" y1="130" x2="182" y2="130"/>
-  <text class="ts" x="186" y="145">nama,</text>
-  <text class="ts" x="186" y="158">status</text>
-
-  <line class="ln" x1="425" y1="75" x2="468" y2="75"/>
-  <line class="ln" x1="468" y1="95" x2="427" y2="95"/>
-  <line class="ln" x1="425" y1="190" x2="468" y2="190"/>
-  <text class="ts" x="10" y="330">Garis putus-putus: sistem sekolah yang sudah ada; integrasi melalui berkas ekspor.</text>
+  <rect class="soft" x="235" y="285" width="200" height="40" rx="6"/>
+  <text class="tb" x="247" y="303">Sistem informasi sekolah</text>
+  <text class="ts" x="247" y="318">(mis. AIMSIS): impor rekap CSV</text>
+  <line class="ln" x1="335" y1="270" x2="335" y2="283"/>
 </svg>
 
 <!-- Lampiran: Alur presensi berlapis -->
 <svg id="berlapis" width="640" height="330" viewBox="0 0 640 330" xmlns="http://www.w3.org/2000/svg">
   <rect class="acc" x="10" y="10" width="620" height="68" rx="6"/>
-  <text class="tn" x="22" y="28">LAPIS 1 · GERBANG (pagi)</text>
-  <text class="t" x="22" y="47">Siswa menempelkan kartu → perangkat memotret → server mencatat jam dan status</text>
-  <text class="t" x="22" y="64">(tepat waktu/terlambat) → layar menampilkan nama → orang tua menerima notifikasi</text>
+  <text class="tn" x="22" y="28">LAPIS 1 · PRESENSI DATANG DARI PONSEL (pagi)</text>
+  <text class="t" x="22" y="47">Siswa membuka halaman presensi → server memvalidasi perangkat, GPS, jaringan, waktu →</text>
+  <text class="t" x="22" y="64">status tepat waktu/terlambat tercatat → orang tua menerima notifikasi</text>
 
   <rect class="box" x="10" y="88" width="620" height="68" rx="6"/>
   <text class="tn" x="22" y="106">LAPIS 2 · KELAS (setiap sesi pelajaran)</text>
   <text class="t" x="22" y="125">Guru membuka sesi → daftar terisi otomatis dari Lapis 1 → guru hanya menandai</text>
-  <text class="t" x="22" y="142">pengecualian (tercatat hadir tapi tidak ada di kelas, dan sebaliknya) → konfirmasi satu kali</text>
+  <text class="t" x="22" y="142">pengecualian (tercatat hadir tapi tidak ada di kelas, atau tanpa ponsel) → konfirmasi satu kali</text>
 
   <rect class="box" x="10" y="166" width="620" height="68" rx="6"/>
   <text class="tn" x="22" y="184">LAPIS 3 · AUDIT (harian, wali kelas/BK)</text>
-  <text class="t" x="22" y="203">Mesin aturan menandai anomali → wali kelas meninjau antrean beserta foto →</text>
+  <text class="t" x="22" y="203">Mesin aturan menandai anomali (lokasi janggal, akun ganda) → wali kelas meninjau →</text>
   <text class="t" x="22" y="220">wali kelas menetapkan tindak lanjut; semua perubahan data tersimpan di log audit</text>
 
   <rect class="box" x="10" y="244" width="620" height="68" rx="6"/>
@@ -181,41 +180,53 @@
   <text class="t" x="22" y="298">semester) → orang tua dapat mengajukan izin/sakit → wali kelas menyetujui</text>
 </svg>
 
-<!-- Lampiran: Blok perangkat keras -->
-<svg id="perangkat" width="640" height="250" viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg">
-  <rect class="acc" x="240" y="70" width="160" height="100" rx="6"/>
-  <text class="tb" x="320" y="105" text-anchor="middle">ESP32-S3</text>
-  <text class="ts" x="320" y="123" text-anchor="middle">Wi-Fi, PSRAM</text>
-  <text class="ts" x="320" y="139" text-anchor="middle">kamera OV2640 (DVP)</text>
-  <text class="ts" x="320" y="155" text-anchor="middle">slot microSD</text>
-
-  <rect class="box" x="10" y="20" width="170" height="50" rx="6"/>
-  <text class="tb" x="22" y="40">Pembaca RFID RC522</text>
-  <text class="ts" x="22" y="58">13,56 MHz, antarmuka SPI</text>
-  <rect class="box" x="10" y="95" width="170" height="50" rx="6"/>
-  <text class="tb" x="22" y="115">Layar TFT 2,4 inci</text>
-  <text class="ts" x="22" y="133">nama dan status, SPI</text>
-  <rect class="box" x="10" y="170" width="170" height="50" rx="6"/>
-  <text class="tb" x="22" y="190">Buzzer dan LED</text>
-  <text class="ts" x="22" y="208">umpan balik, GPIO</text>
-
-  <rect class="box" x="460" y="20" width="170" height="50" rx="6"/>
-  <text class="tb" x="472" y="40">Adaptor 5 V</text>
-  <text class="ts" x="472" y="58">catu daya perangkat</text>
-  <rect class="box" x="460" y="95" width="170" height="50" rx="6"/>
-  <text class="tb" x="472" y="115">Wi-Fi sekolah</text>
-  <text class="ts" x="472" y="133">HTTPS ke server</text>
-  <rect class="soft" x="460" y="170" width="170" height="50" rx="6"/>
-  <text class="tb" x="472" y="190">Antrean luring</text>
-  <text class="ts" x="472" y="208">microSD, kirim ulang</text>
-
-  <line class="ln" x1="180" y1="45" x2="238" y2="85"/>
-  <line class="ln" x1="238" y1="120" x2="182" y2="120"/>
-  <line class="ln" x1="238" y1="155" x2="182" y2="195"/>
-  <line class="ln" x1="458" y1="45" x2="402" y2="85"/>
-  <line class="ln" x1="402" y1="115" x2="458" y2="120"/>
-  <line class="ln" x1="402" y1="150" x2="458" y2="195"/>
-  <text class="ts" x="10" y="243">Semua komponen dipasang dalam casing akrilik yang ditempel di dinding dekat gerbang.</text>
+<!-- Lampiran: Alur validasi -->
+<svg id="validasi" width="640" height="340" viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg">
+  <rect class="box" x="10" y="10" width="330" height="46" rx="6"/>
+  <text class="tn" x="22" y="28">SYARAT 1</text>
+  <text class="tb" x="90" y="28">Perangkat terdaftar?</text>
+  <text class="ts" x="90" y="45">token perangkat cocok dengan akun</text>
+  <line class="ln" x1="340" y1="33" x2="418" y2="33"/>
+  <text class="ts" x="350" y="27">tidak</text>
+  <line class="ln" x1="175" y1="56" x2="175" y2="70"/>
+  <rect class="box" x="10" y="72" width="330" height="46" rx="6"/>
+  <text class="tn" x="22" y="90">SYARAT 2</text>
+  <text class="tb" x="90" y="90">Izin lokasi dan akurasi</text>
+  <text class="ts" x="90" y="107">akurasi GPS ≤ ambang hasil survei</text>
+  <line class="ln" x1="340" y1="95" x2="418" y2="95"/>
+  <text class="ts" x="350" y="89">tidak</text>
+  <line class="ln" x1="175" y1="118" x2="175" y2="132"/>
+  <rect class="box" x="10" y="134" width="330" height="46" rx="6"/>
+  <text class="tn" x="22" y="152">SYARAT 3</text>
+  <text class="tb" x="90" y="152">Di dalam area sekolah?</text>
+  <text class="ts" x="90" y="169">jarak Haversine ke batas geofence</text>
+  <line class="ln" x1="340" y1="157" x2="418" y2="157"/>
+  <text class="ts" x="350" y="151">tidak</text>
+  <line class="ln" x1="175" y1="180" x2="175" y2="194"/>
+  <rect class="box" x="10" y="196" width="330" height="46" rx="6"/>
+  <text class="tn" x="22" y="214">SYARAT 4</text>
+  <text class="tb" x="90" y="214">Dari jaringan sekolah?</text>
+  <text class="ts" x="90" y="231">IP publik ada di daftar Wi-Fi sekolah</text>
+  <line class="ln" x1="340" y1="219" x2="418" y2="219"/>
+  <text class="ts" x="350" y="213">tidak</text>
+  <line class="ln" x1="175" y1="242" x2="175" y2="256"/>
+  <rect class="box" x="10" y="258" width="330" height="46" rx="6"/>
+  <text class="tn" x="22" y="276">SYARAT 5</text>
+  <text class="tb" x="90" y="276">Dalam jendela waktu?</text>
+  <text class="ts" x="90" y="293">jam datang/pulang sesuai jadwal</text>
+  <line class="ln" x1="340" y1="281" x2="418" y2="281"/>
+  <text class="ts" x="350" y="275">tidak</text>
+  <rect class="soft" x="420" y="10" width="210" height="294" rx="6"/>
+  <text class="tb" x="432" y="32">Ditolak</text>
+  <text class="ts" x="432" y="54">Siswa melihat alasan penolakan</text>
+  <text class="ts" x="432" y="69">dan diarahkan ke guru piket.</text>
+  <text class="ts" x="432" y="84"></text>
+  <text class="ts" x="432" y="99">Percobaan tercatat; percobaan</text>
+  <text class="ts" x="432" y="114">berulang masuk antrean</text>
+  <text class="ts" x="432" y="129">anomali wali kelas.</text>
+  <line class="ln" x1="175" y1="304" x2="175" y2="316"/>
+  <rect class="acc" x="10" y="318" width="330" height="18" rx="4"/>
+  <text class="tb" x="22" y="331">Presensi sah dicatat → notifikasi orang tua</text>
 </svg>
 </body>
 </html>

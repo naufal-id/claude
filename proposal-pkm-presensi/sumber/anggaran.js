@@ -8,17 +8,11 @@ const pos = [
     nama: 'Bahan habis pakai',
     batas: 0.60,
     item: [
-      ['Papan ESP32-S3 dengan kamera OV2640 dan slot microSD', 'Otak titik presensi dan pemotret bukti (2 terpasang, 1 cadangan)', 3, 'unit', 175000, 'belmawa'],
-      ['Modul pembaca RFID RC522 13,56 MHz', 'Membaca UID kartu siswa', 3, 'unit', 30000, 'belmawa'],
-      ['Layar TFT 2,4 inci SPI', 'Menampilkan nama dan status presensi', 3, 'unit', 75000, 'belmawa'],
-      ['Kartu RFID MIFARE S50 cetak identitas', 'Kartu siswa 3 rombel uji coba, guru, dan cadangan', 120, 'keping', 8500, 'belmawa'],
-      ['Kartu microSD 32 GB', 'Antrean luring saat Wi-Fi terputus', 3, 'keping', 60000, 'belmawa'],
-      ['Adaptor 5 V 3 A dan kabel daya', 'Catu daya titik presensi', 3, 'set', 60000, 'belmawa'],
-      ['Komponen pendukung (buzzer, LED, resistor, PCB, kabel jumper, header)', 'Perakitan rangkaian', 3, 'paket', 60000, 'belmawa'],
-      ['Casing akrilik potong laser beserta baut', 'Pelindung perangkat di area gerbang', 3, 'unit', 150000, 'belmawa'],
-      ['Braket dinding, kabel ties, dan duct kabel', 'Pemasangan di gerbang', 2, 'set', 50000, 'belmawa'],
-      ['Kabel data USB dan modul pemrogram', 'Pemrograman dan pengujian perangkat', 2, 'set', 40000, 'belmawa'],
-      ['ATK dan cetak formulir persetujuan orang tua serta kuesioner', 'Perizinan dan evaluasi', 1, 'paket', 200000, 'belmawa'],
+      ['Access point Wi-Fi dual-band', 'Memperkuat sinyal Wi-Fi sekolah di area presensi (gerbang/lobi) bila survei menemukan titik lemah', 2, 'unit', 450000, 'belmawa'],
+      ['Kabel LAN Cat6, konektor, dan aksesori pemasangan', 'Menghubungkan access point ke jaringan sekolah', 1, 'paket', 200000, 'belmawa'],
+      ['Ponsel Android kelas bawah', 'Uji kompatibilitas; setelah program menjadi perangkat presensi manual guru piket', 1, 'unit', 1200000, 'belmawa'],
+      ['Cetak poster panduan presensi dan kode QR tautan halaman', 'Dipasang di 15 kelas, gerbang, dan ruang guru', 20, 'lembar', 15000, 'belmawa'],
+      ['ATK dan cetak formulir persetujuan orang tua serta kuesioner', 'Perizinan dan evaluasi', 1, 'paket', 250000, 'belmawa'],
     ],
   },
   {
@@ -26,9 +20,9 @@ const pos = [
     nama: 'Sewa dan jasa',
     batas: 0.15,
     item: [
-      ['Sewa VPS 2 vCPU, 4 GB RAM (pusat data Indonesia)', 'Server aplikasi, basis data, penyimpanan foto', 4, 'bulan', 150000, 'belmawa'],
+      ['Sewa VPS 2 vCPU, 4 GB RAM (pusat data Indonesia)', 'Server aplikasi web dan basis data', 4, 'bulan', 150000, 'belmawa'],
       ['Nama domain .id', 'Alamat aplikasi web dan sertifikat HTTPS', 1, 'tahun', 250000, 'belmawa'],
-      ['Penggunaan laboratorium dan peralatan kampus (in kind)', 'Perakitan dan pengujian perangkat', 1, 'paket', 500000, 'pt'],
+      ['Penggunaan laboratorium komputer kampus (in kind)', 'Pengembangan dan uji beban aplikasi', 1, 'paket', 500000, 'pt'],
     ],
   },
   {
@@ -37,7 +31,8 @@ const pos = [
     batas: 0.30,
     item: [
       ['Perjalanan ke sekolah: observasi dan wawancara', '4 kali x 2 orang', 8, 'orang-kali', 30000, 'belmawa'],
-      ['Perjalanan ke sekolah: validasi desain dan instalasi', '4 kali x 2 orang', 8, 'orang-kali', 30000, 'belmawa'],
+      ['Perjalanan ke sekolah: survei Wi-Fi dan akurasi GPS', '3 kali x 2 orang', 6, 'orang-kali', 30000, 'belmawa'],
+      ['Perjalanan ke sekolah: validasi rancangan antarmuka', '2 kali x 2 orang', 4, 'orang-kali', 30000, 'belmawa'],
       ['Perjalanan ke sekolah: pendampingan uji coba lapangan', '12 kali x 2 orang', 24, 'orang-kali', 30000, 'belmawa'],
       ['Perjalanan ke sekolah: pelatihan dan serah terima', '2 kali x 2 orang', 4, 'orang-kali', 30000, 'belmawa'],
     ],
@@ -49,7 +44,7 @@ const pos = [
     item: [
       ['Paket data internet tim', 'Pengembangan dan pemantauan uji coba', 4, 'bulan', 100000, 'belmawa'],
       ['Cetak buku panduan pengguna', 'Pegangan admin, guru, dan wali kelas', 10, 'eksemplar', 25000, 'belmawa'],
-      ['Cetak laporan dan dokumentasi', 'Laporan kemajuan dan laporan akhir', 1, 'paket', 150000, 'belmawa'],
+      ['Cetak laporan dan dokumentasi', 'Laporan kemajuan dan laporan akhir', 1, 'paket', 100000, 'belmawa'],
       ['Meterai', 'Surat pernyataan dan dokumen kerja sama', 10, 'lembar', 10000, 'belmawa'],
       ['Biaya publikasi artikel ilmiah (estimasi)', 'Luaran tambahan: artikel di jurnal nasional', 1, 'artikel', 750000, 'pt'],
       ['Konsumsi pelatihan guru dan sosialisasi orang tua', '2 kegiatan x 30 orang', 60, 'porsi', 12500, 'pt'],
