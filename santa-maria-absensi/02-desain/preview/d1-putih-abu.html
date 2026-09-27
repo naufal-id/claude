@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Putih Abu-Abu · Absensi SM1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Arah 1, Putih Abu-Abu: warna dari seragam SMA (kemeja putih, bawahan abu-abu)
+   dan kuning badge OSIS di saku sebagai satu-satunya aksen. */
+:root{
+  --kemeja:#FFFFFF;
+  --abu:#E4E6E9;
+  --abu-garis:#CDD1D6;
+  --garis:#DDE0E4;
+  --tinta:#1B1F24;
+  --tinta-2:#50565F;
+  --kuning:#F2B705;
+  --di-kuning:#1B1F24;
+  --ok:#146C3B; --ok-bg:#E2F1E7;
+  --warn:#8A5000; --warn-bg:#FBEEDA;
+  --err:#B3261E; --err-bg:#FBE3E1;
+  --fokus:#1B1F24;
+  --r:10px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --kemeja:#1A1D21; --abu:#111316; --abu-garis:#2C3036; --garis:#2E3238;
+    --tinta:#EDEFF2; --tinta-2:#A9AFB8; --kuning:#F2B705; --di-kuning:#1B1F24;
+    --ok:#74CF98; --ok-bg:#15301F; --warn:#F2B55C; --warn-bg:#33260F; --err:#F4938C; --err-bg:#3A1A18;
+    --fokus:#F2B705; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --kemeja:#1A1D21; --abu:#111316; --abu-garis:#2C3036; --garis:#2E3238;
+  --tinta:#EDEFF2; --tinta-2:#A9AFB8; --kuning:#F2B705; --di-kuning:#1B1F24;
+  --ok:#74CF98; --ok-bg:#15301F; --warn:#F2B55C; --warn-bg:#33260F; --err:#F4938C; --err-bg:#3A1A18;
+  --fokus:#F2B705; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--abu);color:var(--tinta);font:16px/1.5 "Onest",system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+@media (min-width:860px){body{padding-bottom:0}}
+h1,h2,h3{margin:0;line-height:1.15;text-wrap:balance}
+p{margin:0}
+button,input,textarea{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--fokus);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:20px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Kepala */
+.top{background:var(--kemeja);border-bottom:1px solid var(--garis)}
+.top .wrap{display:flex;align-items:center;gap:16px;min-height:64px}
+.brand{display:flex;flex-direction:column;line-height:1.1}
+.brand b{font-weight:800;font-size:17px;letter-spacing:-.01em}
+.brand span{font-size:13px;color:var(--tinta-2)}
+.who{margin-left:auto;text-align:right;font-size:14px;color:var(--tinta-2);line-height:1.25}
+.who b{display:block;color:var(--tinta);font-weight:600}
+.deskNav{display:none;gap:4px;margin-left:24px}
+.deskNav a{text-decoration:none;padding:20px 12px 18px;font-weight:600;color:var(--tinta-2);border-bottom:3px solid transparent}
+.deskNav a[aria-current="page"]{color:var(--tinta);border-color:var(--tinta)}
+.deskNav a:hover{color:var(--tinta)}
+@media (min-width:860px){.deskNav{display:flex}}
+
+/* Nav bawah (HP) */
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--kemeja);border-top:1px solid var(--garis);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:20}
+.tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px 12px;min-height:60px;text-decoration:none;font-size:13px;font-weight:600;color:var(--tinta-2)}
+.tabs a svg{width:24px;height:24px}
+.tabs a[aria-current="page"]{color:var(--tinta)}
+.tabs a[aria-current="page"] .ind{background:var(--kuning)}
+.ind{display:block;width:28px;height:4px;border-radius:2px;margin-bottom:4px;background:transparent}
+@media (min-width:860px){.tabs{display:none}}
+
+/* Bagian putih (kemeja) dan abu (bawahan) */
+.shirt{background:var(--kemeja);padding-block:28px 32px}
+.pants{padding-block:28px 40px}
+.grid2{display:grid;gap:28px}
+@media (min-width:860px){.grid2{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:48px}}
+
+.date{font-size:15px;color:var(--tinta-2);font-weight:500}
+.clock{font-size:clamp(56px,14vw,88px);font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums;line-height:1;margin-top:6px}
+.bel{margin-top:10px;font-weight:600}
+.bel[data-late="true"]{color:var(--warn)}
+
+.checks{list-style:none;margin:24px 0 0;padding:0;border-top:1px solid var(--garis)}
+.checks li{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--garis)}
+.ico{width:40px;height:40px;border-radius:8px;background:var(--abu);display:grid;place-items:center}
+.ico svg{width:22px;height:22px}
+.checks b{display:block;font-weight:600}
+.checks small{display:block;color:var(--tinta-2);font-size:14px}
+.chip{font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.chip svg{width:14px;height:14px}
+.chip[data-s="ok"]{background:var(--ok-bg);color:var(--ok)}
+.chip[data-s="fail"],.chip[data-s="error"]{background:var(--err-bg);color:var(--err)}
+.chip[data-s="idle"]{background:var(--abu);color:var(--tinta-2)}
+.chip[data-s="checking"]{background:var(--abu);color:var(--tinta)}
+
+.act{margin-top:24px;display:grid;gap:12px}
+.btn{appearance:none;border:0;border-radius:var(--r);min-height:56px;padding:14px 20px;font-weight:700;font-size:17px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px}
+.btn-main{background:var(--kuning);color:var(--di-kuning)}
+.btn-main:hover{filter:brightness(.96)}
+.btn-main:disabled{cursor:progress;opacity:.75}
+.btn-line{background:transparent;border:2px solid var(--tinta);color:var(--tinta);min-height:48px;font-size:16px}
+.btn-quiet{background:transparent;color:var(--tinta-2);min-height:44px;font-size:15px;text-decoration:underline;text-underline-offset:3px;justify-self:start;padding-inline:0}
+.note{font-size:14px;color:var(--tinta-2)}
+.alert{border-radius:var(--r);padding:14px 16px;font-size:15px}
+.alert b{display:block}
+.alert[data-kind="err"]{background:var(--err-bg);color:var(--err)}
+.alert[data-kind="warn"]{background:var(--warn-bg);color:var(--warn)}
+
+/* Badge hadir: meniru badge OSIS di saku kemeja */
+.badge{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 16px;align-items:center;background:var(--kuning);color:var(--di-kuning);border-radius:var(--r);padding:16px 20px}
+.badge .k{grid-row:span 2;font-size:13px;font-weight:800;letter-spacing:.08em;border:2px solid currentColor;border-radius:6px;padding:10px 8px;writing-mode:vertical-rl;transform:rotate(180deg)}
+.badge strong{font-size:36px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.badge span{font-weight:600}
+.badge[data-tone="grey"]{background:var(--abu);color:var(--tinta)}
+
+.side h2{font-size:15px;font-weight:700;color:var(--tinta-2)}
+.idcard{margin-top:12px;display:grid;grid-template-columns:52px minmax(0,1fr);gap:14px;align-items:center}
+.ava{width:52px;height:52px;border-radius:10px;background:var(--abu);display:grid;place-items:center;font-weight:800;color:var(--tinta-2)}
+.idcard b{display:block}
+.idcard small{color:var(--tinta-2);font-size:14px}
+figure{margin:20px 0 0}
+figure svg{width:100%;max-width:340px;height:auto;display:block;color:var(--tinta)}
+figcaption{font-size:14px;color:var(--tinta-2);margin-top:8px;max-width:40ch}
+figure svg text{paint-order:stroke;stroke:var(--kemeja);stroke-width:5px;stroke-linejoin:round}
+
+.cols{display:grid;gap:24px}
+@media (min-width:720px){.cols{grid-template-columns:1fr 1fr;gap:40px}}
+.cols h2{font-size:18px;font-weight:700;margin-bottom:6px}
+.cols p{color:var(--tinta-2);max-width:48ch}
+
+/* Riwayat */
+.monthbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.monthbar h1{font-size:28px;font-weight:800;letter-spacing:-.02em;margin-right:auto}
+.sq{width:44px;height:44px;border-radius:8px;border:1px solid var(--garis);background:var(--kemeja);cursor:pointer;display:grid;place-items:center}
+.sq:disabled{opacity:.35;cursor:not-allowed}
+.sq svg{width:18px;height:18px}
+.big{margin-top:18px;font-size:22px;font-weight:700;letter-spacing:-.01em}
+.big em{font-style:normal;background:var(--kuning);color:var(--di-kuning);padding:0 6px;border-radius:4px}
+.tally{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;font-size:15px;color:var(--tinta-2)}
+.tally b{color:var(--tinta);font-variant-numeric:tabular-nums}
+.cal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.cal .hd{font-size:13px;font-weight:700;color:var(--tinta-2);padding:0 4px 4px}
+.day{appearance:none;border:1px solid transparent;background:var(--kemeja);border-radius:8px;min-height:64px;padding:8px;text-align:left;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;font-variant-numeric:tabular-nums}
+.day .n{font-size:14px;font-weight:600;color:var(--tinta-2)}
+.day .c{font-size:15px;font-weight:800}
+.day .t{font-size:12px;color:var(--tinta-2)}
+.day[data-k="H"] .c{color:var(--ok)}
+.day[data-k="T"]{background:var(--warn-bg)} .day[data-k="T"] .c{color:var(--warn)}
+.day[data-k="S"] .c,.day[data-k="I"] .c{color:var(--tinta)}
+.day[data-k="S"],.day[data-k="I"]{background:var(--kemeja);border-color:var(--abu-garis);border-style:dashed}
+.day[data-k="A"]{background:var(--err-bg)} .day[data-k="A"] .c{color:var(--err)}
+.day[data-k="L"]{background:transparent;border-color:var(--abu-garis)}
+.day.out{visibility:hidden}
+.day.fut{background:transparent;border:1px dashed var(--abu-garis)}
+.day.now{border:2px solid var(--tinta)}
+.day[aria-pressed="true"]{outline:3px solid var(--kuning);outline-offset:1px}
+.detail{margin-top:14px;min-height:48px;font-size:15px;background:var(--kemeja);border-radius:8px;padding:12px 14px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:14px;font-size:13px;color:var(--tinta-2)}
+.legend b{color:var(--tinta)}
+.state{background:var(--kemeja);border-radius:var(--r);padding:24px;display:grid;gap:12px;justify-items:start}
+.state b{font-size:18px}
+.state p{color:var(--tinta-2)}
+.bar{height:6px;width:100%;max-width:280px;border-radius:3px;background:var(--abu);overflow:hidden;position:relative}
+.bar::after{content:"";position:absolute;inset:0;width:40%;background:var(--tinta-2);animation:slide 1s linear infinite}
+@keyframes slide{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+
+/* Hari ini (orang tua) */
+.week{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:10px}
+.week div{background:var(--abu);border-radius:8px;padding:10px 8px;text-align:center;font-variant-numeric:tabular-nums}
+.week small{display:block;font-size:13px;color:var(--tinta-2)}
+.week b{display:block;font-size:17px;margin-top:2px}
+.week i{display:block;font-style:normal;font-size:12px;color:var(--tinta-2)}
+.week div[data-k="T"]{background:var(--warn-bg)} .week div[data-k="T"] b{color:var(--warn)}
+.week div.now{outline:2px solid var(--tinta);outline-offset:-2px;background:var(--kemeja)}
+.list{list-style:none;margin:10px 0 0;padding:0;background:var(--kemeja);border-radius:var(--r)}
+.list li{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--garis)}
+.list li:last-child{border-bottom:0}
+.list .txt{flex:1;min-width:0}
+.list small{display:block;color:var(--tinta-2);font-size:14px}
+.sw{appearance:none;width:52px;height:32px;border-radius:16px;background:var(--abu-garis);position:relative;cursor:pointer;flex:none;border:0}
+.sw::after{content:"";position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .15s}
+.sw:checked{background:var(--tinta)}
+.sw:checked::after{transform:translateX(20px);background:var(--kuning)}
+.copy{appearance:none;border:1px solid var(--tinta);background:transparent;border-radius:8px;min-height:40px;padding:6px 14px;font-weight:600;cursor:pointer}
+.phone{font-weight:700;font-variant-numeric:tabular-nums;user-select:all}
+
+/* Izin */
+.form{display:grid;gap:22px;max-width:620px}
+.field>label,.field>.lab{display:block;font-weight:700;margin-bottom:8px}
+.hint{font-size:14px;color:var(--tinta-2);margin-top:-4px;margin-bottom:8px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.opt span{display:block;border:2px solid var(--garis);border-radius:var(--r);padding:14px 16px;font-weight:600;min-height:56px}
+.opt span small{display:block;font-weight:400;color:var(--tinta-2);font-size:14px}
+.opt input:checked+span{border-color:var(--tinta);background:var(--abu)}
+.opt input:focus-visible+span{outline:3px solid var(--fokus);outline-offset:2px}
+.days{display:flex;flex-wrap:wrap;gap:8px}
+.days .opt span{min-height:44px;padding:10px 14px;font-weight:600}
+textarea{width:100%;min-height:110px;border:2px solid var(--garis);border-radius:var(--r);padding:12px 14px;background:var(--kemeja);resize:vertical}
+textarea:focus{border-color:var(--tinta);outline:none}
+textarea:focus-visible{outline:3px solid var(--fokus);outline-offset:2px}
+[aria-invalid="true"]{border-color:var(--err)!important}
+.err{color:var(--err);font-size:14px;font-weight:600;margin-top:6px}
+.file{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.file input{max-width:100%;font-size:14px}
+.status{font-weight:600;font-size:15px;min-height:22px}
+.status[data-kind="ok"]{color:var(--ok)}
+.status[data-kind="error"]{color:var(--err)}
+.status[data-kind="loading"]{color:var(--tinta-2)}
+.req li{align-items:flex-start}
+.tag{font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.tag[data-s="ok"]{background:var(--ok-bg);color:var(--ok)}
+.tag[data-s="wait"]{background:var(--abu);color:var(--tinta)}
+.h2{font-size:18px;font-weight:700}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><b>SMA Santa Maria 1</b><span>Absensi · Jl. Bengawan 6</span></div>
+    <nav class="deskNav" id="deskNav" aria-label="Menu utama"></nav>
+    <div class="who" id="who"></div>
+  </div>
+</header>
+<main id="view" tabindex="-1"></main>
+<nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
+<noscript><p class="wrap" style="padding-block:24px">Desain ini memakai JavaScript untuk simulasi absen. Aktifkan JavaScript untuk melihatnya.</p></noscript>
+
+<script src="shared.js"></script>
+<script>
+(function(){
+  var S = SM.state, view = document.getElementById('view');
+  var I = {
+    pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>',
+    wifi:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M3 9.5a13 13 0 0 1 18 0M6.2 12.8a8.5 8.5 0 0 1 11.6 0M9.4 16a4 4 0 0 1 5.2 0"/><rect x="11" y="18.5" width="2" height="2" fill="currentColor" stroke="none"/></svg>',
+    absen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><path d="M9.3 10.2l1.9 1.9 3.6-3.6" stroke-linecap="square"/></svg>',
+    riwayat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="1.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8.5 14h2M13.5 14h2M8.5 17h2"/></svg>',
+    pantau:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.2 2" stroke-linecap="square"/></svg>',
+    izin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/><path d="M4 6.5l8 6.2 8-6.2"/></svg>',
+    ok:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>',
+    no:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+    prev:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>',
+    next:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>'
+  };
+  var navIcon = {absen:I.absen,'riwayat-siswa':I.riwayat,pantau:I.pantau,izin:I.izin,'riwayat-ortu':I.riwayat};
+
+  function chrome(){
+    var s = SM.screen(), role = SM.role();
+    var items = SM.nav[role].map(function(k){
+      return {k:k, label:SM.screens[k].label, cur:k===s};
+    });
+    document.getElementById('deskNav').innerHTML = items.map(function(i){
+      return '<a href="#'+i.k+'"'+(i.cur?' aria-current="page"':'')+'>'+i.label+'</a>';
+    }).join('');
+    document.getElementById('tabs').innerHTML = items.map(function(i){
+      return '<a href="#'+i.k+'"'+(i.cur?' aria-current="page"':'')+'><span class="ind"></span>'+navIcon[i.k]+i.label+'</a>';
+    }).join('');
+    document.getElementById('who').innerHTML = role==='siswa'
+      ? '<b>Nama Siswa</b>XI-3 · Siswa'
+      : '<b>Orang tua / wali</b>dari Nama Siswa, XI-3';
+  }
+
+  function chip(m){
+    var txt = {ok:'Cocok',fail:'Tidak cocok',error:'Gagal',idle:'Belum',checking:'Mengecek'}[m.s];
+    var ic = m.s==='ok'?I.ok:(m.s==='fail'||m.s==='error')?I.no:'';
+    return '<span class="chip" data-s="'+m.s+'">'+ic+txt+'</span>';
+  }
+
+  // Diagram radius: titik sekolah, lingkar 75 m, dan posisi HP dari simulasi
+  function radius(){
+    var g = SM.scenarios[S.scenario].gps, done = S.check.gps==='done';
+    var cx=120, cy=86, r=62, you='';
+    if(done && g.s==='ok'){
+      var d = g.jarak/SM.school.radius*r, a=-0.7;
+      you = '<circle cx="'+(cx+Math.cos(a)*d).toFixed(1)+'" cy="'+(cy+Math.sin(a)*d).toFixed(1)+'" r="7" fill="var(--kuning)" stroke="currentColor" stroke-width="2"/>'+
+            '<text x="'+(cx+Math.cos(a)*d+12).toFixed(1)+'" y="'+(cy+Math.sin(a)*d-8).toFixed(1)+'" font-size="12" fill="currentColor" font-weight="600">Kamu, '+SM.jarak(g.jarak)+'</text>';
+    } else if(done && g.s==='fail'){
+      you = '<line x1="'+(cx+r+6)+'" y1="'+cy+'" x2="222" y2="'+cy+'" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 4"/>'+
+            '<circle cx="226" cy="'+cy+'" r="7" fill="var(--kuning)" stroke="currentColor" stroke-width="2"/>'+
+            '<text x="226" y="'+(cy-14)+'" font-size="12" text-anchor="middle" fill="currentColor" font-weight="600">Kamu, '+SM.jarak(g.jarak)+'</text>';
+    }
+    return '<figure><svg viewBox="0 0 250 170" role="img" aria-label="Lingkar radius absen '+SM.school.radius+' meter dengan pusat di Jl. Bengawan 6'+(done&&g.s!=='error'?', posisimu '+SM.jarak(g.jarak)+' dari pusat':'')+'">'+
+      '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 5"/>'+
+      '<line x1="'+cx+'" y1="'+cy+'" x2="'+cx+'" y2="'+(cy+r)+'" stroke="currentColor" stroke-width="1" opacity=".6"/>'+
+      '<text x="'+(cx-6)+'" y="'+(cy+r-10)+'" font-size="12" text-anchor="end" fill="currentColor">'+SM.school.radius+' m</text>'+
+      '<rect x="'+(cx-6)+'" y="'+(cy-6)+'" width="12" height="12" fill="currentColor"/>'+
+      '<text x="'+cx+'" y="'+(cy+24)+'" font-size="12" text-anchor="middle" fill="currentColor" font-weight="600">Jl. Bengawan 6</text>'+
+      you+'</svg><figcaption>Absen terbuka kalau HP berada di dalam lingkar ini dan tersambung ke WiFi sekolah.</figcaption></figure>';
+  }
+
+  function absen(){
+    var jam = SM.jamDemo[S.jam].jam, sisa = SM.sisaBel(jam), c = S.check;
+    var bel = sisa>0 ? 'Bel masuk '+SM.school.bel+', '+sisa+' menit lagi' : 'Bel masuk '+SM.school.bel+' sudah lewat '+(-sisa)+' menit';
+    var gm = SM.msg.gps(), nm = SM.msg.net(), act = '';
+    if(c.status==='idle') act = '<button class="btn btn-main" data-act="cek">'+I.pin+'Cek lokasi dan WiFi</button><p class="note">HP akan meminta izin lokasi. Lokasi hanya dibaca saat kamu menekan tombol ini.</p>';
+    else if(c.status==='checking') act = '<button class="btn btn-main" disabled>Mengecek...</button>';
+    else if(c.status==='ready') act = '<button class="btn btn-main" data-act="masuk">Absen masuk sekarang</button><p class="note">Posisi dan jaringan cocok. Satu ketukan lagi untuk mencatat jam masuk.</p>';
+    else if(c.status==='saving') act = '<button class="btn btn-main" disabled>Mencatat...</button>';
+    else if(c.status==='blocked'){
+      var g = SM.scenarios[S.scenario].gps, fix = g.s==='error' ? 'Izinkan akses lokasi dulu.' : g.s==='fail' ? 'Kamu harus berada di sekolah untuk absen.' : 'Posisi sudah benar. Tinggal sambungkan ke WiFi sekolah.';
+      act = '<div class="alert" data-kind="'+(g.s==='ok'?'warn':'err')+'" role="alert"><b>Belum bisa absen</b>'+fix+'</div><button class="btn btn-line" data-act="cek">Cek ulang</button>';
+    } else if(c.status==='done'){
+      var m = S.masuk;
+      act = '<div class="badge" role="status"><span class="k">HADIR</span><strong>'+m.jam+'</strong><span>'+(m.telat?'Terlambat '+m.telat+' menit':'Tepat waktu')+'</span></div>'+
+            '<p class="note">Orang tua sudah dikabari lewat WhatsApp. Absen pulang dibuka setelah jam pelajaran selesai.</p>'+
+            '<button class="btn btn-quiet" data-act="ulang">Ulangi simulasi</button>';
+    }
+    return '<section class="shirt"><div class="wrap grid2"><div>'+
+      '<p class="date">'+SM.today.label+'</p>'+
+      '<h1 class="clock"><span class="sr">Sekarang pukul </span>'+jam+'</h1>'+
+      '<p class="bel" data-late="'+(sisa<=0)+'">'+bel+'</p>'+
+      '<ul class="checks" aria-live="polite">'+
+        '<li><span class="ico">'+I.pin+'</span><span><b>'+gm.t+'</b><small>'+gm.d+'</small></span>'+chip(gm)+'</li>'+
+        '<li><span class="ico">'+I.wifi+'</span><span><b>'+nm.t+'</b><small>'+nm.d+'</small></span>'+chip(nm)+'</li>'+
+      '</ul><div class="act" aria-live="polite">'+act+'</div></div>'+
+      '<aside class="side" aria-label="Info absen"><h2>Absen sebagai</h2><div class="idcard"><span class="ava" aria-hidden="true">NS</span><span><b>Nama Siswa</b><small>Kelas XI-3 · NIS [nomor induk]</small></span></div>'+radius()+'</aside>'+
+      '</div></section>'+
+      '<section class="pants"><div class="wrap cols">'+
+        '<div><h2>Kenapa harus dua cek?</h2><p>GPS di HP bisa dipalsukan dengan aplikasi, dan sinyal WiFi bisa bocor ke luar pagar. Dengan dua-duanya, absen hanya tercatat kalau kamu benar-benar ada di sekolah.</p></div>'+
+        '<div><h2>Tidak bisa absen?</h2><p>Lapor ke guru piket. Guru piket bisa mencatat kehadiranmu secara manual, dan orang tua tetap dikabari.</p></div>'+
+      '</div></section>';
+  }
+
+  // ---------- Riwayat ----------
+  var monthIdx = 1, picked = null, monthState = null;
+  function riwayat(){
+    var ym = SM.monthOrder[monthIdx], mo = SM.months[ym], body = '';
+    var st = monthState;
+    var head = '<section class="shirt"><div class="wrap"><div class="monthbar">'+
+      '<h1>'+mo.label+'</h1>'+
+      '<button class="sq" data-act="prev" aria-label="Bulan sebelumnya"'+(monthIdx===0?' disabled':'')+'>'+I.prev+'</button>'+
+      '<button class="sq" data-act="next" aria-label="Bulan berikutnya"'+(monthIdx===SM.monthOrder.length-1?' disabled':'')+'>'+I.next+'</button></div>';
+    if(!st || st.status==='loading'){
+      return head+'<div class="state" style="padding-inline:0" role="status"><b>Memuat rekap '+mo.label+'...</b><span class="bar" aria-hidden="true"></span></div></div></section>';
+    }
+    if(st.status==='error'){
+      return head+'<div class="state" style="padding-inline:0" role="alert"><b>Rekap '+mo.label+' gagal dimuat</b><p>Koneksi ke server sekolah terputus. Periksa internet, lalu coba lagi.</p><button class="btn btn-line" data-act="retry">Coba lagi</button></div></div></section>';
+    }
+    if(st.status==='empty'){
+      return head+'<div class="state" style="padding-inline:0"><b>'+mo.label+' belum dimulai</b><p>Rekap muncul setelah hari sekolah pertama bulan ini. Hari ini '+SM.today.label+'.</p><button class="btn btn-line" data-act="prev">Lihat September 2026</button></div></div></section>';
+    }
+    var s = st.summary;
+    head += '<p class="big">Hadir <em>'+s.hadir+'</em> dari '+s.hari+' hari sekolah</p>'+
+      '<div class="tally"><span>Tepat waktu <b>'+s.H+'</b></span><span>Terlambat <b>'+s.T+'</b></span><span>Sakit <b>'+s.S+'</b></span><span>Izin <b>'+s.I+'</b></span><span>Alpa <b>'+s.A+'</b></span></div></div></section>';
+    var cells = ['Sen','Sel','Rab','Kam','Jum'].map(function(h){return '<span class="hd" aria-hidden="true">'+h+'</span>';}).join('');
+    st.weeks.forEach(function(wk){
+      wk.forEach(function(x){
+        if(!x.inMonth){ cells += '<span class="day out" aria-hidden="true"></span>'; return; }
+        var k = x.rec ? x.rec.k : '', cls = 'day'+(x.future?' fut':'')+(x.today?' now':'');
+        var code = x.future ? '' : x.rec ? (k==='L'?'Libur':k) : (x.today?'Belum':'');
+        var t = x.rec && x.rec.jam ? x.rec.jam : '';
+        cells += '<button class="'+cls+'" data-k="'+k+'" data-d="'+x.d+'" aria-pressed="'+(picked===x.d)+'" aria-label="'+SM.esc(SM.detail(ym,x))+'"><span class="n">'+x.d+'</span><span><span class="c">'+code+'</span> <span class="t">'+t+'</span></span></button>';
+      });
+    });
+    var det = picked ? SM.detail(ym, findDay(st.weeks, picked)) : 'Pilih tanggal untuk melihat jam masuk dan keterangannya.';
+    return head+'<section class="pants"><div class="wrap"><div class="cal" role="group" aria-label="Kalender kehadiran '+mo.label+', Senin sampai Jumat">'+cells+'</div>'+
+      '<p class="detail" aria-live="polite">'+det+'</p>'+
+      '<p class="legend"><span><b>H</b> hadir tepat waktu</span><span><b>T</b> terlambat</span><span><b>S</b> sakit</span><span><b>I</b> izin</span><span><b>A</b> alpa</span></p></div></section>';
+  }
+  function findDay(weeks,d){ var f=null; weeks.forEach(function(w){w.forEach(function(x){ if(x.inMonth&&x.d===d) f=x; });}); return f; }
+  function loadMonth(){
+    picked = null;
+    SM.loadMonth(SM.monthOrder[monthIdx], function(st){ monthState = st; if(SM.screen().indexOf('riwayat')===0) render(true); });
+  }
+
+  // ---------- Hari ini (orang tua) ----------
+  function pantau(){
+    var a = SM.anakHariIni(), top;
+    if(a.k==='belum') top = '<div class="badge" data-tone="grey" role="status"><span class="k">BELUM</span><strong>Belum absen</strong><span>Sekarang '+SM.jamOrtu+'</span></div><p class="note" style="margin-top:12px">'+a.d+'</p>';
+    else if(a.k==='S') top = '<div class="badge" data-tone="grey" role="status"><span class="k">SAKIT</span><strong>Sakit</strong><span>Izin terkirim</span></div><p class="note" style="margin-top:12px">'+a.d+'</p>';
+    else top = '<div class="badge" role="status"><span class="k">HADIR</span><strong>'+a.jam+'</strong><span>'+(a.k==='T'?'Terlambat '+SM.telatMenit(a.jam)+' menit':'Tepat waktu')+'</span></div><p class="note" style="margin-top:12px">'+a.d+' Absen pulang belum tercatat.</p>';
+    var week = SM.mingguIni().map(function(x){
+      var r = x.rec, b = r ? (r.k==='L'?'Libur':r.k) : (x.today?'Belum':'-');
+      return '<div data-k="'+(r?r.k:'')+'" class="'+(x.today?'now':'')+'"><small>'+x.nama+' '+x.d+'</small><b>'+b+'</b><i>'+(r&&r.jam?r.jam:'&nbsp;')+'</i></div>';
+    }).join('');
+    var n = S.notif, rows = [['masuk','Saat anak absen masuk'],['pulang','Saat anak absen pulang'],['telat','Kalau anak terlambat'],['belum','Kalau belum absen sampai 07.15']];
+    return '<section class="shirt"><div class="wrap grid2"><div><p class="date">'+SM.today.label+' · pukul '+SM.jamOrtu+'</p><h1 style="font-size:28px;font-weight:800;margin:6px 0 16px">Nama Siswa hari ini</h1>'+top+'</div>'+
+      '<div><h2 class="h2">Minggu ini</h2><div class="week">'+week+'</div><p class="note" style="margin-top:10px">T berarti terlambat. Ketuk Riwayat untuk rekap sebulan.</p></div></div></section>'+
+      '<section class="pants"><div class="wrap cols"><div><h2 class="h2">Kabar lewat WhatsApp</h2><ul class="list">'+
+      rows.map(function(r){ return '<li><label class="txt" for="n-'+r[0]+'">'+r[1]+'</label><input class="sw" type="checkbox" role="switch" id="n-'+r[0]+'" data-notif="'+r[0]+'"'+(n[r[0]]?' checked':'')+'></li>'; }).join('')+
+      '</ul><p class="note" style="margin-top:8px">Dikirim ke [nomor WhatsApp orang tua].</p></div>'+
+      '<div><h2 class="h2">Hubungi sekolah</h2><ul class="list"><li><span class="txt">Tata Usaha<small class="phone">'+SM.school.telp+'</small></span><button class="copy" data-copy="'+SM.school.telp+'">Salin nomor</button></li>'+
+      '<li><span class="txt">Wali kelas XI-3<small>Pesan lewat menu Izin untuk sakit atau keperluan keluarga</small></span></li></ul></div></div></section>';
+  }
+
+  // ---------- Izin ----------
+  function reqList(){
+    if(!S.izin.length) return '<p class="note">Belum ada pengajuan. Pengajuan yang dikirim muncul di sini beserta statusnya.</p>';
+    return '<ul class="list req">'+S.izin.map(function(q){
+      return '<li><span class="txt"><b>'+q.jenis+' · '+q.hari.join(', ')+'</b><small>'+SM.esc(q.ket)+(q.lampiran?' · lampiran: '+SM.esc(q.lampiran):'')+'</small></span><span class="tag" data-s="'+(q.status.indexOf('Disetujui')===0?'ok':'wait')+'">'+q.status+'</span></li>';
+    }).join('')+'</ul>';
+  }
+  function izin(){
+    return '<section class="shirt"><div class="wrap"><h1 style="font-size:28px;font-weight:800">Ajukan izin</h1>'+
+      '<p class="note" style="margin:6px 0 24px;max-width:56ch">Pengajuan masuk ke wali kelas XI-3. Kalau disetujui, rekap anak tertulis Sakit atau Izin, bukan Alpa.</p>'+
+      '<form class="form" id="izinForm" novalidate>'+
+      '<fieldset class="field" style="border:0;padding:0;margin:0"><legend class="lab" style="font-weight:700;margin-bottom:8px">Jenis</legend><div class="opts">'+
+        '<label class="opt"><input type="radio" name="jenis" value="Sakit"><span>Sakit<small>Lampirkan surat dokter kalau ada</small></span></label>'+
+        '<label class="opt"><input type="radio" name="jenis" value="Izin"><span>Izin<small>Keperluan keluarga</small></span></label></div>'+
+        '<p class="err" data-err="jenis" hidden></p></fieldset>'+
+      '<fieldset class="field" style="border:0;padding:0;margin:0"><legend class="lab" style="font-weight:700;margin-bottom:8px">Hari tidak masuk</legend><div class="days">'+
+        SM.hariIzin.map(function(h){ return '<label class="opt"><input type="checkbox" name="hari" value="'+h.label+'"><span>'+h.label+'</span></label>'; }).join('')+
+        '</div><p class="err" data-err="hari" hidden></p></fieldset>'+
+      '<div class="field"><label for="ket">Keterangan</label><textarea id="ket" name="ket" placeholder="Contoh: demam sejak semalam, istirahat di rumah"></textarea><p class="err" data-err="ket" hidden></p></div>'+
+      '<div class="field"><label for="lampiran">Lampiran (tidak wajib)</label><p class="hint">Foto surat dokter atau surat keterangan.</p><div class="file"><input type="file" id="lampiran" name="lampiran" accept="image/*,.pdf"><span class="note" data-file>Belum ada berkas</span></div></div>'+
+      '<div style="display:grid;gap:10px;justify-items:start"><button class="btn btn-main" type="submit">Kirim ke wali kelas</button><p class="status" data-status role="status"></p></div>'+
+      '</form></div></section>'+
+      '<section class="pants"><div class="wrap"><h2 class="h2">Pengajuan sebelumnya</h2><div id="reqList" style="margin-top:10px;max-width:620px">'+reqList()+'</div></div></section>';
+  }
+
+  var screens = {absen:absen,'riwayat-siswa':riwayat,'riwayat-ortu':riwayat,pantau:pantau,izin:izin};
+  var last = null;
+  function render(keepFocus){
+    var s = SM.screen();
+    chrome();
+    view.innerHTML = screens[s]();
+    if(s==='izin') SM.bindIzinForm(document.getElementById('izinForm'));
+    if(last!==s && !keepFocus){ view.focus({preventScroll:true}); window.scrollTo(0,0); }
+    last = s;
+  }
+
+  view.addEventListener('click', function(e){
+    var b = e.target.closest('[data-act],[data-copy],.day'); if(!b) return;
+    if(b.classList.contains('day')){ picked = +b.getAttribute('data-d'); render(true); var nb = view.querySelector('.day[data-d="'+picked+'"]'); if(nb) nb.focus(); return; }
+    if(b.hasAttribute('data-copy')){ SM.copy(b.getAttribute('data-copy'), b); return; }
+    var a = b.getAttribute('data-act');
+    if(a==='cek') SM.runCheck();
+    if(a==='masuk') SM.checkIn();
+    if(a==='ulang'){ SM.resetCheck(); }
+    if(a==='prev'&&monthIdx>0){ monthIdx--; loadMonth(); }
+    if(a==='next'&&monthIdx<SM.monthOrder.length-1){ monthIdx++; loadMonth(); }
+    if(a==='retry') loadMonth();
+  });
+  view.addEventListener('change', function(e){
+    var t = e.target; if(t.hasAttribute('data-notif')) S.notif[t.getAttribute('data-notif')] = t.checked;
+  });
+
+  SM.on('check', function(){ if(SM.screen()==='absen'){ var f=document.activeElement&&document.activeElement.getAttribute('data-act'); render(true); var nb=view.querySelector('[data-act]'); if(f&&nb) nb.focus(); } });
+  SM.on('anak', function(){ if(SM.screen()==='pantau') render(true); });
+  SM.on('izin', function(){ var l=document.getElementById('reqList'); if(l) l.innerHTML = reqList(); });
+  SM.on('screen', function(){ if(SM.screen().indexOf('riwayat')===0) loadMonth(); render(); });
+
+  SM.toolbar('d1');
+  if(SM.screen().indexOf('riwayat')===0) loadMonth();
+  render(true);
+})();
+</script>
+</body>
+</html>

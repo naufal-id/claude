@@ -1,0 +1,410 @@
+<title>Absensi Santa Maria 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Onest:wght@700&family=Newsreader:ital,opsz,wght@1,6..72,500&family=Lexend:wght@600&family=Red+Hat+Mono:wght@500&family=Archivo:wdth,wght@125,800&family=Bricolage+Grotesque:opsz,wght@12..96,800&display=swap" rel="stylesheet">
+<style>
+/* Halaman pembanding: netral dan tenang supaya lima desain di dalamnya yang bicara.
+   Merah tua dipakai hemat, mengambil warna salib Yayasan Salib Suci. */
+:root{
+  --bg:#FFFFFF;
+  --bg-2:#F4F4F3;
+  --line:#E2E2DF;
+  --ink:#18191C;
+  --ink-2:#55575E;
+  --accent:#A3201A;
+  --on-accent:#FFFFFF;
+  --focus:#A3201A;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121315; --bg-2:#1B1C1F; --line:#2D2F33; --ink:#EDEDEB; --ink-2:#A8AAB0; --accent:#F08A7E; --on-accent:#1B0A08; --focus:#F08A7E; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121315; --bg-2:#1B1C1F; --line:#2D2F33; --ink:#EDEDEB; --ink-2:#A8AAB0; --accent:#F08A7E; --on-accent:#1B0A08; --focus:#F08A7E; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;margin:0}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{text-wrap:balance;line-height:1.15}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.page{max-width:1200px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.muted{color:var(--ink-2)}
+.small{font-size:14px}
+
+.intro{display:grid;gap:18px;max-width:780px}
+.kick{font-size:14px;color:var(--ink-2)}
+.kick b{color:var(--accent);font-weight:600}
+h1{font-size:clamp(34px,6vw,58px);font-weight:700;font-stretch:88%;letter-spacing:-.02em;line-height:1.02}
+.lede{font-size:clamp(17px,2.2vw,20px);max-width:64ch}
+.jump{display:flex;flex-wrap:wrap;gap:6px 18px;font-weight:600}
+.jump a{min-height:44px;display:inline-flex;align-items:center;text-underline-offset:4px}
+
+section{margin-top:64px}
+.sh{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;margin-bottom:18px}
+.sh h2{font-size:clamp(24px,3.4vw,32px);font-weight:700;font-stretch:88%;letter-spacing:-.01em}
+.sh p{color:var(--ink-2);max-width:62ch}
+
+/* Diagram alur */
+figure{margin:0}
+.flow{border:1px solid var(--line);border-radius:10px;padding:18px;background:var(--bg-2);overflow-x:auto}
+.flow svg{display:block;width:100%;height:auto;color:var(--ink)}
+.flow .tall{display:none;max-width:420px;margin:0 auto}
+@media (max-width:720px){.flow .wide{display:none}.flow .tall{display:block}}
+.flow figcaption{margin-top:12px;font-size:14px;color:var(--ink-2);max-width:70ch}
+
+/* Pembanding */
+.ctrl{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;margin-bottom:18px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;border:1px solid var(--line);border-radius:10px;padding:4px}
+.seg button{appearance:none;border:0;background:transparent;border-radius:7px;min-height:40px;padding:6px 14px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg-label{font-size:14px;color:var(--ink-2);margin-right:4px}
+.shots{display:grid;gap:16px;grid-template-columns:repeat(5,minmax(0,1fr))}
+.shots[data-dev="d"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.shots[data-dev="d"] .shot:first-child{grid-column:1 / -1}
+@media (max-width:980px){.shots{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:min(72vw,280px);overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory}.shots .shot{scroll-snap-align:start}
+  .shots[data-dev="d"]{grid-auto-columns:min(88vw,560px);grid-template-columns:none}.shots[data-dev="d"] .shot:first-child{grid-column:auto}}
+.shot{display:grid;gap:8px;align-content:start;min-width:0}
+.shot a.img{display:block;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg-2)}
+.shot img{display:block;width:100%;height:auto;aspect-ratio:390/844}
+.shots[data-dev="d"] .shot img{aspect-ratio:1280/800}
+.shot .cap{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.shot .cap b{font-weight:700}
+.shot .cap a{font-size:14px;font-weight:600;white-space:nowrap;min-height:32px;display:inline-flex;align-items:center}
+.shot[data-dim="true"]{opacity:.35}
+.hint{font-size:14px;color:var(--ink-2);margin-top:10px}
+
+/* Kartu arah */
+.dirs{display:grid;gap:0;border-top:1px solid var(--line)}
+.dir{display:grid;gap:18px;padding:28px 14px;border-bottom:1px solid var(--line)}
+@media (min-width:900px){.dir{grid-template-columns:260px minmax(0,1fr) 300px;gap:32px}}
+.dir>*{min-width:0}
+.dir .no{font-size:14px;color:var(--ink-2);font-weight:600}
+.dir h3{font-size:26px;font-weight:700;font-stretch:88%;margin-top:2px}
+.dir .from{margin-top:6px;color:var(--ink-2)}
+.spec{font-size:40px;line-height:1.05;margin-top:14px}
+.dir dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 16px;margin:0}
+.dir dt{font-size:14px;color:var(--ink-2);font-weight:600}
+.dir dd{margin:0}
+.sw{display:flex;flex-wrap:wrap;gap:6px}
+.sw span{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-family:"Red Hat Mono",ui-monospace,monospace;color:var(--ink-2)}
+.sw i{width:22px;height:22px;border-radius:5px;border:1px solid var(--line);display:inline-block}
+.links{display:grid;gap:4px;align-content:start}
+.links a{font-weight:600;min-height:40px;display:flex;align-items:center;text-underline-offset:4px}
+.dial{font-size:14px;color:var(--ink-2)}
+.dir[data-hl="true"]{background:var(--bg-2)}
+.why{font-size:15px;border-left:3px solid var(--accent);padding-left:12px;margin-top:10px}
+
+/* Prioritas */
+.prio{display:grid;gap:10px;margin-bottom:8px}
+.prio-out{min-height:26px;font-weight:600}
+
+/* Tabel */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:900px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--line)}
+thead th{background:var(--bg-2);font-weight:700}
+tbody th{font-weight:600;color:var(--ink-2);width:140px}
+tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+td[data-hl="true"],th[data-hl="true"]{background:var(--bg-2);box-shadow:inset 0 3px 0 var(--accent)}
+
+.same{display:grid;gap:10px 32px}
+@media (min-width:760px){.same{grid-template-columns:1fr 1fr}}
+.same li{padding-left:2px}
+.same ul{margin:0;padding-left:18px;display:grid;gap:8px}
+.tech{display:grid;gap:20px}
+@media (min-width:860px){.tech{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 40px}}
+.tech h3{font-size:18px;font-weight:700;margin-bottom:4px}
+.tech p{color:var(--ink-2);max-width:60ch}
+.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 20px;margin:0;max-width:760px}
+.facts dt{color:var(--ink-2);font-size:15px}
+.facts dd{margin:0;font-weight:600}
+.src{margin:16px 0 0;padding-left:18px;display:grid;gap:6px;font-size:15px}
+.src a{word-break:break-word}
+.foot{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-2);display:grid;gap:6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="page">
+  <header class="intro">
+    <p class="kick"><b>Tugas desain</b> · SMA Santa Maria 1 Bandung · Jl. Bengawan No. 6, Cihapit</p>
+    <h1>Lima rancangan web absensi GPS dan WiFi</h1>
+    <p class="lede">Siswa absen dari HP dengan dua bukti: posisi GPS di dalam radius sekolah dan jaringan WiFi sekolah. Orang tua melihat jam masuk anak, menerima kabar lewat WhatsApp, dan mengirim izin sakit. Kelima rancangan memakai fitur dan isi yang sama. Yang berbeda hanya huruf, warna, tata letak, dan cara absennya, jadi bisa dibandingkan langsung.</p>
+    <nav class="jump" aria-label="Isi halaman">
+      <a href="#bandingkan">Bandingkan layar</a>
+      <a href="#arah">Lima arah</a>
+      <a href="#tabel">Tabel perbandingan</a>
+      <a href="#cara-kerja">Cara kerja GPS + WiFi</a>
+      <a href="#sumber">Data dan sumber</a>
+    </nav>
+  </header>
+
+  <section id="bandingkan" aria-labelledby="h-band">
+    <div class="sh"><h2 id="h-band">Bandingkan layar yang sama</h2><p>Pilih layar dan ukuran. Ketuk gambar untuk membuka desainnya dalam versi yang bisa dicoba.</p></div>
+    <div class="ctrl">
+      <div role="group" aria-label="Pilih layar"><span class="seg-label">Layar</span>
+        <span class="seg" id="scrSeg">
+          <button type="button" data-scr="absen" aria-pressed="true">Absen siswa</button>
+          <button type="button" data-scr="pantau" aria-pressed="false">Hari ini (orang tua)</button>
+          <button type="button" data-scr="izin" aria-pressed="false">Izin</button>
+          <button type="button" data-scr="riwayat" aria-pressed="false">Riwayat</button>
+        </span></div>
+      <div role="group" aria-label="Pilih ukuran"><span class="seg-label">Ukuran</span>
+        <span class="seg" id="devSeg">
+          <button type="button" data-dev="m" aria-pressed="true">HP</button>
+          <button type="button" data-dev="d" aria-pressed="false">Laptop</button>
+        </span></div>
+    </div>
+    <div class="shots" id="shots" data-dev="m" aria-live="polite"></div>
+    <p class="hint" id="shotHint"></p>
+  </section>
+
+  <section id="arah" aria-labelledby="h-arah">
+    <div class="sh"><h2 id="h-arah">Lima arah, lima sumber ide</h2><p>Setiap arah diambil dari benda nyata di sekolah, bukan dari template aplikasi. Pilih prioritasmu untuk melihat arah mana yang paling cocok.</p></div>
+    <div class="prio">
+      <div role="group" aria-label="Prioritas"><span class="seg-label">Prioritas</span>
+        <span class="seg" id="prioSeg">
+          <button type="button" data-prio="" aria-pressed="true">Semua</button>
+          <button type="button" data-prio="bersih" aria-pressed="false">Paling bersih</button>
+          <button type="button" data-prio="ortu" aria-pressed="false">Mudah untuk orang tua</button>
+          <button type="button" data-prio="cepat" aria-pressed="false">Absen paling cepat</button>
+          <button type="button" data-prio="khas" aria-pressed="false">Paling khas sekolah</button>
+        </span></div>
+      <p class="prio-out" id="prioOut" aria-live="polite"></p>
+    </div>
+    <div class="dirs" id="dirs"></div>
+  </section>
+
+  <section id="tabel" aria-labelledby="h-tabel">
+    <div class="sh"><h2 id="h-tabel">Tabel perbandingan</h2><p>Satu baris, satu aspek. Geser ke samping di HP.</p></div>
+    <div class="tw"><table id="cmp"><caption class="sr">Perbandingan lima arah desain</caption></table></div>
+  </section>
+
+  <section aria-labelledby="h-same">
+    <div class="sh"><h2 id="h-same">Sama di kelima desain</h2><p>Supaya perbandingan adil, fitur dan keadaan layar dibuat identik.</p></div>
+    <div class="same">
+      <ul>
+        <li>Absen masuk dengan dua cek: GPS dalam radius 75 m dari Jl. Bengawan 6, dan HP tersambung ke WiFi sekolah.</li>
+        <li>Simulasi empat keadaan dari panel demo: di sekolah, tanpa WiFi sekolah, di luar area, dan izin lokasi ditolak. Tiap keadaan punya pesan yang bilang apa yang harus dilakukan.</li>
+        <li>Bel masuk 06.55. Absen setelah bel tercatat terlambat, lengkap dengan jumlah menitnya.</li>
+      </ul>
+      <ul>
+        <li>Layar orang tua: status hari ini, jam masuk minggu ini, pengaturan kabar WhatsApp, nomor Tata Usaha yang bisa disalin.</li>
+        <li>Form izin sakit atau keperluan keluarga ke wali kelas, dengan pesan salah yang jelas dan daftar status pengajuan.</li>
+        <li>Rekap bulanan dengan keadaan memuat, gagal (Agustus gagal sekali, lalu bisa dicoba lagi), dan kosong (Oktober belum dimulai).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="cara-kerja" aria-labelledby="h-cara">
+    <div class="sh"><h2 id="h-cara">Cara kerja GPS + WiFi</h2><p>Absen tercatat hanya kalau dua cek lolos. Keduanya dicek server, bukan hanya di HP.</p></div>
+    <figure class="flow">
+      <svg class="wide" viewBox="0 0 960 300" role="img" aria-label="Alur absen: HP siswa mengirim koordinat GPS dan permintaan lewat WiFi sekolah. Server mengecek jarak ke Jl. Bengawan 6 dan alamat IP jaringan. Kalau keduanya cocok, jam masuk dicatat dan orang tua dikabari lewat WhatsApp.">
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>
+        <g fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="20" y="110" width="150" height="80" rx="8"/>
+          <rect x="300" y="30" width="230" height="92" rx="8"/>
+          <rect x="300" y="178" width="230" height="92" rx="8"/>
+          <rect x="640" y="104" width="150" height="92" rx="8" stroke="var(--accent)" stroke-width="2.5"/>
+          <rect x="840" y="110" width="104" height="80" rx="8"/>
+          <path d="M170 135 C230 135 240 76 298 76" marker-end="url(#ah)"/>
+          <path d="M170 165 C230 165 240 224 298 224" marker-end="url(#ah)"/>
+          <path d="M530 76 C590 76 590 138 638 138" marker-end="url(#ah)"/>
+          <path d="M530 224 C590 224 590 162 638 162" marker-end="url(#ah)"/>
+          <path d="M790 150 L838 150" marker-end="url(#ah)"/>
+        </g>
+        <g fill="currentColor" font-size="14">
+          <text x="95" y="146" text-anchor="middle" font-weight="700">HP siswa</text>
+          <text x="95" y="166" text-anchor="middle" font-size="12.5" fill="var(--ink-2)">tombol Cek ditekan</text>
+          <text x="415" y="62" text-anchor="middle" font-weight="700">Cek 1: lokasi GPS</text>
+          <text x="415" y="84" text-anchor="middle" font-size="12.5">jarak ke Jl. Bengawan 6 &#8804; 75 m</text>
+          <text x="415" y="104" text-anchor="middle" font-size="12.5">dan akurasi GPS cukup</text>
+          <text x="415" y="210" text-anchor="middle" font-weight="700">Cek 2: jaringan</text>
+          <text x="415" y="232" text-anchor="middle" font-size="12.5">permintaan datang dari</text>
+          <text x="415" y="252" text-anchor="middle" font-size="12.5">alamat IP WiFi sekolah</text>
+          <text x="715" y="140" text-anchor="middle" font-weight="700">Server</text>
+          <text x="715" y="160" text-anchor="middle" font-size="12.5">dua cek cocok,</text>
+          <text x="715" y="178" text-anchor="middle" font-size="12.5">jam masuk dicatat</text>
+          <text x="892" y="146" text-anchor="middle" font-weight="700">WhatsApp</text>
+          <text x="892" y="166" text-anchor="middle" font-size="12.5">orang tua</text>
+          <text x="232" y="92" text-anchor="middle" font-size="12" fill="var(--ink-2)">koordinat</text>
+          <text x="232" y="214" text-anchor="middle" font-size="12" fill="var(--ink-2)">lewat WiFi</text>
+          <text x="600" y="98" text-anchor="middle" font-size="12" fill="var(--ink-2)">cocok</text>
+          <text x="600" y="206" text-anchor="middle" font-size="12" fill="var(--ink-2)">cocok</text>
+        </g>
+      </svg>
+      <svg class="tall" viewBox="0 0 360 560" role="img" aria-label="Alur absen: HP siswa, lalu cek lokasi GPS dan cek jaringan WiFi sekolah, lalu server mencatat jam masuk, lalu orang tua dikabari lewat WhatsApp.">
+        <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>
+        <g fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="105" y="10" width="150" height="62" rx="8"/>
+          <rect x="10" y="130" width="160" height="110" rx="8"/>
+          <rect x="190" y="130" width="160" height="110" rx="8"/>
+          <rect x="95" y="310" width="170" height="80" rx="8" stroke="var(--accent)" stroke-width="2.5"/>
+          <rect x="105" y="460" width="150" height="62" rx="8"/>
+          <path d="M150 72 L95 128" marker-end="url(#ah2)"/>
+          <path d="M210 72 L265 128" marker-end="url(#ah2)"/>
+          <path d="M90 240 L150 308" marker-end="url(#ah2)"/>
+          <path d="M270 240 L210 308" marker-end="url(#ah2)"/>
+          <path d="M180 390 L180 458" marker-end="url(#ah2)"/>
+        </g>
+        <g fill="currentColor" font-size="14" text-anchor="middle">
+          <text x="180" y="38" font-weight="700">HP siswa</text>
+          <text x="180" y="58" font-size="12.5" fill="var(--ink-2)">tombol Cek ditekan</text>
+          <text x="90" y="160" font-weight="700">Cek 1: GPS</text>
+          <text x="90" y="184" font-size="12.5">jarak ke</text>
+          <text x="90" y="202" font-size="12.5">Jl. Bengawan 6</text>
+          <text x="90" y="220" font-size="12.5">&#8804; 75 m</text>
+          <text x="270" y="160" font-weight="700">Cek 2: WiFi</text>
+          <text x="270" y="184" font-size="12.5">permintaan dari</text>
+          <text x="270" y="202" font-size="12.5">alamat IP</text>
+          <text x="270" y="220" font-size="12.5">WiFi sekolah</text>
+          <text x="180" y="342" font-weight="700">Server</text>
+          <text x="180" y="364" font-size="12.5">dua cek cocok, jam dicatat</text>
+          <text x="180" y="488" font-weight="700">WhatsApp</text>
+          <text x="180" y="508" font-size="12.5">orang tua</text>
+        </g>
+      </svg>
+      <figcaption>Browser tidak bisa membaca nama WiFi (SSID) yang sedang dipakai HP. Jadi cek jaringan dilakukan server dengan mencocokkan alamat IP publik jaringan sekolah, cara yang juga dipakai layanan absensi kantor seperti Lark. GPS dibaca lewat Geolocation API browser, hanya saat tombol ditekan.</figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="h-tech">
+    <div class="sh"><h2 id="h-tech">Catatan untuk tahap pengembangan</h2></div>
+    <div class="tech">
+      <div><h3>Radius 75 m adalah usulan</h3><p>Angka ini titik awal untuk diuji di lapangan. Layanan absensi seperti Mekari Talenta memakai radius bawaan 80 m dengan pilihan 10 sampai 100 m. Sebaiknya ukur batas pagar sekolah, lalu tolak absen kalau akurasi GPS lebih buruk dari radiusnya.</p></div>
+      <div><h3>Kenapa tidak GPS saja</h3><p>Aplikasi GPS palsu mudah didapat. WiFi saja juga bocor: sinyal bisa tertangkap dari luar pagar. Dengan dua cek, pemalsuan butuh dua trik sekaligus.</p></div>
+      <div><h3>Privasi lokasi</h3><p>Lokasi dibaca sekali saat siswa menekan tombol Cek, lalu hanya jarak dan hasilnya yang disimpan. Tidak ada pelacakan sepanjang hari. Ini ditulis di layar absen supaya siswa dan orang tua tahu.</p></div>
+      <div><h3>Kalau semua gagal</h3><p>Setiap desain menyediakan jalur manual: guru piket mencatat kehadiran, dan orang tua tetap dikabari. HP mati atau GPS rusak tidak boleh membuat siswa tercatat alpa.</p></div>
+      <div><h3>Web, bukan aplikasi toko</h3><p>Geolocation API hanya jalan di HTTPS. Semua desain dibuat responsif, jadi satu situs bisa dipakai siswa di HP dan orang tua di laptop.</p></div>
+      <div><h3>Mode gelap</h3><p>Desain 1, 2, 3, dan 5 mengikuti mode gelap HP. Desain 4 sengaja satu tema gelap karena meniru papan tulis.</p></div>
+    </div>
+  </section>
+
+  <section id="sumber" aria-labelledby="h-src">
+    <div class="sh"><h2 id="h-src">Data sekolah yang dipakai</h2><p>Hanya fakta di bawah ini yang berasal dari sumber publik. Nama siswa, jam masuk, kelas XI-3, dan angka kehadiran di dalam desain adalah data contoh.</p></div>
+    <dl class="facts">
+      <dt>Alamat</dt><dd>Jl. Bengawan No. 6, Cihapit, Bandung Wetan, Kota Bandung 40114</dd>
+      <dt>Titik koordinat</dt><dd>-6,9114, 107,6315</dd>
+      <dt>Telepon</dt><dd>(022) 7205804</dd>
+      <dt>Yayasan</dt><dd>Yayasan Salib Suci, kegiatan sekolah dimulai 1967</dd>
+      <dt>Akreditasi</dt><dd>A, NPSN 20219265</dd>
+      <dt>Jam masuk</dt><dd>06.55, Senin sampai Jumat, sehari penuh</dd>
+      <dt>Kelas</dt><dd>6 kelas per tingkat, sekitar 30 siswa per kelas</dd>
+      <dt>Ekstrakurikuler</dt><dd>Rabu, Kamis, dan Jumat</dd>
+      <dt>Fasilitas</dt><dd>WiFi gratis, laboratorium, perpustakaan, CCTV</dd>
+    </dl>
+    <ol class="src">
+      <li><a href="https://smasantamaria1.sch.id/" target="_blank" rel="noopener">Situs resmi SMA Santa Maria 1 Bandung</a></li>
+      <li><a href="https://id.wikipedia.org/wiki/SMA_Santa_Maria_1_Bandung" target="_blank" rel="noopener">Wikipedia: SMA Santa Maria 1 Bandung</a></li>
+      <li><a href="https://dapo.dikdasmen.go.id/sekolah/C5B1427A6684FE23FC08" target="_blank" rel="noopener">Data Pokok Pendidikan: SMAS St Maria 1 Bandung</a></li>
+      <li><a href="https://sekolah.data.kemdikbud.go.id/index.php/chome/profil/f28dd944-a9a2-42b9-8d16-c050775f61a1" target="_blank" rel="noopener">Profil sekolah, Kemdikbud</a></li>
+      <li><a href="https://sekolahloka.com/data/smas-st-maria-1-bandung/" target="_blank" rel="noopener">Sekolahloka: profil dan koordinat</a></li>
+      <li><a href="https://yss.my.id/tentang-kami/" target="_blank" rel="noopener">Yayasan Salib Suci</a></li>
+      <li><a href="https://help-center.talenta.co/hc/en-us/articles/11229563878553-Live-Attendance-Overview" target="_blank" rel="noopener">Mekari Talenta: Live Attendance dan radius geofence</a></li>
+      <li><a href="https://www.larksuite.com/hc/en-US/articles/360048487788-admin-set-up-wi-fi-attendance-based-on-public-ip-address" target="_blank" rel="noopener">Lark: absensi WiFi berdasarkan IP publik</a></li>
+      <li><a href="https://dribbble.com/tags/attendance_app" target="_blank" rel="noopener">Dribbble: kumpulan desain aplikasi absensi</a> dan <a href="https://www.behance.net/search/projects/Parent%20app%20school" target="_blank" rel="noopener">Behance: aplikasi sekolah untuk orang tua</a>, dipakai sebagai pembanding pola yang terlalu umum</li>
+    </ol>
+  </section>
+
+  <footer class="foot">
+    <p>Pratinjau desain, bukan aplikasi yang sudah berjalan. Absen, lokasi, dan kabar WhatsApp di dalamnya disimulasikan.</p>
+    <p>Logo sekolah tidak dipakai. Semua desain menulis nama sekolah sebagai teks sampai ada izin memakai logo resmi.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var D = [
+    { no:1, id:'d1', file:'d1-putih-abu.html', name:'Putih Abu-Abu', from:'Seragam SMA: kemeja putih di atas, bawahan abu-abu di bawah, badge OSIS kuning di saku.',
+      font:'Onest', specStyle:'font-family:Onest,sans-serif;font-weight:700', sw:[['#FFFFFF','putih'],['#E4E6E9','abu'],['#1B1F24','tinta'],['#F2B705','kuning OSIS']],
+      layout:'Satu kolom di HP dengan menu bawah. Bagian putih berisi aksi utama, bagian abu berisi penjelasan.', absen:'Satu tombol kuning besar. Setelah absen muncul badge HADIR seperti badge saku.', rekap:'Kalender Senin sampai Jumat dengan kode H, T, S, I, A.',
+      dark:'Ikut mode gelap HP', plus:'Paling bersih dan paling mudah dibangun. Pola yang sudah akrab bagi pengguna HP.', risk:'Paling mirip aplikasi pada umumnya. Identitasnya bertumpu pada warna seragam.',
+      dial:'Energi 1 · Ritme 1 · Gerak 1' },
+    { no:2, id:'d2', file:'d2-buku-penghubung.html', name:'Buku Penghubung', from:'Buku penghubung sekolah dan orang tua: kertas, garis margin merah buku tulis, tinta pulpen biru.',
+      font:'Newsreader + Figtree', specStyle:'font-family:Newsreader,serif;font-style:italic;font-weight:500', sw:[['#FFFFFF','kertas'],['#D64545','margin'],['#1D3F9A','pulpen'],['#1A2233','tinta']],
+      layout:'Satu lembar kertas di tengah. Tanggal ditulis di kolom margin, isi di kanan garis merah.', absen:'Status ditulis sebagai kalimat: Hadir, masuk 06.41. Tepat waktu.', rekap:'Tabel buku absen per minggu, ringkasan dalam satu kalimat.',
+      dark:'Ikut mode gelap HP', plus:'Paling mudah dibaca orang tua. Form izin berbentuk surat izin yang sudah dikenal.', risk:'Huruf serif dan kalimat panjang terasa lambat untuk siswa yang buru-buru.',
+      dial:'Energi 1 · Ritme 2 · Gerak 1' },
+    { no:3, id:'d3', file:'d3-kartu-pelajar.html', name:'Kartu Pelajar', from:'Kartu pelajar ukuran ID-1 (85,6 x 54 mm) dan cap stempel sekolah.',
+      font:'Lexend + Red Hat Mono', specStyle:'font-family:Lexend,sans-serif;font-weight:600', sw:[['#EDF0F4','latar'],['#17365F','kartu'],['#5B3E96','stempel'],['#131B26','tinta']],
+      layout:'Kartu jadi pusat layar. Di laptop kartu menempel di kiri, isi di kanan.', absen:'Tekan dan tahan kartu 1 detik. Dua cap GPS dan WiFi terisi dulu, lalu cap HADIR tercetak.', rekap:'Cap bulat per hari. Cap putus-putus untuk sakit dan izin.',
+      dark:'Ikut mode gelap HP', plus:'Paling mudah diingat siswa. Tahan kartu mencegah absen tidak sengaja.', risk:'Gerakan tahan perlu diajarkan sekali. Kartu memakan ruang di layar orang tua.',
+      dial:'Energi 2 · Ritme 2 · Gerak 2' },
+    { no:4, id:'d4', file:'d4-papan-tulis.html', name:'Papan Tulis', from:'Papan tulis hijau di depan kelas, kapur, dan turus (tanda hitung lima-lima).',
+      font:'Archivo (lebar dan sempit)', specStyle:'font-family:Archivo,sans-serif;font-stretch:125%;font-weight:800', sw:[['#1E382E','papan'],['#F2F0E6','kapur'],['#F3D36B','kapur kuning'],['#6B4E33','baki kayu']],
+      layout:'Jam raksasa di papan, panel kelas di samping. Menu ada di baki kapur di bawah.', absen:'Tombol kapur kuning besar. Kata HADIR digarisbawahi kapur setelah tercatat.', rekap:'Tabel kapur dan turus untuk jumlah hari hadir.',
+      dark:'Satu tema gelap, disengaja', plus:'Paling berani dan paling terbaca dari jauh. Jumlah teman yang sudah absen memberi dorongan datang pagi.', risk:'Tema gelap tetap tidak ikut pengaturan HP. Tampilan kapur bisa terasa main-main bagi sebagian orang tua.',
+      dial:'Energi 3 · Ritme 2 · Gerak 1' },
+    { no:5, id:'d5', file:'d5-jam-pelajaran.html', name:'Jam Pelajaran', from:'Jadwal pelajaran dan bel masuk 06.55. Semua layar dibaca lewat sumbu waktu.',
+      font:'Bricolage Grotesque + Albert Sans', specStyle:'font-family:"Bricolage Grotesque",sans-serif;font-weight:800', sw:[['#FFFFFF','kertas'],['#2A58A5','jejak absen'],['#C2410C','garis bel'],['#15171C','tinta']],
+      layout:'Menu dan jam masuk minggu ini di samping. Pita waktu pagi dengan garis bel di tengah layar.', absen:'Pita 06.30 sampai 07.15. Jam masuk tertanda tepat di pita, sebelum atau sesudah garis bel.', rekap:'Grafik titik jam masuk per hari, rata-rata jam masuk, dan jam paling pagi.',
+      dark:'Ikut mode gelap HP', plus:'Paling informatif soal ketepatan waktu. Orang tua langsung melihat pola datang anaknya.', risk:'Grafik perlu dibaca sebentar. Butuh data jam yang rapi dari server.',
+      dial:'Energi 2 · Ritme 3 · Gerak 2' }
+  ];
+  var PRIO = {
+    bersih:{ ids:['d1','d5'], why:{d1:'Warna paling sedikit, satu aksen, tata letak yang sudah akrab.', d5:'Latar putih, satu garis jingga, sisanya tipografi dan ruang kosong.'} },
+    ortu:{ ids:['d2','d1'], why:{d2:'Kabar ditulis sebagai kalimat lengkap dan form izin berbentuk surat.', d1:'Status hari ini tampil sebagai satu badge besar dengan jamnya.'} },
+    cepat:{ ids:['d1','d4'], why:{d1:'Cek lalu satu tombol besar di posisi jempol.', d4:'Tombol kapur paling besar di layar, jam terbaca dari jauh.'} },
+    khas:{ ids:['d3','d4','d2'], why:{d3:'Kartu pelajar dan stempel sekolah hanya ada di dunia sekolah.', d4:'Papan hijau dan turus langsung terasa seperti kelas.', d2:'Buku penghubung dan surat izin adalah kebiasaan sekolah di Indonesia.'} }
+  };
+  var SCR = { absen:{label:'Absen siswa', hash:'absen'}, pantau:{label:'Hari ini (orang tua)', hash:'pantau'}, izin:{label:'Izin', hash:'izin'}, riwayat:{label:'Riwayat', hash:'riwayat-ortu'} };
+  var state = { scr:'absen', dev:'m', prio:'' };
+
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  function drawShots(){
+    var box = document.getElementById('shots'); box.setAttribute('data-dev', state.dev);
+    var hl = state.prio ? PRIO[state.prio].ids : null;
+    box.innerHTML = D.map(function(d){
+      var src = 'shots/'+d.id+'-'+state.scr+'-'+state.dev+'.jpg', href = d.file+'#'+SCR[state.scr].hash;
+      return '<figure class="shot"'+(hl&&hl.indexOf(d.id)<0?' data-dim="true"':'')+'><a class="img" href="'+href+'"><img src="'+src+'" alt="Desain '+d.no+' '+esc(d.name)+', layar '+SCR[state.scr].label+', ukuran '+(state.dev==='m'?'HP':'laptop')+'" loading="lazy" width="'+(state.dev==='m'?390:1280)+'" height="'+(state.dev==='m'?844:800)+'"></a>'+
+        '<figcaption class="cap"><b>'+d.no+' '+esc(d.name)+'</b><a href="'+href+'">Coba</a></figcaption></figure>';
+    }).join('');
+    document.getElementById('shotHint').textContent = state.scr==='absen' ? 'Tangkapan layar absen diambil setelah tombol Cek ditekan dengan posisi di sekolah. Buka desainnya untuk mencoba tiga keadaan lain.' : 'Tangkapan layar memakai data contoh.';
+  }
+
+  function drawDirs(){
+    var p = state.prio ? PRIO[state.prio] : null;
+    document.getElementById('dirs').innerHTML = D.map(function(d){
+      var on = p && p.ids.indexOf(d.id)>=0;
+      var links = Object.keys(SCR).map(function(k){ return '<a href="'+d.file+'#'+SCR[k].hash+'">'+SCR[k].label+'</a>'; }).join('');
+      return '<article class="dir" id="arah-'+d.no+'"'+(on?' data-hl="true"':'')+'>'+
+        '<div><p class="no">Arah '+d.no+'</p><h3>'+esc(d.name)+'</h3><p class="from">'+esc(d.from)+'</p><p class="spec" style=\''+d.specStyle+'\' aria-hidden="true">Aa 06.55</p><p class="small muted">'+esc(d.font)+'</p></div>'+
+        '<div style="display:grid;gap:14px;align-content:start"><dl><dt>Tata letak</dt><dd>'+esc(d.layout)+'</dd><dt>Cara absen</dt><dd>'+esc(d.absen)+'</dd><dt>Rekap</dt><dd>'+esc(d.rekap)+'</dd><dt>Kuat</dt><dd>'+esc(d.plus)+'</dd><dt>Risiko</dt><dd>'+esc(d.risk)+'</dd></dl>'+
+        '<div class="sw">'+d.sw.map(function(c){ return '<span><i style="background:'+c[0]+'"></i>'+c[0]+' '+esc(c[1])+'</span>'; }).join('')+'</div>'+
+        (on?'<p class="why">'+esc(p.why[d.id])+'</p>':'')+'</div>'+
+        '<div class="links"><p class="dial">'+d.dial+' · '+esc(d.dark)+'</p>'+links+'</div></article>';
+    }).join('');
+    var out = document.getElementById('prioOut');
+    out.textContent = p ? 'Paling cocok: '+p.ids.map(function(id){ var d=D.filter(function(x){return x.id===id;})[0]; return d.no+' '+d.name; }).join(', ')+'. Ini penilaian perancang, bukan hasil uji pengguna.' : '';
+  }
+
+  function drawTable(){
+    var hl = state.prio ? PRIO[state.prio].ids : [];
+    var rows = [['Sumber ide','from'],['Huruf','font'],['Tata letak','layout'],['Cara absen','absen'],['Rekap bulanan','rekap'],['Mode gelap','dark'],['Kekuatan','plus'],['Risiko','risk'],['Energi, ritme, gerak','dial']];
+    var head = '<thead><tr><th scope="col">Aspek</th>'+D.map(function(d){ return '<th scope="col"'+(hl.indexOf(d.id)>=0?' data-hl="true"':'')+'><a href="'+d.file+'">'+d.no+' '+esc(d.name)+'</a></th>'; }).join('')+'</tr></thead>';
+    var body = '<tbody>'+rows.map(function(r){ return '<tr><th scope="row">'+r[0]+'</th>'+D.map(function(d){ return '<td'+(hl.indexOf(d.id)>=0?' data-hl="true"':'')+'>'+esc(d[r[1]])+'</td>'; }).join('')+'</tr>'; }).join('')+'</tbody>';
+    var t = document.getElementById('cmp'); t.innerHTML = '<caption class="sr">Perbandingan lima arah desain</caption>'+head+body;
+  }
+
+  function seg(id, key, after){
+    document.getElementById(id).addEventListener('click', function(e){
+      var b = e.target.closest('button'); if(!b) return;
+      state[key] = b.getAttribute('data-'+key);
+      this.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+      after();
+      try{ localStorage.setItem('sm1-hub', JSON.stringify({scr:state.scr,dev:state.dev})); }catch(err){}
+    });
+  }
+  try{ var saved = JSON.parse(localStorage.getItem('sm1-hub')||'null'); if(saved){ if(SCR[saved.scr]) state.scr=saved.scr; if(saved.dev==='m'||saved.dev==='d') state.dev=saved.dev; } }catch(err){}
+  ['scrSeg','devSeg'].forEach(function(id){ var key=id==='scrSeg'?'scr':'dev'; document.getElementById(id).querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-'+key)===state[key])); }); });
+  seg('scrSeg','scr',drawShots);
+  seg('devSeg','dev',drawShots);
+  seg('prioSeg','prio',function(){ drawDirs(); drawTable(); drawShots(); });
+  drawShots(); drawDirs(); drawTable();
+})();
+</script>
