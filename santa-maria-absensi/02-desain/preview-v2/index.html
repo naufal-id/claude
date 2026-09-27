@@ -1,0 +1,131 @@
+<title>Absensi Santa Maria 1</title>
+<style>
+/* Galeri: lima kolom, lima dunia. Tiap kolom memakai latar tema masing-masing,
+   ponsel di dalamnya menjalankan alur absen yang sama supaya bisa dibandingkan berdampingan. */
+:root{--ink:#141519;--paper:#F4F3EF;--dim:#5C5E66;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:inherit}
+:focus-visible{outline:3px solid #2F5FD0;outline-offset:3px}
+.top{display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap;padding:18px 20px;max-width:1500px;margin:0 auto}
+.top b{font-weight:800;letter-spacing:-.01em}
+.top span{color:var(--dim)}
+.top a{margin-left:auto;padding:9px 16px;border-radius:10px;background:var(--ink);color:#fff;text-decoration:none;font-weight:700;font-size:14px}
+.strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));min-height:100vh}
+@media (max-width:1100px){.strip{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:min(86vw,360px);overflow-x:auto;scroll-snap-type:x mandatory}.col{scroll-snap-align:start}}
+.col{position:relative;overflow:hidden;padding:34px 22px 30px;display:grid;grid-template-rows:auto auto 1fr auto;gap:22px;justify-items:center;text-decoration:none;color:inherit}
+.col .no{font:700 12px/1 system-ui,sans-serif;letter-spacing:.2em;opacity:.8}
+.col>div:first-of-type{min-height:112px;display:grid;justify-items:center;align-content:start}
+.col h2{margin:6px 0 0;text-align:center;line-height:.95;font-weight:400}
+.col .ph{width:min(100%,250px);position:relative;z-index:2}
+.col .viz{width:100%;display:grid;place-items:center;position:relative;z-index:2}
+.col .go{position:relative;z-index:2;font:700 14px/1 system-ui,sans-serif;padding:12px 18px;border-radius:30px;text-decoration:none;display:inline-block}
+.col>*{z-index:1}
+
+.c1{background:radial-gradient(70% 40% at 50% 0%,#18224A,transparent 70%),#090D19;color:#EEF0F8}
+.c1 h2{font-family:"Grenze",serif;font-weight:600;font-size:54px;color:#F6CD62}
+.c1 .go{background:linear-gradient(180deg,#F7CF68,#E3A12E);color:#1A1204}
+.c1 .ray{position:absolute;top:-10%;left:20%;width:120px;height:130%;background:linear-gradient(180deg,rgba(246,205,98,.12),transparent 70%);transform:rotate(18deg);mix-blend-mode:screen;animation:sway 10s ease-in-out infinite alternate;z-index:0}
+@keyframes sway{to{transform:rotate(26deg)}}
+.c2{background:linear-gradient(180deg,#0A0F2E,#1E2257 35%,#6B4F86 60%,#E0876A 82%,#F6CFA0);color:#fff}
+.c2 h2{font-family:"Gloock",serif;font-size:62px}
+.c2 .go{background:#fff;color:#1E2257}
+.c2 .st{position:absolute;inset:0 0 50% 0;z-index:0;display:block}
+.c2 .st i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.2}}
+.c3{background:#0B2E2D;color:#EFEFE6}
+.c3 h2{font-family:"Poiret One",serif;font-size:38px;letter-spacing:.06em}
+.c3 .go{background:linear-gradient(180deg,#EACB6E,#9C7A24);color:#1E1606;border-radius:0;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+.c3 .burst{position:absolute;left:50%;top:62%;width:0;height:0;z-index:0}
+.c3 .burst svg{position:absolute;left:-700px;top:-700px;width:1400px;height:1400px;animation:spin 120s linear infinite}
+.c3 .burst path{fill:rgba(212,176,74,.07)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.c4{background-color:#C89B68;background-image:radial-gradient(rgba(96,58,24,.35) 1px,transparent 1.5px),radial-gradient(rgba(255,238,206,.28) 1px,transparent 1.5px);background-size:7px 7px,11px 11px;background-position:0 0,3px 5px;color:#1D1D1F}
+.c4 h2{font-family:"Archivo Black",sans-serif;font-size:50px;background:#fff;padding:8px 14px 10px;transform:rotate(-3deg);box-shadow:0 8px 14px -8px rgba(60,30,5,.6)}
+.c4 .ph{transform:rotate(2deg)}
+.c4 .go{background:#2F5FD0;color:#fff;border-radius:0;transform:rotate(-2deg)}
+.c5{background:#F6F7FB;color:#141A2E}
+.c5 h2{font-family:"Castoro",serif;font-style:italic;font-size:52px;color:#2B4C9B}
+.c5 .go{background:#2B4C9B;color:#fff}
+.c5 .thread{position:absolute;inset:0;z-index:0;pointer-events:none}
+.c5 .thread path{fill:none;stroke:#AEB6C7;stroke-width:1.4}
+
+.viz svg{max-width:100%;height:auto;display:block}
+.c1 .viz svg{width:220px}
+.c2 .viz{background:#0E1433;border-radius:20px;padding:10px 8px 0}
+.c2 .viz svg{width:230px;height:auto}
+.c3 .viz svg{width:250px}
+.c4 .viz .paper{background:#fff;padding:20px 8px 8px;box-shadow:0 8px 14px -8px rgba(60,30,5,.6);transform:rotate(-2deg);position:relative}
+.c5 .viz svg{width:220px}
+
+.foot{max-width:1500px;margin:0 auto;padding:22px 20px 40px;display:flex;flex-wrap:wrap;gap:8px 24px;color:var(--dim);font-size:14px}
+.foot a{font-weight:700;color:var(--ink)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+
+<header class="top">
+  <b>Absensi SMA Santa Maria 1</b><span>Lima arah desain · GPS + WiFi · Jl. Bengawan 6, Bandung</span>
+  <a href="catatan.html">Baca catatan desain</a>
+</header>
+
+<main class="strip" aria-label="Lima desain, dibandingkan berdampingan">
+  <section class="col c1" aria-label="Arah 1 Kaca Patri">
+    <span class="ray" aria-hidden="true"></span>
+    <div><div class="no">ARAH 1</div><h2>Kaca Patri</h2></div>
+    <div class="ph" data-dev="phone" data-theme="kaca" data-screen="absen" data-live></div>
+    <div class="viz" id="v1"></div>
+    <a class="go" href="m1-kaca-patri.html">Buka papan</a>
+  </section>
+  <section class="col c2" aria-label="Arah 2 Fajar">
+    <span class="st" id="st" aria-hidden="true"></span>
+    <div><div class="no">ARAH 2</div><h2>Fajar</h2></div>
+    <div class="ph" data-dev="phone" data-theme="fajar" data-screen="absen" data-live></div>
+    <div class="viz" id="v2"></div>
+    <a class="go" href="m2-fajar.html">Buka papan</a>
+  </section>
+  <section class="col c3" aria-label="Arah 3 Deco Bengawan">
+    <span class="burst" id="burst" aria-hidden="true"></span>
+    <div><div class="no">ARAH 3</div><h2>DECO<br>BENGAWAN</h2></div>
+    <div class="ph" data-dev="phone" data-theme="deco" data-screen="absen" data-live></div>
+    <div class="viz" id="v3"></div>
+    <a class="go" href="m3-deco-bengawan.html">Buka papan</a>
+  </section>
+  <section class="col c4" aria-label="Arah 4 Mading">
+    <div><div class="no">ARAH 4</div><h2>MADING</h2></div>
+    <div class="ph" data-dev="phone" data-theme="mading" data-screen="absen" data-live></div>
+    <div class="viz" id="v4"></div>
+    <a class="go" href="m4-mading.html">Buka papan</a>
+  </section>
+  <section class="col c5" aria-label="Arah 5 Rosario">
+    <svg class="thread" viewBox="0 0 300 1400" preserveAspectRatio="none" aria-hidden="true"><path d="M240 0C300 300 20 360 60 700S280 1000 150 1400" vector-effect="non-scaling-stroke"/></svg>
+    <div><div class="no">ARAH 5</div><h2>Rosario</h2></div>
+    <div class="ph" data-dev="phone" data-theme="rosario" data-screen="absen" data-live></div>
+    <div class="viz" id="v5"></div>
+    <a class="go" href="m5-rosario.html">Buka papan</a>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Ponsel di atas berjalan sendiri dan bisa diketuk. Di bawahnya, rekap September versi tiap desain.</span>
+  <span>Nama, jam, dan angka: data contoh.</span>
+  <a href="catatan.html">Alasan, riset, dan perbandingan</a>
+</footer>
+
+<script src="core.js"></script>
+<script src="t-kaca.js"></script>
+<script src="t-fajar.js"></script>
+<script src="t-deco.js"></script>
+<script src="t-mading.js"></script>
+<script src="t-rosario.js"></script>
+<script>
+  ['kaca', 'fajar', 'deco', 'mading', 'rosario'].forEach(SM2.ensure);
+  var th = SM2.themes;
+  document.getElementById('v1').innerHTML = '<div class="t-kaca" style="background:none">' + th.kaca.rose(220) + '</div>';
+  document.getElementById('v2').innerHTML = '<div class="t-fajar" style="background:none">' + th.fajar.skymap(300, 290).replace('class="skymap"', 'class="skymap" style="position:static;width:230px;height:auto"') + '</div>';
+  document.getElementById('v3').innerHTML = '<div class="t-deco" style="background:none">' + th.deco.skyline(300, 220) + '</div>';
+  document.getElementById('v4').innerHTML = '<div class="paper t-mading" style="background:#fff"><span class="pin" style="--pc:#E0413A;position:absolute;left:50%;top:-9px"></span>' + th.mading.calendar(226) + '</div>';
+  document.getElementById('v5').innerHTML = '<div class="t-rosario" style="background:none">' + th.rosario.loop(240) + '</div>';
+  document.getElementById('burst').innerHTML = '<svg viewBox="-900 -900 1800 1800">' + th.deco.sunburst(40) + '</svg>';
+  (function () { var s = 7, o = ''; function r() { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; } for (var i = 0; i < 60; i++) o += '<i style="left:' + (r() * 100).toFixed(1) + '%;top:' + (r() * 100).toFixed(1) + '%;animation-delay:-' + (r() * 3).toFixed(1) + 's"></i>'; document.getElementById('st').innerHTML = o; })();
+  SM2.mountAll();
+</script>

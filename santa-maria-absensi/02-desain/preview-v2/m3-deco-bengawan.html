@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deco Bengawan · Absensi SM1</title>
+<style>
+/* Papan mockup 3: komposisi simetris pada satu sumbu, seperti fasad Art Deco Bandung.
+   Sinar matahari berputar di belakang, bingkai bertingkat, garis kecepatan. */
+:root{--jade:#0B2E2D;--jade2:#0F3B3A;--brass:#D4B04A;--brass2:#FFE08A;--ivory:#EFEFE6;--dim:#B9CBC7;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--jade);color:var(--ivory);font:16px/1.5 "Josefin Sans",system-ui,sans-serif}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--brass2);outline-offset:3px}
+.page{position:relative;overflow:hidden}
+.cap{letter-spacing:.24em;font-size:12px;font-weight:700;text-transform:uppercase;color:var(--dim)}
+.burst{position:absolute;left:50%;top:980px;width:0;height:0;pointer-events:none}
+.burst svg{position:absolute;left:-1400px;top:-1400px;width:2800px;height:2800px;animation:spin 140s linear infinite}
+.burst path{fill:rgba(212,176,74,.06)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero{text-align:center;padding-top:48px}
+.btitle{margin:10px 0 0;font:400 clamp(52px,10vw,132px)/0.95 "Poiret One",Georgia,serif;letter-spacing:.08em}
+.speed{width:min(420px,70%);margin:22px auto 0;display:grid;gap:6px;justify-items:center}
+.speed i{display:block;height:1.5px;background:var(--brass);width:100%}
+.speed i:nth-child(2){width:78%}.speed i:nth-child(3){width:56%}
+.axis{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:44px;margin-top:56px}
+.axis .bay{position:relative;padding:34px 24px 24px}
+.axis .bay .fr{position:absolute;inset:0;width:100%;height:100%}
+.axis .bay .fr path{fill:none;stroke:var(--brass);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.axis .bay .fr .in{stroke-width:1;opacity:.55}
+.axis .bay.side{margin-bottom:40px}
+.axis .bay.side .b-ph{--pw:240px}
+.axis .bay.c .b-ph{--pw:310px}
+.axis .bay.c{padding:46px 30px 30px;background:rgba(10,43,42,.65)}
+.hint{margin-top:14px}
+@media (max-width:980px){.axis .bay.side{display:none}.axis .bay.c .b-ph{--pw:270px}}
+
+.sec-h{text-align:center;margin-bottom:36px}
+.sec-h b{display:block;font:400 54px/1 "Poiret One",serif;letter-spacing:.06em;color:var(--brass2)}
+.sec-h .speed{width:180px;margin-top:14px}
+.band{position:relative;padding:40px 26px 30px;background:rgba(10,43,42,.6)}
+.band>.fr{position:absolute;inset:0;width:100%;height:100%}
+.band>.fr path{fill:none;stroke:var(--brass);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.band>.fr .in{stroke-width:1;opacity:.55}
+.floors{gap:22px}
+.floors figure{margin:0;display:grid;justify-items:center}
+.floors .b-ph{--pw:205px}
+.floors .flr{width:46px;height:46px;border-radius:50%;border:2px solid var(--brass);display:grid;place-items:center;font:400 24px "Poiret One",serif;margin-bottom:16px;background:radial-gradient(circle,#1C5A57,#0C302F)}
+.floors .flr.lit{background:radial-gradient(circle at 40% 35%,#FFE9A8,#E3BE55 60%,#A8842A);color:#1E1606;box-shadow:0 0 18px rgba(255,224,138,.5)}
+.floors .b-cap{color:var(--dim);letter-spacing:.14em;text-transform:uppercase;font-size:12px;font-weight:700}
+
+.sym{display:grid;grid-template-columns:230px minmax(0,1fr) 230px;gap:34px;align-items:center}
+.sym .b-ph{--pw:230px}
+.sym .mid{position:relative;padding:40px 30px}
+.sym .mid>.fr{position:absolute;inset:0;width:100%;height:100%}
+.sym .mid>.fr path{fill:none;stroke:var(--brass);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.sym .mid>.fr .in{stroke-width:1;opacity:.55}
+@media (max-width:1100px){.sym{grid-template-columns:1fr}.sym>.b-ph{justify-self:center}}
+
+.skywide{position:relative}
+.skywide .sky{display:block;width:100%;height:auto}
+.skyphones{display:flex;justify-content:center;gap:40px;margin-top:-120px;position:relative}
+.skyphones .b-ph{--pw:240px}
+.stat3{display:flex;justify-content:center;gap:0;margin:26px auto 0;max-width:720px;border-top:1.5px solid var(--brass);border-bottom:1.5px solid var(--brass)}
+.stat3 div{flex:1;text-align:center;padding:14px 8px;border-left:1px solid #2B6461}
+.stat3 div:first-child{border-left:0}
+.stat3 b{display:block;font:400 44px/1.1 "Poiret One",serif;color:var(--brass2)}
+@media (max-width:980px){.skyphones{margin-top:20px;overflow-x:auto;justify-content:flex-start}}
+
+.sys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.sys .cell{position:relative;padding:30px 26px;min-height:240px;background:rgba(10,43,42,.6)}
+.sys .cell>.fr{position:absolute;inset:0;width:100%;height:100%}
+.sys .cell>.fr path{fill:none;stroke:var(--brass);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.sys .cell>.fr .in{stroke-width:1;opacity:.55}
+.coins{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}
+.coins figure{margin:0;text-align:center;font-size:12px;color:var(--dim)}
+.coins i{display:block;width:56px;height:56px;border-radius:50%;margin:0 auto 6px;box-shadow:0 0 0 2px var(--jade),0 0 0 3.5px var(--brass)}
+.spec{font:400 96px/1 "Poiret One",serif;margin-top:10px}
+.orn{display:flex;gap:18px;align-items:flex-end;margin-top:22px}
+.orn svg{width:84px;height:84px}
+.orn svg *{fill:none;stroke:var(--brass);stroke-width:1.5}
+@media (max-width:980px){.sys{grid-template-columns:1fr}}
+.end{text-align:center;padding-bottom:90px}
+.end a{display:inline-block;padding:16px 30px;background:linear-gradient(180deg,#EACB6E,#C9A43A 55%,#9C7A24);color:#1E1606;text-decoration:none;font-weight:700;letter-spacing:.2em;text-transform:uppercase;font-size:13px;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="burst" id="burst" aria-hidden="true"></div>
+
+  <section class="b-sec hero" aria-label="Deco Bengawan">
+    <div class="b-in">
+      <p class="cap">Arah 3 · Absensi SMA Santa Maria 1 · Bandung</p>
+      <h1 class="btitle">DECO<br>BENGAWAN</h1>
+      <div class="speed" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="axis">
+        <div class="bay side" data-frame><div class="b-ph" data-dev="phone" data-theme="deco" data-screen="sambut" data-label="Layar masuk Deco"></div></div>
+        <div class="bay c" data-frame><div class="b-ph" data-dev="phone" data-theme="deco" data-screen="absen" data-live></div><p class="cap hint">Coba: tekan tombol kuningan</p></div>
+        <div class="bay side" data-frame><div class="b-ph" data-dev="phone" data-theme="deco" data-screen="rekap" data-label="Cakrawala September"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Alur absen">
+    <div class="b-in">
+      <div class="sec-h"><b>ALUR ABSEN</b><div class="speed" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="band" data-frame>
+        <div class="b-row scroll floors">
+          <figure><span class="flr">1</span><div class="b-ph" data-dev="phone" data-theme="deco" data-screen="absen" data-state="idle" data-label="Siap cek"></div><figcaption class="b-cap">Tekan cek</figcaption></figure>
+          <figure><span class="flr">2</span><div class="b-ph" data-dev="phone" data-theme="deco" data-screen="absen" data-state="wifi" data-label="GPS cocok"></div><figcaption class="b-cap">Lampu GPS</figcaption></figure>
+          <figure><span class="flr">3</span><div class="b-ph" data-dev="phone" data-theme="deco" data-screen="absen" data-state="ready" data-label="Siap absen"></div><figcaption class="b-cap">Dua lampu</figcaption></figure>
+          <figure><span class="flr lit">4</span><div class="b-ph" data-dev="phone" data-theme="deco" data-screen="absen" data-state="done" data-label="Hadir"></div><figcaption class="b-cap">Pintu terbuka</figcaption></figure>
+          <figure><span class="flr">&#215;</span><div class="b-ph" data-dev="phone" data-theme="deco" data-screen="absen" data-state="fail" data-label="Di luar area"></div><figcaption class="b-cap">Di luar area</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Orang tua">
+    <div class="b-in">
+      <div class="sec-h"><b>ORANG TUA</b><div class="speed" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="sym">
+        <div class="b-ph" data-dev="phone" data-theme="deco" data-screen="ortu" data-label="Beranda orang tua"></div>
+        <div class="mid" data-frame><div class="b-lt" data-dev="laptop" data-theme="deco" data-screen="laptop" data-label="Dasbor orang tua di laptop" style="margin:0 auto"></div></div>
+        <div class="b-ph" data-dev="phone" data-theme="deco" data-screen="notif" data-label="Notifikasi masuk"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Rekap dan izin">
+    <div class="b-in">
+      <div class="sec-h"><b>CAKRAWALA SEPTEMBER</b><div class="speed" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="skywide t-deco" id="skywide" style="background:none"></div>
+      <div class="stat3"><div><b>18/19</b><span class="cap">hadir</span></div><div><b>06.43</b><span class="cap">rata-rata</span></div><div><b>06.36</b><span class="cap">paling pagi</span></div></div>
+      <div class="skyphones" style="margin-top:50px"><div class="b-ph" data-dev="phone" data-theme="deco" data-screen="izin" data-label="Surat izin"></div><div class="b-ph" data-dev="phone" data-theme="deco" data-screen="rekap" data-label="Rekap bulanan"></div></div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Sistem visual">
+    <div class="b-in">
+      <div class="sec-h"><b>SISTEM VISUAL</b><div class="speed" aria-hidden="true"><i></i><i></i><i></i></div></div>
+      <div class="sys">
+        <div class="cell" data-frame><div class="cap">Warna</div><div class="coins"><figure><i style="background:#0F3B3A"></i>Jade</figure><figure><i style="background:linear-gradient(180deg,#EACB6E,#9C7A24)"></i>Kuningan</figure><figure><i style="background:#EFEFE6"></i>Gading</figure><figure><i style="background:#F08A6E"></i>Terlambat</figure></div></div>
+        <div class="cell" data-frame><div class="cap">Huruf</div><div class="spec">Aa 06.41</div><div class="cap" style="color:var(--ivory)">Poiret One + Josefin Sans</div></div>
+        <div class="cell" data-frame><div class="cap">Ornamen</div><div class="orn">
+          <svg viewBox="0 0 84 84" aria-hidden="true"><path d="M42 84L0 42M42 84L12 20M42 84L42 0M42 84L72 20M42 84L84 42"/></svg>
+          <svg viewBox="0 0 84 84" aria-hidden="true"><path d="M6 30L42 6L78 30M6 52L42 28L78 52M6 74L42 50L78 74"/></svg>
+          <svg viewBox="0 0 84 84" aria-hidden="true"><path d="M6 84V54H18V36H30V18H54V36H66V54H78V84"/></svg>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="end"><a href="catatan.html#deco">Baca alasan desain Deco Bengawan</a></div>
+</div>
+<script src="core.js"></script>
+<script src="t-deco.js"></script>
+<script>
+  SM2.chrome('deco');
+  SM2.ensure('deco');
+  var T = SM2.themes.deco;
+  document.getElementById('burst').innerHTML = '<svg viewBox="-900 -900 1800 1800">' + T.sunburst(44) + '</svg>';
+  document.getElementById('skywide').innerHTML = T.skyline(1240, 460, { labels: true });
+  function frames() {
+    document.querySelectorAll('[data-frame]').forEach(function (el) {
+      var old = el.querySelector(':scope > .fr'); if (old) old.remove();
+      el.insertAdjacentHTML('afterbegin', T.frame(Math.max(60, el.offsetWidth), Math.max(60, el.offsetHeight), 18));
+    });
+  }
+  SM2.mountAll();
+  frames();
+  window.addEventListener('resize', function () { clearTimeout(window._fr); window._fr = setTimeout(frames, 150); });
+  setTimeout(frames, 600);
+</script>
+</body>
+</html>

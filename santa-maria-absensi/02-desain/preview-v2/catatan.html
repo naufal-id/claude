@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Catatan Desain · Absensi SM1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Halaman teks: semua penjelasan ada di sini supaya papan mockup tetap visual. */
+:root{--bg:#FBFBF9;--ink:#17181B;--dim:#55575E;--line:#E3E2DD;--soft:#F1F0EC;--accent:#2B4C9B;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131416;--ink:#ECECE8;--dim:#A7A9AF;--line:#2C2E33;--soft:#1C1D20;--accent:#9DB5F2;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131416;--ink:#ECECE8;--dim:#A7A9AF;--line:#2C2E33;--soft:#1C1D20;--accent:#9DB5F2;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 "Public Sans",system-ui,sans-serif}
+a{color:var(--accent);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:40px 80px}
+.prose{max-width:720px}
+h1,h2,h3{font-family:"Newsreader",Georgia,serif;font-weight:600;line-height:1.1;text-wrap:balance;margin:0}
+h1{font-size:clamp(40px,6vw,64px);letter-spacing:-.01em}
+h2{font-size:36px;margin-top:72px;padding-top:28px;border-top:1px solid var(--line)}
+h3{font-size:22px;margin-top:28px}
+p{margin:14px 0 0}
+.lede{font-size:20px;color:var(--dim);margin-top:18px}
+.toc{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:26px;font-weight:600}
+.toc a{min-height:40px;display:inline-flex;align-items:center}
+ul,ol{margin:12px 0 0;padding-left:22px}
+li{margin-top:6px}
+.dir{scroll-margin-top:20px}
+.dir .no{font:600 13px "Public Sans",sans-serif;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.dir h2{margin-top:8px;padding-top:0;border:0}
+.dirhead{margin-top:72px;padding-top:28px;border-top:1px solid var(--line)}
+.kv{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px 22px;margin-top:22px;max-width:860px}
+.kv dt{font-weight:700;color:var(--dim);font-size:15px;padding-top:2px}
+.kv dd{margin:0}
+.sw{display:inline-flex;align-items:center;gap:6px;margin:2px 12px 2px 0;font-size:15px;white-space:nowrap}
+.sw i{width:16px;height:16px;border-radius:4px;display:inline-block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+.sw code{font-size:13px;color:var(--dim)}
+.tw{overflow-x:auto;margin-top:22px;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--line)}
+thead th{background:var(--soft)}
+tbody th{color:var(--dim);font-weight:600;width:150px}
+tr:last-child th,tr:last-child td{border-bottom:0}
+.rec{background:var(--soft);border-radius:14px;padding:20px 22px;margin-top:22px;max-width:760px}
+.rec p:first-child{margin-top:0}
+.facts{display:grid;grid-template-columns:170px minmax(0,1fr);gap:8px 20px;margin-top:18px;max-width:760px}
+.facts dt{color:var(--dim)}
+.facts dd{margin:0;font-weight:600}
+.back{display:inline-block;margin-top:14px;font-weight:700}
+.muted{color:var(--dim)}
+.small{font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">Kembali ke galeri desain</a>
+  <div class="prose">
+    <h1>Catatan desain absensi SMA Santa Maria 1</h1>
+    <p class="lede">Lima arah desain untuk web absensi siswa berbasis GPS dan WiFi. Mockup visual ada di galeri dan lima papan desain. Halaman ini berisi alasannya: dari mana ide tiap arah, kenapa warna dan hurufnya dipilih, apa arti setiap animasi, dan arah mana yang cocok untuk dikembangkan.</p>
+  </div>
+  <nav class="toc" aria-label="Isi halaman">
+    <a href="#ringkas">Ringkasan</a><a href="#prinsip">Prinsip</a><a href="#kaca">1 Kaca Patri</a><a href="#fajar">2 Fajar</a><a href="#deco">3 Deco Bengawan</a><a href="#mading">4 Mading</a><a href="#rosario">5 Rosario</a><a href="#banding">Perbandingan</a><a href="#rekomendasi">Rekomendasi</a><a href="#teknis">Catatan teknis</a><a href="#sumber">Data dan sumber</a>
+  </nav>
+
+  <h2 id="ringkas">Ringkasan</h2>
+  <div class="tw"><table>
+    <thead><tr><th scope="col">Arah</th><th scope="col">Diambil dari</th><th scope="col">Cara absen</th><th scope="col">Rekap bulanan</th><th scope="col">Huruf</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><a href="m1-kaca-patri.html">1 Kaca Patri</a></th><td>Jendela kaca patri Katedral St. Petrus Bandung</td><td>Dua lengkung jendela menyala untuk GPS dan WiFi, lalu jendela mawar dan berkas cahaya untuk hadir</td><td>Jendela mawar, satu kelopak satu hari</td><td>Grenze + Hanken Grotesk</td></tr>
+      <tr><th scope="row"><a href="m2-fajar.html">2 Fajar</a></th><td>Pagi di Bandung, Tangkuban Perahu, Stella Maris</td><td>Kamu muncul sebagai bintang di dalam lingkar sekolah, garis tersambung, matahari terbit</td><td>Peta langit, makin pagi makin terang</td><td>Gloock + Rethink Sans</td></tr>
+      <tr><th scope="row"><a href="m3-deco-bengawan.html">3 Deco Bengawan</a></th><td>Art Deco Bandung: Villa Isola, Hotel Preanger, Savoy Homann</td><td>Jarum penunjuk lift menuju bel, lampu tombol lantai, pintu lift kuningan membuka</td><td>Cakrawala gedung, makin pagi makin tinggi</td><td>Poiret One + Josefin Sans</td></tr>
+      <tr><th scope="row"><a href="m4-mading.html">4 Mading</a></th><td>Majalah dinding kelas</td><td>Kartu GPS dan WiFi dicap OK, kartu nama jatuh dan dipaku, cap HADIR</td><td>Kalender dinding dengan stiker</td><td>Archivo Black + Caveat + Chivo</td></tr>
+      <tr><th scope="row"><a href="m5-rosario.html">5 Rosario</a></th><td>Untaian rosario dan Bulan Rosario (Oktober)</td><td>Dua manik terisi, lalu geser manik sampai ke salib</td><td>Untaian melingkar dengan liontin salib</td><td>Castoro + Be Vietnam Pro</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="prose">
+    <h2 id="prinsip">Prinsip yang dipakai</h2>
+    <h3>Diambil dari Santa Maria, bukan dari template aplikasi</h3>
+    <p>Setiap arah berangkat dari sesuatu yang sudah dikenal warga sekolah. SMA Santa Maria 1 adalah sekolah Katolik di bawah Yayasan Salib Suci, di Jl. Bengawan No. 6, Cihapit, Bandung. Dari situ muncul tiga sumber: tradisi Katolik dan Maria (kaca patri, bintang, rosario), sejarah arsitektur Bandung (Wolff Schoemaker merancang Katedral Bandung pada 1922 dan Villa Isola pada 1933), dan kehidupan sehari-hari siswa (mading kelas).</p>
+    <p>Pola yang terlalu umum di desain absensi Dribbble dan Behance sengaja dihindari: dasbor ungu bergradasi, empat kartu statistik, grafik donat, tombol sidik jari di tengah layar, dan ilustrasi orang 3D.</p>
+    <h3>Setiap animasi mewakili satu langkah</h3>
+    <p>Alur absen punya lima keadaan yang sama di kelima desain: siap, cek GPS, cek WiFi, siap absen, hadir. Ada juga keadaan gagal untuk posisi di luar area. Setiap animasi menandai satu perpindahan keadaan. Contohnya kaca yang menyala, bintang yang muncul, lampu tombol lift, cap OK, atau manik yang terisi. Siswa bisa membaca kemajuan cek tanpa membaca teks. Semua animasi berhenti kalau pengguna mengaktifkan pengaturan kurangi gerak di HP.</p>
+    <h3>Isi dan fitur sama, supaya perbandingan adil</h3>
+    <p>Kelima desain memakai layar yang sama: masuk, absen dengan lima keadaan, beranda orang tua, notifikasi, surat izin, rekap bulanan, dan dasbor orang tua di laptop. Data contohnya juga sama: siswa kelas XI-3, masuk 06.41, bel 06.55, dan 18 dari 19 hari hadir di bulan September.</p>
+    <h3>Mockup dan teks dipisah</h3>
+    <p>Galeri dan lima papan desain hanya berisi mockup dengan label singkat. Semua penjelasan ada di halaman ini.</p>
+  </div>
+
+  <section class="dir" id="kaca">
+    <div class="dirhead"><div class="no">Arah 1</div><h2>Kaca Patri</h2></div>
+    <p class="prose">Katedral St. Petrus Bandung dirancang Wolff Schoemaker dan diresmikan pada 1922, dengan jendela mawar dan deretan kaca patri. Di arah ini, cahaya yang menembus kaca menjadi tanda kehadiran. Jendela yang gelap berarti belum dicek. Jendela yang menyala berarti cek sudah lolos.</p>
+    <dl class="kv">
+      <dt>Cara absen</dt><dd>Layar absen memuat satu jendela gotik dengan dua lengkung. Lengkung kiri menyala biru saat GPS cocok. Lengkung kanan menyala emas saat WiFi cocok. Setelah siswa menekan Absen masuk, jendela bundar di atasnya menyala dan berkas cahaya jatuh ke lantai membentuk tulisan "Hadir 06.41".</dd>
+      <dt>Rekap bulanan</dt><dd>Jendela mawar dengan 22 kelopak luar, satu untuk tiap hari sekolah September. Biru berarti hadir, emas terlambat, hijau sakit atau izin, merah alpa. Kelopak menyala satu per satu searah jarum jam saat layar dibuka.</dd>
+      <dt>Warna</dt><dd><span class="sw"><i style="background:#0E1322"></i>Malam <code>#0E1322</code></span><span class="sw"><i style="background:#2D5BD7"></i>Kobalt <code>#2D5BD7</code></span><span class="sw"><i style="background:#F0B840"></i>Emas <code>#F0B840</code></span><span class="sw"><i style="background:#2F9C7B"></i>Zamrud <code>#2F9C7B</code></span><span class="sw"><i style="background:#C23A4E"></i>Rubi <code>#C23A4E</code></span><br><span class="small muted">Biru kobalt menjadi warna utama karena biru adalah warna Maria. Empat warna kaca sekaligus menjadi kode status di rekap.</span></dd>
+      <dt>Huruf</dt><dd>Grenze adalah campuran huruf Romawi dan gotik. Bentuknya mengingatkan pada katedral tapi tetap mudah dibaca untuk jam dan judul. Hanken Grotesk dipakai untuk teks kecil karena tenang di latar gelap.</dd>
+      <dt>Gerak</dt><dd>Kaca berkilau saat cek berjalan. Kaca menyala saat cek lolos. Berkas cahaya bergoyang pelan dan debu cahaya melayang saat hadir. Di rekap, kelopak menyala berurutan dan kilau cahaya berputar.</dd>
+      <dt>Kuat</dt><dd>Paling terasa Katolik dan paling mudah dikenali sebagai milik Santa Maria. Tampilan gelap nyaman dipakai pagi hari.</dd>
+      <dt>Risiko</dt><dd>Warna banyak, jadi perlu disiplin supaya tidak ramai. Mosaik kaca perlu dibuat sebagai aset vektor yang ringan.</dd>
+    </dl>
+  </section>
+
+  <section class="dir" id="fajar">
+    <div class="dirhead"><div class="no">Arah 2</div><h2>Fajar</h2></div>
+    <p class="prose">Siswa berangkat pagi, sebelum bel 06.55. Di arah ini, langit layar menjadi jam. Langit gelap berarti masih subuh. Langit terang berarti kamu sudah hadir. Siluet Tangkuban Perahu, gunung di utara Bandung, berada di cakrawala. Bintang mengingatkan pada Maria sebagai Stella Maris.</p>
+    <dl class="kv">
+      <dt>Cara absen</dt><dd>Sekolah tampil sebagai bintang bersudut delapan di tengah lingkar putus-putus berjari-jari 75 m. Saat GPS dicek, bintang "Kamu" muncul di dalam lingkar. Saat WiFi dicek, gelombang memancar dari bintang sekolah. Setelah keduanya cocok, garis cahaya menyambungkan kamu ke sekolah. Saat siswa menekan Absen masuk, matahari terbit dari balik gunung dan langit menjadi terang.</dd>
+      <dt>Rekap bulanan</dt><dd>Peta langit September. Kolomnya Senin sampai Jumat, barisnya minggu. Makin besar dan terang bintangnya, makin pagi siswa datang. Bintang jingga berarti terlambat, lingkaran kosong berarti sakit. Hari dalam satu minggu tersambung menjadi rasi.</dd>
+      <dt>Warna</dt><dd><span class="sw"><i style="background:#121A3A"></i>Malam <code>#121A3A</code></span><span class="sw"><i style="background:#E0876A"></i>Fajar <code>#E0876A</code></span><span class="sw"><i style="background:#F7C45E"></i>Matahari <code>#F7C45E</code></span><span class="sw"><i style="background:#8FB6F0"></i>Pagi <code>#8FB6F0</code></span><br><span class="small muted">Gradasi di sini tidak dipakai sebagai hiasan. Gradasi itu menunjukkan waktu: posisi warna mengikuti jam menuju bel.</span></dd>
+      <dt>Huruf</dt><dd>Gloock adalah huruf serif kontras tinggi yang anggun di ukuran besar, pas untuk jam 06.41 sebagai fokus layar. Rethink Sans dipakai untuk teks kecil karena bersih dan jelas.</dd>
+      <dt>Gerak</dt><dd>Bintang berkelip, bintang jatuh sesekali di layar masuk, dan lingkar radius berputar pelan. Titik "kamu" muncul dengan pantulan. Garis sambungan tergambar, matahari naik, dan langit berganti warna. Di rekap, rasi tergambar hari demi hari.</dd>
+      <dt>Kuat</dt><dd>Paling emosional dan paling mudah dipahami. Hubungan GPS dengan radius terlihat jelas sebagai bintang di dalam lingkar. Grafik rekapnya menunjukkan pola jam datang, bukan hanya hadir atau tidak.</dd>
+      <dt>Risiko</dt><dd>Warna langit harus dijaga supaya teks tetap terbaca. Karena itu teks utama selalu berada di lembar putih.</dd>
+    </dl>
+  </section>
+
+  <section class="dir" id="deco">
+    <div class="dirhead"><div class="no">Arah 3</div><h2>Deco Bengawan</h2></div>
+    <p class="prose">Bandung dijuluki kota Art Deco. Hotel Preanger (1929) dan Villa Isola (1933) dirancang Wolff Schoemaker, dan Savoy Homann (1939) dirancang Albert Aalbers. Jalan Bengawan berada di kawasan kota lama Bandung Wetan. Arah ini meminjam tiga benda khas masa itu: penunjuk lantai lift, tombol kuningan, dan pintu lift berukir.</p>
+    <dl class="kv">
+      <dt>Cara absen</dt><dd>Penunjuk setengah lingkaran bergerak dari 06.30 ke 07.15. Jarumnya menunjuk jam sekarang, dan batas bel 06.55 ditandai belah ketupat. Dua tombol lantai (GPS dan WiFi) menyala saat cek lolos. Tombol panggil kuningan berubah dari CEK menjadi ABSEN. Setelah ditekan, dua daun pintu lift menutup lalu membuka, dan di baliknya tertulis HADIR dengan sinar matahari Deco.</dd>
+      <dt>Rekap bulanan</dt><dd>Cakrawala gedung September. Satu gedung mewakili satu hari. Makin pagi datang, makin tinggi gedungnya, dan hari yang sangat pagi mendapat menara kecil di atapnya. Gedung jingga berarti terlambat, garis putus-putus berarti sakit. Dua lampu sorot bergerak di belakang, seperti suasana malam hotel lama.</dd>
+      <dt>Warna</dt><dd><span class="sw"><i style="background:#0F3B3A"></i>Jade <code>#0F3B3A</code></span><span class="sw"><i style="background:#D4B04A"></i>Kuningan <code>#D4B04A</code></span><span class="sw"><i style="background:#EFEFE6"></i>Gading <code>#EFEFE6</code></span><span class="sw"><i style="background:#F08A6E"></i>Terlambat <code>#F08A6E</code></span></dd>
+      <dt>Huruf</dt><dd>Poiret One adalah huruf geometris tipis bergaya Deco, dipakai hanya di ukuran besar (jam dan judul) supaya tetap terbaca. Josefin Sans memakai huruf kapital berjarak lebar untuk label, seperti papan nama gedung lama.</dd>
+      <dt>Gerak</dt><dd>Sinar matahari berputar sangat pelan dan jarum mengayun ke posisi jam. Tombol lantai menyala dan tombol kuningan berpendar saat siap. Pintu lift menutup lalu membuka. Di rekap, gedung naik satu per satu, jendela berkedip, dan lampu sorot bergerak.</dd>
+      <dt>Kuat</dt><dd>Paling khas Bandung dan paling elegan. Penunjuk jam dengan batas bel langsung menjawab pertanyaan "masih sempat tidak?".</dd>
+      <dt>Risiko</dt><dd>Huruf tipis tidak boleh dipakai di ukuran kecil. Pintu lift perlu dijaga singkat (2,2 detik) supaya tidak memperlambat.</dd>
+    </dl>
+  </section>
+
+  <section class="dir" id="mading">
+    <div class="dirhead"><div class="no">Arah 4</div><h2>Mading</h2></div>
+    <p class="prose">Majalah dinding adalah tempat siswa SMA di Indonesia menempel pengumuman, karya, dan catatan. Arah ini paling dekat dengan dunia siswa: papan gabus, kertas, selotip, paku payung, cap, dan stiker. Absen berarti menempel kartu namamu di mading kelas.</p>
+    <dl class="kv">
+      <dt>Cara absen</dt><dd>Dua kartu indeks (GPS dan WiFi) dipaku di papan. Saat cek berjalan, garis pensil bergerak di bawahnya. Saat cek lolos, kartu dicap OK. Tempat kosong bergaris putus-putus menunggu kartumu. Setelah siswa menekan Tempel kartu hadirku, kartu nama jatuh, memantul, dipaku, lalu dicap HADIR dengan tanggal.</dd>
+      <dt>Rekap bulanan</dt><dd>Kalender dinding dengan stiker: bintang emas untuk hadir, jam jingga untuk terlambat, plester untuk sakit, amplop untuk izin, dan silang merah untuk alpa. Stiker jatuh ke kalender satu per satu.</dd>
+      <dt>Warna</dt><dd><span class="sw"><i style="background:#C89B68"></i>Gabus <code>#C89B68</code></span><span class="sw"><i style="background:#FFFFFF"></i>Kertas <code>#FFFFFF</code></span><span class="sw"><i style="background:#FFE066"></i>Kertas tempel <code>#FFE066</code></span><span class="sw"><i style="background:#2F5FD0"></i>Spidol <code>#2F5FD0</code></span><span class="sw"><i style="background:#E0413A"></i>Paku <code>#E0413A</code></span></dd>
+      <dt>Huruf</dt><dd>Archivo Black terasa seperti huruf poster yang dipotong dari kertas. Caveat adalah tulisan tangan untuk catatan dan keterangan. Chivo dipakai untuk teks biasa supaya tetap terbaca.</dd>
+      <dt>Gerak</dt><dd>Cap menghentak, kartu jatuh dengan pantulan, paku ditancapkan, dan tombol bergoyang saat siap. Notifikasi masuk seperti kertas yang ditempel. Di rekap, stiker ditempel satu per satu.</dd>
+      <dt>Kuat</dt><dd>Paling menyenangkan bagi siswa dan paling mudah membuat orang tersenyum. Stiker di rekap langsung terbaca tanpa legenda.</dd>
+      <dt>Risiko</dt><dd>Tampilannya paling ramai, jadi orang tua mungkin menganggapnya kurang resmi. Tulisan tangan hanya dipakai untuk teks pendek.</dd>
+    </dl>
+  </section>
+
+  <section class="dir" id="rosario">
+    <div class="dirhead"><div class="no">Arah 5</div><h2>Rosario</h2></div>
+    <p class="prose">Bulan Oktober adalah Bulan Rosario dalam tradisi Katolik, dan kata rosario berasal dari rosarium, taman mawar. Arah ini memakai untaian manik sebagai alat hitung hari. Bentuknya dibuat abstrak dan hormat: tidak meniru rosario secara utuh, hanya manik, benang, dan salib kecil sebagai penghormatan pada Yayasan Salib Suci. Dari kelima arah, ini yang paling bersih.</p>
+    <dl class="kv">
+      <dt>Cara absen</dt><dd>Seutas benang melengkung di tengah layar. Dua manik (GPS dan WiFi) terisi biru saat cek lolos. Setelah itu, manik besar di jalur bawah bisa digeser sampai ke salib. Gerakan geser mencegah absen tidak sengaja. Pengguna keyboard dan pembaca layar cukup menekan Enter. Saat manik sampai, manik di sepanjang benang ikut menyala dan muncul tulisan "Hadir."</dd>
+      <dt>Rekap bulanan</dt><dd>Untaian melingkar dengan 22 manik, satu untuk tiap hari sekolah, ditambah simpul mawar dan liontin salib. Manik biru berarti hadir, cincin cokelat terlambat, manik biru muda bergaris putus sakit, dan manik putih belum berjalan. Di layar orang tua, satu minggu tampil sebagai satu dasa (lima manik).</dd>
+      <dt>Warna</dt><dd><span class="sw"><i style="background:#F6F7FB"></i>Mutiara <code>#F6F7FB</code></span><span class="sw"><i style="background:#2B4C9B"></i>Biru Maria <code>#2B4C9B</code></span><span class="sw"><i style="background:#AEB6C7"></i>Perak <code>#AEB6C7</code></span><span class="sw"><i style="background:#C8566F"></i>Mawar <code>#C8566F</code></span></dd>
+      <dt>Huruf</dt><dd>Castoro adalah huruf serif klasik dengan miring yang indah untuk jam dan kalimat status. Be Vietnam Pro dipakai untuk teks biasa karena bersih dan netral.</dd>
+      <dt>Gerak</dt><dd>Manik terus berjalan di benang pada layar masuk dan di sepanjang papan. Manik cek memancarkan riak, lalu manik besar menggeser dirinya sebagai petunjuk. Saat hadir, cahaya melebar dan manik menyala berurutan.</dd>
+      <dt>Kuat</dt><dd>Paling bersih, paling tenang, dan paling mudah dibangun. Gerakan geser ke salib membuat absen terasa disengaja.</dd>
+      <dt>Risiko</dt><dd>Simbol religius harus dipakai dengan hormat. Sebaiknya bentuknya dikonsultasikan dengan pihak sekolah atau yayasan.</dd>
+    </dl>
+  </section>
+
+  <h2 id="banding">Perbandingan</h2>
+  <div class="tw"><table>
+    <thead><tr><th scope="col">Aspek</th><th scope="col">1 Kaca Patri</th><th scope="col">2 Fajar</th><th scope="col">3 Deco Bengawan</th><th scope="col">4 Mading</th><th scope="col">5 Rosario</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Suasana</th><td>Khidmat, gelap, bercahaya</td><td>Hangat, pagi, puitis</td><td>Elegan, simetris, bersejarah</td><td>Ceria, ramai, buatan siswa</td><td>Tenang, bersih, lapang</td></tr>
+      <tr><th scope="row">Ciri Santa Maria</th><td>Katedral, biru Maria</td><td>Stella Maris</td><td>Bandung kota lama</td><td>Budaya siswa</td><td>Rosario, salib</td></tr>
+      <tr><th scope="row">Gerakan absen</th><td>Ketuk</td><td>Ketuk</td><td>Tekan tombol kuningan</td><td>Ketuk</td><td>Geser ke salib</td></tr>
+      <tr><th scope="row">Kebersihan tampilan</th><td>Sedang</td><td>Sedang</td><td>Sedang</td><td>Ramai</td><td>Paling bersih</td></tr>
+      <tr><th scope="row">Untuk orang tua</th><td>Jelas, tema gelap</td><td>Kalimat besar di lembar putih</td><td>Angka jam besar</td><td>Kertas tempel tulisan tangan</td><td>Kalimat besar, banyak ruang</td></tr>
+      <tr><th scope="row">Rekap</th><td>Jendela mawar</td><td>Peta langit (jam datang)</td><td>Cakrawala (jam datang)</td><td>Kalender stiker</td><td>Untaian melingkar</td></tr>
+      <tr><th scope="row">Tingkat kerumitan dibangun</th><td>Sedang</td><td>Sedang</td><td>Tinggi</td><td>Sedang</td><td>Rendah</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="prose">
+    <h2 id="rekomendasi">Rekomendasi</h2>
+    <div class="rec">
+      <p><b>Kalau yang diutamakan bersih dan mudah dipakai:</b> pilih Rosario. Tampilannya paling tenang, identitas Santa Maria-nya kuat tanpa ramai, dan geser ke salib adalah cara absen yang paling sulit tertekan tidak sengaja.</p>
+      <p><b>Kalau yang diutamakan paling berkesan untuk presentasi:</b> pilih Kaca Patri atau Deco Bengawan. Keduanya paling kuat secara visual dan punya cerita Bandung yang jelas lewat karya Wolff Schoemaker.</p>
+      <p><b>Kalau yang diutamakan disukai siswa:</b> pilih Mading.</p>
+      <p><b>Gabungan yang layak dicoba:</b> Rosario sebagai dasar, ditambah peta langit dari Fajar untuk rekap orang tua. Peta langit menunjukkan pola jam datang, yang tidak terlihat di kalender biasa.</p>
+      <p class="small muted">Ini penilaian perancang, belum diuji ke siswa dan orang tua. Langkah berikutnya sebaiknya uji singkat dengan 5 siswa dan 5 orang tua memakai papan desain.</p>
+    </div>
+
+    <h2 id="teknis">Catatan teknis</h2>
+    <h3>Cek WiFi lewat alamat IP</h3>
+    <p>Browser tidak bisa membaca nama WiFi (SSID) yang sedang dipakai HP. Jadi server mencocokkan alamat IP publik jaringan sekolah, cara yang juga dipakai layanan absensi kantor seperti Lark. Karena itu semua desain menulis "dikenali dari alamat IP sekolah", bukan nama WiFi.</p>
+    <h3>Radius 75 m adalah usulan</h3>
+    <p>Mekari Talenta memakai radius bawaan 80 m dengan pilihan 10 sampai 100 m. Angka 75 m perlu diuji dengan mengukur batas pagar sekolah. Absen juga sebaiknya ditolak kalau akurasi GPS lebih buruk dari radiusnya.</p>
+    <h3>Kenapa harus dua cek</h3>
+    <p>Aplikasi GPS palsu mudah didapat, dan sinyal WiFi bisa tertangkap dari luar pagar. Dengan dua cek, pemalsuan butuh dua trik sekaligus.</p>
+    <h3>Privasi dan jalur cadangan</h3>
+    <p>Lokasi dibaca sekali saat tombol cek ditekan, tanpa pelacakan sepanjang hari. Kalau semua cek gagal, guru piket bisa mencatat kehadiran secara manual. HP yang mati tidak boleh membuat siswa tercatat alpa.</p>
+    <h3>Aksesibilitas</h3>
+    <p>Semua tombol bisa dipakai dengan keyboard. Gerakan geser dan tekan-tahan punya jalan pintas Enter. Semua animasi berhenti kalau pengaturan kurangi gerak aktif. Setiap status punya teks, jadi warna tidak menjadi satu-satunya penanda.</p>
+
+    <h2 id="sumber">Data sekolah dan sumber</h2>
+    <p>Hanya fakta di bawah ini yang berasal dari sumber publik. Nama siswa, kelas XI-3, jam masuk, dan angka kehadiran di semua mockup adalah data contoh. Logo sekolah tidak dipakai. Nama sekolah ditulis sebagai teks sampai ada izin memakai logo resmi.</p>
+    <dl class="facts">
+      <dt>Alamat</dt><dd>Jl. Bengawan No. 6, Cihapit, Bandung Wetan, Kota Bandung 40114</dd>
+      <dt>Koordinat</dt><dd>-6,9114, 107,6315</dd>
+      <dt>Yayasan</dt><dd>Yayasan Salib Suci, kegiatan sekolah dimulai 1967</dd>
+      <dt>Akreditasi</dt><dd>A, NPSN 20219265</dd>
+      <dt>Jam masuk</dt><dd>06.55, Senin sampai Jumat</dd>
+      <dt>Kelas</dt><dd>6 kelas per tingkat, sekitar 30 siswa per kelas</dd>
+      <dt>Telepon</dt><dd>(022) 7205804</dd>
+    </dl>
+    <ol class="small" style="margin-top:22px">
+      <li><a href="https://smasantamaria1.sch.id/" target="_blank" rel="noopener">Situs resmi SMA Santa Maria 1 Bandung</a></li>
+      <li><a href="https://id.wikipedia.org/wiki/SMA_Santa_Maria_1_Bandung" target="_blank" rel="noopener">Wikipedia: SMA Santa Maria 1 Bandung</a></li>
+      <li><a href="https://dapo.dikdasmen.go.id/sekolah/C5B1427A6684FE23FC08" target="_blank" rel="noopener">Data Pokok Pendidikan</a></li>
+      <li><a href="https://sekolahloka.com/data/smas-st-maria-1-bandung/" target="_blank" rel="noopener">Sekolahloka: profil dan koordinat</a></li>
+      <li><a href="https://yss.my.id/tentang-kami/" target="_blank" rel="noopener">Yayasan Salib Suci</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/St._Peter%27s_Cathedral,_Bandung" target="_blank" rel="noopener">St. Peter's Cathedral, Bandung</a> dan <a href="https://katedralbandung.org/profil/sejarah/" target="_blank" rel="noopener">sejarah Katedral Bandung</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Charles_Prosper_Wolff_Schoemaker" target="_blank" rel="noopener">Charles Prosper Wolff Schoemaker</a>, <a href="https://en.wikipedia.org/wiki/Villa_Isola" target="_blank" rel="noopener">Villa Isola</a>, <a href="https://en.wikipedia.org/wiki/Hotel_Savoy_Homann" target="_blank" rel="noopener">Hotel Savoy Homann</a></li>
+      <li><a href="https://ntt.kemenag.go.id/opini/860/bulan-mei-dan-oktober-dalam-devosi-rosario-katolik-sajarah-makna-dan-tujuan" target="_blank" rel="noopener">Kemenag NTT: Bulan Mei dan Oktober dalam devosi rosario</a></li>
+      <li><a href="https://www.kompas.com/skola/read/2024/10/24/130000169/mengenal-majalah-dinding-mading-sekolah--pengertian-isi-dan-ide-kreatif?page=all" target="_blank" rel="noopener">Kompas: mengenal majalah dinding sekolah</a></li>
+      <li><a href="https://help-center.talenta.co/hc/en-us/articles/11229563878553-Live-Attendance-Overview" target="_blank" rel="noopener">Mekari Talenta: Live Attendance</a></li>
+      <li><a href="https://www.larksuite.com/hc/en-US/articles/360048487788-admin-set-up-wi-fi-attendance-based-on-public-ip-address" target="_blank" rel="noopener">Lark: absensi WiFi berdasarkan IP publik</a></li>
+      <li><a href="https://dribbble.com/tags/attendance_app" target="_blank" rel="noopener">Dribbble: desain aplikasi absensi</a> dan <a href="https://www.behance.net/search/projects/Parent%20app%20school" target="_blank" rel="noopener">Behance: aplikasi sekolah untuk orang tua</a></li>
+    </ol>
+  </div>
+  <a class="back" href="index.html" style="margin-top:40px">Kembali ke galeri desain</a>
+</div>
+</body>
+</html>

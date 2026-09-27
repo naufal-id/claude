@@ -9,7 +9,7 @@ eksekusi). Fase desain memakai preview HTML mandiri di
 
 Proyek kedua ada di `santa-maria-absensi/`: lima arah desain web absensi GPS dan
 WiFi untuk SMA Santa Maria 1 Bandung. Pintu masuknya
-`santa-maria-absensi/02-desain/preview/index.html`.
+`santa-maria-absensi/02-desain/preview-v2/index.html`.
 
 Penamaan berkas mengikuti konvensi `YYYY-MM-DD_nama-berkas_draft-ke-N.md`.
 Seluruh konten dalam Bahasa Indonesia.

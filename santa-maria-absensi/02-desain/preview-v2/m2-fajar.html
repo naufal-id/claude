@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fajar · Absensi SM1</title>
+<style>
+/* Papan mockup 2: halaman adalah pagi itu sendiri. Atas malam, bawah terang.
+   Ponsel disusun seperti rasi bintang, alur absen naik seperti lintasan matahari. */
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:#0B1030;color:#fff;font:16px/1.5 "Rethink Sans",system-ui,sans-serif}
+a{color:inherit}
+:focus-visible{outline:3px solid #F7C45E;outline-offset:3px}
+.page{position:relative;overflow:hidden;background:linear-gradient(180deg,#0A0F2E 0%,#151B48 16%,#2A2D6A 30%,#5B4A86 42%,#A8697C 52%,#E0876A 60%,#F2B98C 68%,#F8D9B0 78%,#FBEAD2 90%,#FDF4E6 100%)}
+.sky{position:absolute;left:0;right:0;top:0;height:1500px;pointer-events:none}
+.sky i{position:absolute;border-radius:50%;background:#fff;animation:tw var(--t) ease-in-out infinite;animation-delay:var(--dl)}
+@keyframes tw{50%{opacity:.2}}
+.shoot{position:absolute;width:160px;height:2px;background:linear-gradient(90deg,transparent,#fff);transform:rotate(-20deg);opacity:0;animation:shoot 9s ease-in 3s infinite}
+@keyframes shoot{0%{opacity:0;transform:rotate(-20deg) translateX(0)}3%{opacity:1}8%{opacity:0;transform:rotate(-20deg) translateX(320px)}100%{opacity:0}}
+
+.hero{min-height:1000px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:20px;align-items:start;padding-top:40px}
+.kick{color:#C9CDE6}
+.btitle{margin:10px 0 0;font:400 clamp(96px,16vw,220px)/0.8 "Gloock",Georgia,serif;letter-spacing:-.03em}
+.btitle span{display:block;color:#F7C45E}
+.stella{display:inline-block;width:46px;color:#FFF3C4;filter:drop-shadow(0 0 14px #FFE9A8);animation:pulse 3s ease-in-out infinite;margin-top:34px}
+@keyframes pulse{50%{transform:scale(.8) rotate(15deg)}}
+.cons{position:relative;height:880px}
+.cons svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.cons svg.lines line{stroke:rgba(255,233,168,.55);stroke-width:1.2;stroke-dasharray:500;stroke-dashoffset:500;animation:draw 2.4s ease forwards;animation-delay:var(--d)}
+.cons svg.lines circle{fill:#FFF3C4;filter:drop-shadow(0 0 6px #FFE9A8)}
+@keyframes draw{to{stroke-dashoffset:0}}
+.cons .b-ph{position:absolute}
+.cons .p1{--pw:230px;left:0;top:300px}
+.cons .p2{--pw:290px;left:31%;top:40px}
+.cons .p3{--pw:230px;right:0;top:230px}
+.hint{position:absolute;left:31%;top:690px;width:290px;text-align:center;font-size:13px;color:#C9CDE6}
+.mtn{position:absolute;left:0;right:0;top:880px;height:260px;pointer-events:none}
+.mtn svg{width:100%;height:100%}
+@media (max-width:980px){.hero-grid{grid-template-columns:1fr}.cons{height:auto;display:flex;justify-content:center}.cons .b-ph{position:static}.cons .p1,.cons .p3,.cons svg.lines,.hint{display:none}.hero{min-height:0}.mtn{top:auto;bottom:-40px;height:140px}}
+
+.sec-h{display:flex;align-items:baseline;gap:16px;margin-bottom:26px}
+.sec-h b{font:400 52px/1 "Gloock",serif}
+.sec-h span{color:rgba(255,255,255,.75)}
+.arc{align-items:flex-end;gap:26px;padding-top:60px}
+.arc figure{margin:0}
+.arc .b-ph{--pw:210px}
+.arc figure:nth-child(1){transform:translateY(0)}
+.arc figure:nth-child(2){transform:translateY(-54px)}
+.arc figure:nth-child(3){transform:translateY(-84px)}
+.arc figure:nth-child(4){transform:translateY(-54px)}
+.arc figure:nth-child(5){transform:translateY(0)}
+.arc .b-cap b{display:block;font:400 22px "Gloock",serif}
+.arc .b-cap{color:#F4E6EA}
+@media (max-width:980px){.arc figure{transform:none!important}}
+
+.horizon{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:36px;align-items:end}
+.horizon .b-lt{--lw:900px}
+.horizon .side{display:grid;gap:24px}
+.horizon .side .b-ph{--pw:230px}
+.hz-line{height:2px;background:linear-gradient(90deg,transparent,rgba(26,29,51,.4),transparent);margin-top:26px}
+@media (max-width:980px){.horizon{grid-template-columns:1fr}.horizon .side{grid-auto-flow:column;justify-content:start;overflow-x:auto}}
+
+.dark{color:#1A1D33}
+.dark .sec-h span{color:#4A4F6C}
+.nightwin{background:#0E1433;color:#fff;border-radius:34px;padding:28px 30px;position:relative;overflow:hidden}
+.nightwin .skymap{width:100%;height:auto;display:block}
+.nightwin .row{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px}
+.nightwin .row b{font:400 36px "Gloock",serif}
+.rk-grid{display:grid;grid-template-columns:minmax(0,1.2fr) auto;gap:34px;align-items:center}
+.rk-grid .pair{display:flex;gap:22px}
+.rk-grid .pair .b-ph{--pw:230px}
+@media (max-width:980px){.rk-grid{grid-template-columns:1fr}.rk-grid .pair{overflow-x:auto}}
+
+.sys{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:20px}
+.card{background:rgba(255,255,255,.7);border-radius:26px;padding:22px}
+.card .b-lab{color:#4A4F6C;margin-bottom:14px}
+.skystrip{height:120px;border-radius:18px;background:linear-gradient(90deg,#0E1433,#2A2D6A 25%,#A8697C 50%,#E0876A 65%,#F7C45E 85%,#8FB6F0);position:relative}
+.skystrip span{position:absolute;bottom:-26px;transform:translateX(-50%);font-size:12.5px;color:#4A4F6C}
+.spec{font:400 96px/0.9 "Gloock",serif}
+.stars3{display:flex;gap:18px;align-items:center;height:96px}
+.stars3 i{border-radius:50%;background:#1A1D33}
+@media (max-width:980px){.sys{grid-template-columns:1fr}}
+.end{text-align:center;padding-bottom:90px}
+.end a{display:inline-block;padding:14px 26px;border-radius:16px;background:#1E2257;color:#fff;text-decoration:none;font-weight:700}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}.cons svg.lines line{stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="sky" id="sky" aria-hidden="true"><span class="shoot" style="left:18%;top:180px"></span></div>
+
+  <section class="b-sec hero" aria-label="Fajar">
+    <div class="b-in hero-grid">
+      <div>
+        <p class="kick">Arah 2 · Absensi SMA Santa Maria 1</p>
+        <h1 class="btitle">Fajar<span>06.41</span></h1>
+        <span class="stella" id="stella" aria-hidden="true"></span>
+      </div>
+      <div class="cons">
+        <svg class="lines" viewBox="0 0 800 880" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="115" y1="560" x2="395" y2="330" style="--d:.4s"/><line x1="395" y1="330" x2="685" y2="480" style="--d:1.2s"/>
+          <circle cx="115" cy="560" r="4"/><circle cx="395" cy="330" r="5"/><circle cx="685" cy="480" r="4"/>
+        </svg>
+        <div class="b-ph p1" data-dev="phone" data-theme="fajar" data-screen="sambut" data-label="Layar masuk Fajar"></div>
+        <div class="b-ph p2" data-dev="phone" data-theme="fajar" data-screen="absen" data-live></div>
+        <div class="b-ph p3" data-dev="phone" data-theme="fajar" data-screen="rekap" data-label="Peta langit September"></div>
+        <p class="hint">Coba: ketuk tombolnya</p>
+      </div>
+    </div>
+    <div class="mtn" aria-hidden="true"><svg viewBox="0 0 1440 260" preserveAspectRatio="none"><path d="M0 260V150C140 140 250 118 390 92C520 70 600 60 720 58L1050 54C1110 56 1160 68 1220 84C1300 104 1380 130 1440 142V260Z" fill="#11153A" opacity=".85"/><path d="M0 260V200C240 186 420 176 640 180C900 184 1160 170 1440 160V260Z" fill="#0B0F2C" opacity=".9"/></svg></div>
+  </section>
+
+  <section class="b-sec" aria-label="Alur absen">
+    <div class="b-in">
+      <div class="sec-h"><b>Alur absen</b><span>langit makin terang di tiap langkah</span></div>
+      <div class="b-row scroll arc">
+        <figure><div class="b-ph" data-dev="phone" data-theme="fajar" data-screen="absen" data-state="idle" data-label="Siap cek"></div><figcaption class="b-cap"><b>Subuh</b>belum dicek</figcaption></figure>
+        <figure><div class="b-ph" data-dev="phone" data-theme="fajar" data-screen="absen" data-state="gps" data-label="Mencari lokasi"></div><figcaption class="b-cap"><b>Bintangmu</b>muncul di radius</figcaption></figure>
+        <figure><div class="b-ph" data-dev="phone" data-theme="fajar" data-screen="absen" data-state="ready" data-label="Siap absen"></div><figcaption class="b-cap"><b>Tersambung</b>GPS dan WiFi cocok</figcaption></figure>
+        <figure><div class="b-ph" data-dev="phone" data-theme="fajar" data-screen="absen" data-state="done" data-label="Hadir"></div><figcaption class="b-cap"><b>Matahari terbit</b>hadir 06.41</figcaption></figure>
+        <figure><div class="b-ph" data-dev="phone" data-theme="fajar" data-screen="absen" data-state="fail" data-label="Di luar area"></div><figcaption class="b-cap"><b>Di luar lingkar</b>1,4 km dari sekolah</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Orang tua">
+    <div class="b-in">
+      <div class="sec-h"><b>Orang tua</b><span>lintasan matahari sebagai garis waktu hari anak</span></div>
+      <div class="horizon">
+        <div><div class="b-lt" data-dev="laptop" data-theme="fajar" data-screen="laptop" data-label="Dasbor orang tua di laptop"></div><div class="hz-line"></div></div>
+        <div class="side"><div class="b-ph" data-dev="phone" data-theme="fajar" data-screen="ortu" data-label="Beranda orang tua"></div><div class="b-ph" data-dev="phone" data-theme="fajar" data-screen="notif" data-label="Notifikasi masuk"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec dark" aria-label="Rekap dan izin">
+    <div class="b-in">
+      <div class="sec-h"><b>Langit September</b><span>makin terang bintangnya, makin pagi datangnya</span></div>
+      <div class="rk-grid">
+        <div class="nightwin" id="nightwin"><div class="row"><b>18 dari 19 hari</b><span style="color:#C9CDE6">rata-rata 06.43 · paling pagi 06.36</span></div></div>
+        <div class="pair"><div class="b-ph" data-dev="phone" data-theme="fajar" data-screen="izin" data-label="Form izin"></div><div class="b-ph" data-dev="phone" data-theme="fajar" data-screen="rekap" data-label="Rekap bulanan"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec dark" aria-label="Sistem visual">
+    <div class="b-in">
+      <div class="sec-h"><b>Sistem visual</b></div>
+      <div class="sys">
+        <div class="card"><div class="b-lab">Langit sebagai jam</div><div class="skystrip"><span style="left:0%">05.00</span><span style="left:30%">06.00</span><span style="left:62%">06.41</span><span style="left:85%">06.55</span><span style="left:100%">siang</span></div></div>
+        <div class="card"><div class="b-lab">Huruf</div><div class="spec">Aa 06</div><div style="font-weight:600">Gloock + Rethink Sans</div></div>
+        <div class="card"><div class="b-lab">Bintang = kedatangan</div><div class="stars3"><i style="width:30px;height:30px;box-shadow:0 0 0 10px rgba(26,29,51,.12)"></i><i style="width:18px;height:18px"></i><i style="width:10px;height:10px;background:#C8702A"></i><i style="width:18px;height:18px;background:none;box-shadow:inset 0 0 0 2px #3E63B8"></i></div><div style="font-size:13.5px;color:#4A4F6C">pagi sekali · pagi · terlambat · sakit</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="end dark"><a href="catatan.html#fajar">Baca alasan desain Fajar</a></div>
+</div>
+<script src="core.js"></script>
+<script src="t-fajar.js"></script>
+<script>
+  SM2.chrome('fajar');
+  SM2.ensure('fajar');
+  var T = SM2.themes.fajar;
+  (function () {
+    var s = 29, out = '';
+    function r() { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }
+    for (var i = 0; i < 160; i++) { var z = r() < .1 ? 3 : r() < .5 ? 2 : 1.2; out += '<i style="left:' + (r() * 100).toFixed(2) + '%;top:' + (Math.pow(r(), 1.6) * 100).toFixed(2) + '%;width:' + z + 'px;height:' + z + 'px;opacity:' + (1 - i / 220).toFixed(2) + ';--t:' + (2 + r() * 4).toFixed(1) + 's;--dl:-' + (r() * 4).toFixed(1) + 's"></i>'; }
+    document.getElementById('sky').insertAdjacentHTML('beforeend', out);
+  })();
+  document.getElementById('stella').innerHTML = T.star8(46);
+  document.getElementById('nightwin').insertAdjacentHTML('beforeend', '<div class="t-fajar" style="background:none;margin-top:10px">' + T.skymap(640, 440, { labels: true }).replace('class="skymap"', 'class="skymap" style="position:static;width:100%;height:auto"') + '</div>');
+  SM2.mountAll();
+</script>
+</body>
+</html>

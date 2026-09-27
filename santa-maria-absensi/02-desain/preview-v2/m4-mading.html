@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mading · Absensi SM1</title>
+<style>
+/* Papan mockup 4: seluruh halaman adalah papan gabus. Ponsel ditempel selotip dan miring,
+   keterangan ditulis tangan di kertas tempel, panah digambar tangan di antara langkah. */
+:root{--gabus:#C89B68;--tinta:#1D1D1F;--kuning:#FFE066;--biru:#2F5FD0;--merah:#E0413A;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0;color:var(--tinta);font:16px/1.4 "Chivo",system-ui,sans-serif;background-color:var(--gabus);background-image:radial-gradient(rgba(96,58,24,.35) 1px,transparent 1.5px),radial-gradient(rgba(255,238,206,.28) 1px,transparent 1.5px),radial-gradient(rgba(96,58,24,.18) 1.5px,transparent 2px);background-size:7px 7px,11px 11px,17px 17px;background-position:0 0,3px 5px,8px 2px}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--biru);outline-offset:3px}
+.page{position:relative;overflow:hidden}
+.hw{font-family:"Caveat",cursive}
+.paper{position:relative;background:#fff;box-shadow:0 1px 1px rgba(0,0,0,.12),0 10px 18px -10px rgba(60,30,5,.6)}
+.tape{position:absolute;left:50%;top:-14px;width:110px;height:30px;margin-left:-55px;background:rgba(246,231,168,.8);transform:rotate(var(--r,-3deg));box-shadow:0 1px 2px rgba(0,0,0,.08);z-index:5}
+.pin{position:absolute;left:50%;top:-10px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 12%,var(--pc,#E0413A) 32%,#7a1a15 100%);box-shadow:2px 4px 3px rgba(40,20,0,.35);z-index:5}
+.sticky{background:var(--kuning);padding:14px 16px 18px;font:600 26px/1.05 "Caveat",cursive;box-shadow:0 10px 16px -10px rgba(60,30,5,.6)}
+
+.hero{padding-top:40px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:30px;align-items:start}
+.poster{padding:34px 30px 30px;transform:rotate(-2deg);clip-path:polygon(0 2%,6% 0,14% 1.5%,22% 0,31% 1.2%,40% 0,52% 1.6%,63% 0,74% 1.4%,85% 0,94% 1.5%,100% 0,100% 100%,0 100%)}
+.poster p.k{margin:0 0 10px;font-weight:700;color:#55524C}
+.btitle{margin:0;font:400 clamp(70px,10vw,140px)/0.86 "Archivo Black",sans-serif;letter-spacing:-.02em}
+.btitle span{color:var(--biru)}
+.notes{display:flex;gap:18px;margin-top:26px;align-items:flex-start}
+.notes .sticky{width:200px;transform:rotate(3deg)}
+.notes .sticky:nth-child(2){transform:rotate(-4deg);background:#fff;font-size:24px}
+.pinned{position:relative;height:820px}
+.pinned>div{position:absolute}
+.pinned .a{left:0;top:120px;transform:rotate(-5deg)}
+.pinned .b{left:32%;top:0;transform:rotate(1.5deg)}
+.pinned .c{right:0;top:160px;transform:rotate(4deg)}
+.pinned .a .b-ph,.pinned .c .b-ph{--pw:230px}
+.pinned .b .b-ph{--pw:285px}
+.pinned .try{left:36%;top:640px;width:230px;transform:rotate(-2deg)}
+.tapewrap{position:relative}
+.tapewrap>.tape{top:-16px}
+@media (max-width:980px){.notes{flex-wrap:wrap}.notes .sticky{width:calc(50% - 9px);font-size:22px}.hero-grid{grid-template-columns:1fr}.pinned{height:auto;display:flex;justify-content:center}.pinned>div{position:static}.pinned .a,.pinned .c,.pinned .try{display:none}}
+
+.label{display:inline-block;padding:10px 18px 12px;transform:rotate(-2deg);margin-bottom:38px}
+.label b{font:400 40px/1 "Archivo Black",sans-serif}
+.label.y{background:var(--kuning)}
+.flow{gap:10px;align-items:flex-start}
+.flow figure{margin:0;display:grid;justify-items:center}
+.flow .b-ph{--pw:188px}
+.flow figure:nth-child(odd) .tapewrap{transform:rotate(-2.5deg)}
+.flow figure:nth-child(even) .tapewrap{transform:rotate(2deg)}
+.flow .tag{margin-top:18px;background:#fff;padding:6px 14px 8px;font:600 24px/1 "Caveat",cursive;transform:rotate(-2deg);box-shadow:0 6px 10px -6px rgba(60,30,5,.6)}
+.flow .arrow{width:40px;flex:none;align-self:center;margin-top:-80px}
+.flow .arrow path{fill:none;stroke:#2A1A08;stroke-width:2.5;stroke-linecap:round}
+@media (max-width:980px){.flow .arrow{display:none}}
+
+.board2{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:40px;align-items:start}
+.board2 .b-lt{--lw:900px}
+.board2 .lap{transform:rotate(-1deg)}
+.board2 .side{display:grid;gap:40px}
+.board2 .side .b-ph{--pw:230px}
+.board2 .side>div:nth-child(1){transform:rotate(3deg)}
+.board2 .side>div:nth-child(2){transform:rotate(-2.5deg)}
+@media (max-width:980px){.board2{grid-template-columns:1fr}.board2 .side{grid-auto-flow:column;justify-content:start;overflow-x:auto;padding:20px 0}}
+
+.rk{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px;align-items:start}
+.bigcal{padding:40px 22px 22px;transform:rotate(-1.2deg)}
+.bigcal .spiral{position:absolute;left:18px;right:18px;top:-12px;height:24px;background:radial-gradient(circle at 50% 60%,#2A2A2E 0 5px,transparent 5.5px) 0 0/28px 24px repeat-x}
+.bigcal .cal{width:100%!important}
+.bigcal h3{margin:0 0 14px;text-align:center;font:400 44px "Archivo Black",sans-serif}
+.rk .pair{display:flex;gap:30px}
+.rk .pair .b-ph{--pw:230px}
+.rk .pair>div:nth-child(1){transform:rotate(-3deg)}
+.rk .pair>div:nth-child(2){transform:rotate(2.5deg);margin-top:40px}
+@media (max-width:980px){.rk{grid-template-columns:1fr}.rk .pair{overflow-x:auto;padding:20px 0}}
+
+.sys{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:34px;align-items:start}
+.sheet{padding:26px 22px 22px}
+.sheet .stks{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
+.sheet .stks figure{margin:0;text-align:center;font:600 20px "Caveat",cursive}
+.sheet .stks svg{width:54px;display:block;margin:0 auto}
+.sw{display:flex;gap:10px;flex-wrap:wrap}
+.sw div{width:70px;height:86px;padding:6px;font-size:11px;font-weight:700;display:flex;align-items:flex-end;box-shadow:0 6px 10px -6px rgba(60,30,5,.6)}
+.spec{font:400 72px/0.9 "Archivo Black",sans-serif}
+@media (max-width:980px){.sys{grid-template-columns:1fr}}
+.end{text-align:center;padding-bottom:90px}
+.end a{display:inline-block;padding:16px 26px;background:var(--biru);color:#fff;text-decoration:none;font:400 18px "Archivo Black",sans-serif;transform:rotate(-1.5deg);box-shadow:0 10px 16px -10px rgba(60,30,5,.7)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+  <section class="b-sec hero" aria-label="Mading">
+    <div class="b-in hero-grid">
+      <div>
+        <div class="paper poster"><span class="pin" style="--pc:#2F5FD0"></span><p class="k">Arah 4 · Absensi SMA Santa Maria 1</p><h1 class="btitle">MA<br>DING<br><span>XI-3</span></h1></div>
+        <div class="notes"><div class="sticky"><span class="tape" style="--r:5deg;width:70px;margin-left:-35px"></span>Absen = tempel kartu di mading kelas.</div><div class="sticky"><span class="pin"></span>GPS OK + WiFi OK = dicap HADIR</div></div>
+      </div>
+      <div class="pinned">
+        <div class="a tapewrap"><span class="tape"></span><div class="b-ph" data-dev="phone" data-theme="mading" data-screen="sambut" data-label="Layar masuk Mading"></div></div>
+        <div class="b tapewrap"><span class="tape" style="--r:2deg"></span><div class="b-ph" data-dev="phone" data-theme="mading" data-screen="absen" data-live></div></div>
+        <div class="c tapewrap"><span class="tape" style="--r:-6deg"></span><div class="b-ph" data-dev="phone" data-theme="mading" data-screen="rekap" data-label="Kalender stiker"></div></div>
+        <div class="try sticky">Coba: ketuk tombol biru di HP tengah</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Alur absen">
+    <div class="b-in">
+      <div class="paper label"><span class="tape" style="width:70px;margin-left:-35px"></span><b>Alur absen</b></div>
+      <div class="b-row scroll flow">
+        <figure><div class="tapewrap"><span class="tape"></span><div class="b-ph" data-dev="phone" data-theme="mading" data-screen="absen" data-state="idle" data-label="Siap cek"></div></div><span class="tag">1. cek dulu</span></figure>
+        <svg class="arrow" viewBox="0 0 56 40" aria-hidden="true"><path d="M4 26c14-16 30-18 46-8M50 18l-10-2M50 18l-4 9"/></svg>
+        <figure><div class="tapewrap"><span class="tape" style="--r:3deg"></span><div class="b-ph" data-dev="phone" data-theme="mading" data-screen="absen" data-state="wifi" data-label="GPS dicap OK"></div></div><span class="tag">2. GPS dicap OK</span></figure>
+        <svg class="arrow" viewBox="0 0 56 40" aria-hidden="true"><path d="M4 14c14 16 30 18 46 8M50 22l-10 2M50 22l-4-9"/></svg>
+        <figure><div class="tapewrap"><span class="tape" style="--r:-5deg"></span><div class="b-ph" data-dev="phone" data-theme="mading" data-screen="absen" data-state="ready" data-label="Siap tempel"></div></div><span class="tag">3. siap tempel</span></figure>
+        <svg class="arrow" viewBox="0 0 56 40" aria-hidden="true"><path d="M4 26c14-16 30-18 46-8M50 18l-10-2M50 18l-4 9"/></svg>
+        <figure><div class="tapewrap"><span class="tape" style="--r:2deg"></span><div class="b-ph" data-dev="phone" data-theme="mading" data-screen="absen" data-state="done" data-label="Kartu dicap HADIR"></div></div><span class="tag">4. dicap HADIR!</span></figure>
+        <figure style="margin-left:24px"><div class="tapewrap"><span class="tape" style="--r:-2deg"></span><div class="b-ph" data-dev="phone" data-theme="mading" data-screen="absen" data-state="fail" data-label="Di luar area"></div></div><span class="tag" style="color:#E0413A">kalau di luar area</span></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Orang tua">
+    <div class="b-in">
+      <div class="label y"><span class="pin"></span><b>Orang tua</b></div>
+      <div class="board2">
+        <div class="lap tapewrap"><span class="tape" style="left:8%;--r:-12deg"></span><span class="tape" style="left:92%;--r:10deg"></span><div class="b-lt" data-dev="laptop" data-theme="mading" data-screen="laptop" data-label="Mading orang tua di laptop"></div></div>
+        <div class="side"><div class="tapewrap"><span class="tape"></span><div class="b-ph" data-dev="phone" data-theme="mading" data-screen="ortu" data-label="Beranda orang tua"></div></div><div class="tapewrap"><span class="tape" style="--r:4deg"></span><div class="b-ph" data-dev="phone" data-theme="mading" data-screen="notif" data-label="Notifikasi masuk"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Rekap dan izin">
+    <div class="b-in">
+      <div class="paper label"><span class="pin" style="--pc:#2F5FD0"></span><b>Rekap dan izin</b></div>
+      <div class="rk">
+        <div class="paper bigcal t-mading" id="bigcal" style="background:#fff"><span class="spiral"></span><h3>SEPTEMBER</h3></div>
+        <div class="pair"><div class="tapewrap"><span class="tape"></span><div class="b-ph" data-dev="phone" data-theme="mading" data-screen="izin" data-label="Surat izin"></div></div><div class="tapewrap"><span class="tape" style="--r:5deg"></span><div class="b-ph" data-dev="phone" data-theme="mading" data-screen="rekap" data-label="Rekap bulanan"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Sistem visual">
+    <div class="b-in">
+      <div class="label y"><span class="tape" style="width:70px;margin-left:-35px"></span><b>Sistem visual</b></div>
+      <div class="sys">
+        <div class="paper sheet" style="transform:rotate(-1.5deg)"><span class="pin"></span><b style="font:400 20px Archivo Black,sans-serif">Lembar stiker</b><div class="stks" id="stks"></div></div>
+        <div class="paper sheet" style="transform:rotate(2deg)"><span class="tape"></span><b style="font:400 20px Archivo Black,sans-serif">Kertas dan tinta</b><div class="sw" style="margin-top:14px"><div style="background:#C89B68">gabus</div><div style="background:#fff">kertas</div><div style="background:#FFE066">tempel</div><div style="background:#2F5FD0;color:#fff">spidol</div><div style="background:#E0413A;color:#fff">paku</div></div></div>
+        <div class="paper sheet" style="transform:rotate(-1deg)"><span class="pin" style="--pc:#2F5FD0"></span><div class="spec">Aa 06.41</div><div class="hw" style="font-size:40px;line-height:1">tulisan tangan</div><div style="font-weight:700;margin-top:6px">Archivo Black + Caveat + Chivo</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="end"><a href="catatan.html#mading">Baca alasan desain Mading</a></div>
+</div>
+<script src="core.js"></script>
+<script src="t-mading.js"></script>
+<script>
+  SM2.chrome('mading');
+  SM2.ensure('mading');
+  var T = SM2.themes.mading;
+  document.getElementById('bigcal').insertAdjacentHTML('beforeend', T.calendar(560, { times: true }));
+  var L = { H: 'hadir', T: 'telat', S: 'sakit', I: 'izin', A: 'alpa' };
+  document.getElementById('stks').innerHTML = Object.keys(L).map(function (k) { return '<figure>' + T.stickers[k] + L[k] + '</figure>'; }).join('');
+  SM2.mountAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kaca Patri · Absensi SM1</title>
+<style>
+/* Papan mockup 1: lorong katedral yang gelap, triptik lengkung runcing, berkas cahaya menyilang halaman. */
+:root{--nave:#090D19;--nave2:#0E1322;--lead:#05070D;--light:#EEF0F8;--dim:#A9B0C8;--gold:#F0B840;--gold2:#FFE3A0;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--nave);color:var(--light);font:16px/1.5 "Hanken Grotesk",system-ui,sans-serif}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.page{position:relative;overflow:hidden;background:radial-gradient(60% 40% at 50% 0%,#18224A 0%,transparent 70%),linear-gradient(180deg,#0B1022,#090D19 40%,#0A0E1C)}
+.rays{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.rays i{position:absolute;top:-10%;height:140%;width:180px;background:linear-gradient(180deg,rgba(246,205,98,.10),rgba(45,91,215,.05) 50%,transparent 80%);transform:rotate(22deg);transform-origin:top;mix-blend-mode:screen;animation:sway 12s ease-in-out infinite alternate}
+.rays i:nth-child(2){left:38%;width:120px;animation-duration:15s;background:linear-gradient(180deg,rgba(58,109,232,.12),transparent 70%)}
+.rays i:nth-child(3){left:72%;width:220px;animation-duration:18s;animation-direction:alternate-reverse;background:linear-gradient(180deg,rgba(194,58,78,.10),transparent 70%)}
+@keyframes sway{from{transform:rotate(18deg)}to{transform:rotate(28deg)}}
+
+.hero{text-align:center;padding-top:56px}
+.btitle{margin:0;font:600 clamp(64px,13vw,168px)/0.85 "Grenze",Georgia,serif;letter-spacing:-.02em;background:linear-gradient(180deg,#FFF2CF,#F0B840 55%,#B77A1D);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .kick{margin-bottom:14px;color:var(--dim)}
+.trip{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:36px;margin-top:40px}
+.niche{position:relative;padding:48px 26px 26px}
+.niche svg.arch{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.niche svg.arch path{fill:rgba(20,28,56,.55);stroke:rgba(240,184,64,.55);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.niche.c{padding-top:80px}
+.niche .b-ph{--pw:250px}
+.niche.c .b-ph{--pw:300px}
+.tag{display:inline-block;margin-top:14px;padding:4px 12px;border:1px solid rgba(240,184,64,.45);border-radius:20px;font-size:12.5px;color:var(--dim)}
+@media (max-width:980px){.trip{flex-direction:column;align-items:center}.niche.side{display:none}.niche.c .b-ph{--pw:270px}}
+
+.sec-h{display:flex;align-items:center;gap:18px;margin-bottom:34px}
+.sec-h b{font:600 44px/1 "Grenze",serif;color:var(--gold2)}
+.sec-h i{flex:1;height:1px;background:linear-gradient(90deg,rgba(240,184,64,.6),transparent)}
+.arcade{gap:22px}
+.arcade .b-ph{--pw:210px}
+.arcade figure{margin:0;position:relative;padding:38px 12px 12px}
+.arcade figure svg.arch{position:absolute;inset:0;width:100%;height:100%}
+.arcade figure svg.arch path{fill:rgba(20,28,56,.4);stroke:rgba(240,184,64,.35);stroke-width:1;vector-effect:non-scaling-stroke}
+.arcade .b-cap{color:var(--dim)}
+.arcade .b-cap b{display:block;color:var(--light);font:600 20px "Grenze",serif}
+
+.nave{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:40px;align-items:center}
+.nave .b-lt{--lw:900px}
+.bigrose{position:absolute;right:-120px;top:-80px;width:620px;opacity:.26;animation:turn 120s linear infinite;pointer-events:none}
+@keyframes turn{to{transform:rotate(360deg)}}
+.stack{display:grid;gap:26px;justify-items:center}
+.stack .b-ph{--pw:230px}
+@media (max-width:980px){.nave{grid-template-columns:1fr}.stack{grid-auto-flow:column;justify-content:start;overflow-x:auto}}
+
+.rosewrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:center}
+.rosewrap .rose-big{width:100%;max-width:560px;justify-self:center;filter:drop-shadow(0 0 60px rgba(45,91,215,.35))}
+.pair{display:flex;gap:26px;justify-content:center}
+.pair .b-ph{--pw:240px}
+@media (max-width:980px){.rosewrap{grid-template-columns:1fr}.pair{overflow-x:auto;justify-content:flex-start}}
+
+.sys{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px}
+.panel{border:1px solid #232B48;border-radius:18px;padding:22px;background:rgba(14,19,34,.7)}
+.panel .b-lab{color:var(--dim);margin-bottom:16px}
+.glass{display:flex;gap:12px;align-items:flex-end}
+.glass figure{margin:0;text-align:center;font-size:12px;color:var(--dim)}
+.glass svg{width:52px;display:block;margin:0 auto 6px}
+.glass b{display:block;color:var(--light);font-weight:600}
+.spec{font:600 92px/0.9 "Grenze",serif;color:var(--gold2)}
+.spec2{font:500 30px/1.1 "Hanken Grotesk",sans-serif;margin-top:10px}
+.motion{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.motion div{aspect-ratio:1;border-radius:12px;background:#0B1020;display:grid;place-items:center;overflow:hidden;position:relative}
+.motion small{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:11px;color:var(--dim)}
+.m1 svg{width:46px}
+.m1 .pn{animation:kShim 1.4s ease-in-out infinite;animation-delay:var(--d)}
+.m2 i{position:absolute;width:3px;height:3px;border-radius:50%;background:#FFE7A8;animation:kDust 5s linear infinite}
+.m3 .ring{width:44px;height:44px;border-radius:50%;background:conic-gradient(#2D5BD7,#F0B840,#C23A4E,#2F9C7B,#2D5BD7);animation:turn 6s linear infinite;box-shadow:0 0 0 4px #05070D}
+.end{text-align:center;padding-bottom:90px}
+.end a{display:inline-block;padding:14px 26px;border-radius:14px;background:linear-gradient(180deg,#F7CF68,#E3A12E);color:#1A1204;text-decoration:none;font-weight:700}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="rays" aria-hidden="true"><i style="left:6%"></i><i></i><i></i></div>
+
+  <section class="b-sec hero" aria-label="Kaca Patri">
+    <div class="b-in">
+      <p class="kick">Arah 1 · Absensi SMA Santa Maria 1</p>
+      <h1 class="btitle">Kaca Patri</h1>
+      <div class="trip">
+        <div class="niche side"><svg class="arch" viewBox="0 0 100 180" preserveAspectRatio="none" aria-hidden="true"><path d="M0 180V60A58 58 0 0 1 50 0A58 58 0 0 1 100 60V180Z"/></svg><div class="b-ph" data-dev="phone" data-theme="kaca" data-screen="sambut" data-label="Layar masuk Kaca Patri"></div></div>
+        <div class="niche c"><svg class="arch" viewBox="0 0 100 180" preserveAspectRatio="none" aria-hidden="true"><path d="M0 180V56A58 58 0 0 1 50 0A58 58 0 0 1 100 56V180Z"/></svg><div class="b-ph" data-dev="phone" data-theme="kaca" data-screen="absen" data-live></div><span class="tag">Coba: ketuk tombolnya</span></div>
+        <div class="niche side"><svg class="arch" viewBox="0 0 100 180" preserveAspectRatio="none" aria-hidden="true"><path d="M0 180V60A58 58 0 0 1 50 0A58 58 0 0 1 100 60V180Z"/></svg><div class="b-ph" data-dev="phone" data-theme="kaca" data-screen="rekap" data-label="Rekap jendela mawar"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Alur absen">
+    <div class="b-in">
+      <div class="sec-h"><b>Alur absen</b><i></i></div>
+      <div class="b-row scroll arcade">
+        <figure><svg class="arch" viewBox="0 0 100 180" preserveAspectRatio="none" aria-hidden="true"><path d="M0 180V58A58 58 0 0 1 50 0A58 58 0 0 1 100 58V180Z"/></svg><div class="b-ph" data-dev="phone" data-theme="kaca" data-screen="absen" data-state="idle" data-label="Siap cek"></div><figcaption class="b-cap"><b>Gelap</b>belum dicek</figcaption></figure>
+        <figure><svg class="arch" viewBox="0 0 100 180" preserveAspectRatio="none" aria-hidden="true"><path d="M0 180V58A58 58 0 0 1 50 0A58 58 0 0 1 100 58V180Z"/></svg><div class="b-ph" data-dev="phone" data-theme="kaca" data-screen="absen" data-state="wifi" data-label="GPS cocok, cek WiFi"></div><figcaption class="b-cap"><b>Kaca kiri</b>GPS cocok</figcaption></figure>
+        <figure><svg class="arch" viewBox="0 0 100 180" preserveAspectRatio="none" aria-hidden="true"><path d="M0 180V58A58 58 0 0 1 50 0A58 58 0 0 1 100 58V180Z"/></svg><div class="b-ph" data-dev="phone" data-theme="kaca" data-screen="absen" data-state="ready" data-label="Siap absen"></div><figcaption class="b-cap"><b>Dua kaca</b>siap absen</figcaption></figure>
+        <figure><svg class="arch" viewBox="0 0 100 180" preserveAspectRatio="none" aria-hidden="true"><path d="M0 180V58A58 58 0 0 1 50 0A58 58 0 0 1 100 58V180Z"/></svg><div class="b-ph" data-dev="phone" data-theme="kaca" data-screen="absen" data-state="done" data-label="Hadir"></div><figcaption class="b-cap"><b>Mawar menyala</b>hadir 06.41</figcaption></figure>
+        <figure><svg class="arch" viewBox="0 0 100 180" preserveAspectRatio="none" aria-hidden="true"><path d="M0 180V58A58 58 0 0 1 50 0A58 58 0 0 1 100 58V180Z"/></svg><div class="b-ph" data-dev="phone" data-theme="kaca" data-screen="absen" data-state="fail" data-label="Di luar area"></div><figcaption class="b-cap"><b>Kaca merah</b>di luar area</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Orang tua">
+    <div class="b-in">
+      <div class="bigrose" id="bigrose" aria-hidden="true"></div>
+      <div class="sec-h"><b>Orang tua</b><i></i></div>
+      <div class="nave">
+        <div class="b-lt" data-dev="laptop" data-theme="kaca" data-screen="laptop" data-label="Dasbor orang tua di laptop"></div>
+        <div class="stack">
+          <div class="b-ph" data-dev="phone" data-theme="kaca" data-screen="ortu" data-label="Beranda orang tua"></div>
+          <div class="b-ph" data-dev="phone" data-theme="kaca" data-screen="notif" data-label="Notifikasi masuk"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Rekap dan izin">
+    <div class="b-in">
+      <div class="sec-h"><b>Rekap dan izin</b><i></i></div>
+      <div class="rosewrap">
+        <div class="rose-big" id="rosebig"></div>
+        <div class="pair"><div class="b-ph" data-dev="phone" data-theme="kaca" data-screen="izin" data-label="Surat izin"></div><div class="b-ph" data-dev="phone" data-theme="kaca" data-screen="rekap" data-label="Rekap bulanan"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Sistem visual">
+    <div class="b-in">
+      <div class="sec-h"><b>Sistem visual</b><i></i></div>
+      <div class="sys">
+        <div class="panel"><div class="b-lab">Kaca</div><div class="glass" id="glass"></div></div>
+        <div class="panel"><div class="b-lab">Huruf</div><div class="spec">Aa 06.41</div><div class="spec2">Grenze + Hanken Grotesk</div></div>
+        <div class="panel"><div class="b-lab">Gerak</div><div class="motion"><div class="m1" id="m1"><small>kaca menyala</small></div><div class="m2"><i style="left:30%;top:60%"></i><i style="left:55%;top:70%;animation-delay:-2s"></i><i style="left:70%;top:50%;animation-delay:-3.4s"></i><small>debu cahaya</small></div><div class="m3"><span class="ring"></span><small>kilau mawar</small></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="end"><a href="catatan.html#kaca">Baca alasan desain Kaca Patri</a></div>
+</div>
+<script src="core.js"></script>
+<script src="t-kaca.js"></script>
+<script>
+  SM2.chrome('kaca');
+  SM2.ensure('kaca');
+  var T = SM2.themes.kaca;
+  document.getElementById('rosebig').innerHTML = '<div class="t-kaca" style="background:none">' + T.rose(560) + '</div>';
+  document.getElementById('bigrose').innerHTML = '<div class="t-kaca" style="background:none">' + T.rose(620, { center: false }) + '</div>';
+  document.getElementById('m1').insertAdjacentHTML('afterbegin', '<div class="t-kaca" style="background:none">' + T.lancet(46, 90, 21) + '</div>');
+  var G = [['#2D5BD7', 'Kobalt', 'hadir'], ['#F0B840', 'Emas', 'terlambat, cahaya'], ['#2F9C7B', 'Zamrud', 'sakit, izin'], ['#C23A4E', 'Rubi', 'alpa']];
+  document.getElementById('glass').innerHTML = G.map(function (g) {
+    return '<figure><svg viewBox="0 0 52 90" aria-hidden="true"><path d="M2 88V45A45 45 0 0 1 26 2A45 45 0 0 1 50 45V88Z" fill="' + g[0] + '" stroke="#05070D" stroke-width="4"/><path d="M2 60H50M26 20V88" stroke="#05070D" stroke-width="3"/></svg><b>' + g[1] + '</b>' + g[2] + '</figure>';
+  }).join('');
+  SM2.mountAll();
+</script>
+</body>
+</html>

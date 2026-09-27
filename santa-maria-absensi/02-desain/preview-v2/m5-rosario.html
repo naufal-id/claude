@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rosario · Absensi SM1</title>
+<style>
+/* Papan mockup 5: putih mutiara dan banyak ruang kosong. Satu untaian benang dengan manik
+   yang terus bergerak menjalar dari atas ke bawah halaman, menghubungkan semua bagian. */
+:root{--mutiara:#F6F7FB;--biru:#2B4C9B;--biru2:#3E63B8;--tinta:#141A2E;--redup:#5A6178;--perak:#AEB6C7;--mawar:#C8566F;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--mutiara);color:var(--tinta);font:16px/1.55 "Be Vietnam Pro",system-ui,sans-serif}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--biru2);outline-offset:3px}
+.page{position:relative;overflow:hidden}
+.thread{position:absolute;left:0;top:0;pointer-events:none;z-index:0}
+.thread path{fill:none;stroke:var(--perak);stroke-width:1.4}
+.thread circle{fill:#fff;stroke:#C7CEDC;stroke-width:1.2;filter:drop-shadow(0 2px 2px rgba(20,26,46,.12))}
+.thread circle.b{fill:var(--biru);stroke:var(--biru)}
+.page>section,.page>.end{position:relative;z-index:1}
+.kick{font-weight:500;color:var(--redup)}
+.cs{font-family:"Castoro",Georgia,serif}
+
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center;min-height:860px}
+.btitle{margin:10px 0 0;font:italic 400 clamp(90px,14vw,200px)/0.85 "Castoro",Georgia,serif;color:var(--biru);letter-spacing:-.02em}
+.sub{font:400 34px/1.2 "Castoro",serif;margin-top:22px}
+.duo{position:relative;height:760px}
+.duo .b-ph{position:absolute}
+.duo .back{--pw:240px;left:4%;top:120px;opacity:.95}
+.duo .front{--pw:300px;right:6%;top:0}
+.duo .try{position:absolute;right:6%;top:672px;width:300px;text-align:center;font-size:13.5px;color:var(--redup)}
+@media (max-width:980px){.hero-grid{grid-template-columns:1fr;min-height:0}.duo{height:auto;display:flex;flex-direction:column;align-items:center}.duo .b-ph,.duo .try{position:static}.duo .back{display:none}}
+
+.sec-h{margin-bottom:40px;display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
+.sec-h b{font:italic 400 58px/1 "Castoro",serif;color:var(--biru)}
+.sec-h span{color:var(--redup)}
+.flow{gap:30px;align-items:flex-start}
+.flow figure{margin:0}
+.flow .b-ph{--pw:205px}
+.flow figure:nth-child(even){margin-top:70px}
+.flow .b-cap{font:italic 400 20px "Castoro",serif;color:var(--tinta)}
+.flow .b-cap small{display:block;font:400 13px "Be Vietnam Pro",sans-serif;color:var(--redup);font-style:normal}
+@media (max-width:980px){.flow figure:nth-child(even){margin-top:0}}
+
+.par{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:44px;align-items:center}
+.par .b-lt{--lw:880px}
+.par .side{display:grid;gap:30px}
+.par .side .b-ph{--pw:240px}
+@media (max-width:980px){.par{grid-template-columns:1fr}.par .side{grid-auto-flow:column;justify-content:start;overflow-x:auto}}
+
+.rk{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:50px;align-items:center}
+.loopbig{max-width:560px;width:100%;justify-self:center}
+.loopbig svg{width:100%;height:auto;display:block}
+.rk .pair{display:flex;gap:26px}
+.rk .pair .b-ph{--pw:230px}
+.rk .pair>div:nth-child(2){margin-top:80px}
+@media (max-width:980px){.rk{grid-template-columns:1fr}.rk .pair{overflow-x:auto}.rk .pair>div:nth-child(2){margin-top:0}}
+
+.sys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px}
+.card{background:#fff;border-radius:28px;padding:26px}
+.card .lab{font-size:13px;font-weight:600;color:var(--redup);margin-bottom:16px}
+.beads{display:flex;gap:14px;flex-wrap:wrap}
+.beads figure{margin:0;text-align:center;font-size:12.5px;color:var(--redup)}
+.beads i{display:block;width:40px;height:40px;border-radius:50%;margin:0 auto 6px}
+.spec{font:italic 400 92px/0.9 "Castoro",serif;color:var(--biru)}
+.mot{position:relative;height:120px}
+.mot svg{width:100%;height:100%}
+@media (max-width:980px){.sys{grid-template-columns:1fr}}
+.end{text-align:center;padding-bottom:100px}
+.end a{display:inline-block;padding:15px 28px;border-radius:30px;background:var(--biru);color:#fff;text-decoration:none;font-weight:600}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="page" id="page">
+  <svg class="thread" id="thread" aria-hidden="true"></svg>
+
+  <section class="b-sec" aria-label="Rosario" data-anchor="r">
+    <div class="b-in hero-grid">
+      <div>
+        <p class="kick">Arah 5 · Absensi SMA Santa Maria 1</p>
+        <h1 class="btitle">Rosario</h1>
+        <p class="sub">Satu manik, satu hari.<br><span style="color:#5A6178">Geser sampai ke salib.</span></p>
+      </div>
+      <div class="duo">
+        <div class="b-ph back" data-dev="phone" data-theme="rosario" data-screen="sambut" data-label="Layar masuk Rosario"></div>
+        <div class="b-ph front" data-dev="phone" data-theme="rosario" data-screen="absen" data-live></div>
+        <p class="try">Coba: cek lokasi, lalu geser manik ke salib</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Alur absen" data-anchor="l">
+    <div class="b-in">
+      <div class="sec-h"><b>Alur absen</b><span>dua manik terisi, lalu satu geseran</span></div>
+      <div class="b-row scroll flow">
+        <figure><div class="b-ph" data-dev="phone" data-theme="rosario" data-screen="absen" data-state="idle" data-label="Siap cek"></div><figcaption class="b-cap">Manik kosong<small>belum dicek</small></figcaption></figure>
+        <figure><div class="b-ph" data-dev="phone" data-theme="rosario" data-screen="absen" data-state="wifi" data-label="GPS terisi"></div><figcaption class="b-cap">Satu terisi<small>GPS cocok</small></figcaption></figure>
+        <figure><div class="b-ph" data-dev="phone" data-theme="rosario" data-screen="absen" data-state="ready" data-label="Siap digeser"></div><figcaption class="b-cap">Siap digeser<small>GPS dan WiFi cocok</small></figcaption></figure>
+        <figure><div class="b-ph" data-dev="phone" data-theme="rosario" data-screen="absen" data-state="done" data-label="Hadir"></div><figcaption class="b-cap">Hadir<small>06.41, tepat waktu</small></figcaption></figure>
+        <figure><div class="b-ph" data-dev="phone" data-theme="rosario" data-screen="absen" data-state="fail" data-label="Di luar area"></div><figcaption class="b-cap">Manik merah<small>di luar area</small></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Orang tua" data-anchor="r">
+    <div class="b-in">
+      <div class="sec-h"><b>Orang tua</b><span>satu dasa manik untuk satu minggu</span></div>
+      <div class="par">
+        <div class="b-lt" data-dev="laptop" data-theme="rosario" data-screen="laptop" data-label="Dasbor orang tua di laptop"></div>
+        <div class="side"><div class="b-ph" data-dev="phone" data-theme="rosario" data-screen="ortu" data-label="Beranda orang tua"></div><div class="b-ph" data-dev="phone" data-theme="rosario" data-screen="notif" data-label="Notifikasi masuk"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Rekap dan izin" data-anchor="l">
+    <div class="b-in">
+      <div class="sec-h"><b>Untaian September</b><span>18 dari 19 hari hadir</span></div>
+      <div class="rk">
+        <div class="loopbig t-rosario" id="loopbig" style="background:none"></div>
+        <div class="pair"><div class="b-ph" data-dev="phone" data-theme="rosario" data-screen="izin" data-label="Form izin"></div><div class="b-ph" data-dev="phone" data-theme="rosario" data-screen="rekap" data-label="Rekap bulanan"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b-sec" aria-label="Sistem visual" data-anchor="r">
+    <div class="b-in">
+      <div class="sec-h"><b>Sistem visual</b></div>
+      <div class="sys">
+        <div class="card"><div class="lab">Manik</div><div class="beads"><figure><i style="background:#2B4C9B"></i>hadir</figure><figure><i style="background:#fff;box-shadow:inset 0 0 0 3px #A8661A"></i>terlambat</figure><figure><i style="background:#DCE5F7;box-shadow:inset 0 0 0 1.5px #3E63B8"></i>sakit</figure><figure><i style="background:#C8566F"></i>alpa</figure><figure><i style="background:#fff;box-shadow:inset 0 0 0 1.5px #DDE2EC"></i>belum</figure></div></div>
+        <div class="card"><div class="lab">Huruf</div><div class="spec">Aa 06.41</div><div style="font-weight:600;margin-top:8px">Castoro + Be Vietnam Pro</div></div>
+        <div class="card"><div class="lab">Gerak: geser ke salib</div><div class="mot t-rosario" id="mot" style="background:none"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="end"><a href="catatan.html#rosario">Baca alasan desain Rosario</a></div>
+</div>
+<script src="core.js"></script>
+<script src="t-rosario.js"></script>
+<script>
+  SM2.chrome('rosario');
+  SM2.ensure('rosario');
+  var T = SM2.themes.rosario;
+  document.getElementById('loopbig').innerHTML = T.loop(560);
+  document.getElementById('mot').innerHTML = '<svg viewBox="0 0 300 120" aria-hidden="true"><path d="M20 60H250" class="str"/>' + T.cross(270, 42, 36, 'cr') +
+    '<circle r="16" cy="60" fill="#2B4C9B"><animate attributeName="cx" values="30;236;236;30" keyTimes="0;.55;.85;1" dur="3s" repeatCount="indefinite"/></circle></svg>';
+  SM2.mountAll();
+
+  // Untaian benang sepanjang halaman: menyilang kiri dan kanan tiap bagian
+  function thread() {
+    var page = document.getElementById('page'), svg = document.getElementById('thread');
+    var W = page.offsetWidth, H = page.offsetHeight, pts = [[W * 0.62, -20]];
+    document.querySelectorAll('[data-anchor]').forEach(function (sec) {
+      var y = sec.offsetTop + sec.offsetHeight * 0.5, side = sec.getAttribute('data-anchor');
+      pts.push([side === 'r' ? W - 40 : 40, y]);
+    });
+    pts.push([W * 0.5, H + 20]);
+    var d = 'M' + pts[0][0] + ' ' + pts[0][1];
+    for (var i = 1; i < pts.length; i++) { var p = pts[i - 1], q = pts[i], my = (p[1] + q[1]) / 2; d += ' C' + p[0] + ' ' + my + ' ' + q[0] + ' ' + my + ' ' + q[0] + ' ' + q[1]; }
+    var beads = '', reduce = SM2.reduced, dur = 60;
+    for (var k = 0; k < 26; k++) {
+      var big = k % 6 === 5, r = big ? 10 : 7;
+      beads += reduce ? '' : '<circle r="' + r + '"' + (big ? ' class="b"' : '') + '><animateMotion dur="' + dur + 's" repeatCount="indefinite" begin="-' + (k * dur / 26).toFixed(2) + 's"><mpath href="#thr"/></animateMotion></circle>';
+    }
+    svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.innerHTML = '<path id="thr" d="' + d + '"/>' + beads;
+  }
+  thread();
+  setTimeout(thread, 800);
+  window.addEventListener('resize', function () { clearTimeout(window._t); window._t = setTimeout(thread, 200); });
+</script>
+</body>
+</html>
