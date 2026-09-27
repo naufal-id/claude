@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Diagram Proposal PKM Presensi</title>
+<style>
+  body { margin: 0; padding: 16px; background: #fff; font-family: "Liberation Sans", Arial, sans-serif; }
+  svg { display: block; margin-bottom: 24px; }
+  .box { fill: #fff; stroke: #1f1f1f; stroke-width: 1.2; }
+  .acc { fill: #e8eef5; stroke: #1f4e79; stroke-width: 1.4; }
+  .soft { fill: #f3f3f3; stroke: #8a8a8a; stroke-width: 1; stroke-dasharray: 4 3; }
+  .t { font-size: 12px; fill: #111; }
+  .tb { font-size: 12px; font-weight: 700; fill: #111; }
+  .ts { font-size: 10.5px; fill: #333; }
+  .tn { font-size: 10px; font-weight: 700; fill: #1f4e79; }
+  .ln { stroke: #1f1f1f; stroke-width: 1.2; fill: none; marker-end: url(#ah); }
+  .lnd { stroke: #1f4e79; stroke-width: 1.2; fill: none; stroke-dasharray: 5 3; marker-end: url(#ahb); }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker>
+    <marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1f4e79"/></marker>
+  </defs>
+</svg>
+
+<!-- Gambar 3.1 Tahap pelaksanaan -->
+<svg id="tahap" width="640" height="300" viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- baris 1 -->
+  <rect class="box" x="10" y="20" width="140" height="70" rx="6"/>
+  <text class="tn" x="20" y="38">TAHAP 1 · Bulan 1</text>
+  <text class="tb" x="20" y="56">Persiapan dan</text>
+  <text class="tb" x="20" y="71">perizinan</text>
+  <text class="ts" x="20" y="84">izin, persetujuan ortu</text>
+
+  <rect class="box" x="170" y="20" width="140" height="70" rx="6"/>
+  <text class="tn" x="180" y="38">TAHAP 2 · Bulan 1</text>
+  <text class="tb" x="180" y="56">Analisis kebutuhan</text>
+  <text class="ts" x="180" y="71">observasi, wawancara,</text>
+  <text class="ts" x="180" y="84">pengukuran awal</text>
+
+  <rect class="acc" x="330" y="20" width="140" height="70" rx="6"/>
+  <text class="tn" x="340" y="38">TAHAP 3 · Bulan 1–2</text>
+  <text class="tb" x="340" y="56">Perancangan</text>
+  <text class="ts" x="340" y="71">arsitektur, basis data,</text>
+  <text class="ts" x="340" y="84">antarmuka, perangkat</text>
+
+  <rect class="acc" x="490" y="20" width="140" height="70" rx="6"/>
+  <text class="tn" x="500" y="38">TAHAP 4 · Bulan 2–3</text>
+  <text class="tb" x="500" y="56">Implementasi</text>
+  <text class="ts" x="500" y="71">titik presensi, aplikasi</text>
+  <text class="ts" x="500" y="84">web, bot Telegram</text>
+
+  <line class="ln" x1="150" y1="55" x2="168" y2="55"/>
+  <line class="ln" x1="310" y1="55" x2="328" y2="55"/>
+  <line class="ln" x1="470" y1="55" x2="488" y2="55"/>
+
+  <!-- baris 2 -->
+  <rect class="acc" x="490" y="170" width="140" height="70" rx="6"/>
+  <text class="tn" x="500" y="188">TAHAP 5 · Bulan 3</text>
+  <text class="tb" x="500" y="206">Pengujian</text>
+  <text class="ts" x="500" y="221">fungsional, kinerja,</text>
+  <text class="ts" x="500" y="234">skenario kecurangan</text>
+
+  <rect class="box" x="330" y="170" width="140" height="70" rx="6"/>
+  <text class="tn" x="340" y="188">TAHAP 6 · Bulan 3–4</text>
+  <text class="tb" x="340" y="206">Uji coba lapangan</text>
+  <text class="ts" x="340" y="221">3 rombel, 4 minggu;</text>
+  <text class="ts" x="340" y="234">evaluasi SUS dan dampak</text>
+
+  <rect class="box" x="170" y="170" width="140" height="70" rx="6"/>
+  <text class="tn" x="180" y="188">TAHAP 7 · Bulan 4</text>
+  <text class="tb" x="180" y="206">Pemeliharaan dan</text>
+  <text class="tb" x="180" y="221">serah terima</text>
+  <text class="ts" x="180" y="234">perbaikan, pelatihan</text>
+
+  <rect class="box" x="10" y="170" width="140" height="70" rx="6"/>
+  <text class="tn" x="20" y="188">TAHAP 8 · Bulan 2 dan 4</text>
+  <text class="tb" x="20" y="206">Pelaporan dan</text>
+  <text class="tb" x="20" y="221">luaran</text>
+  <text class="ts" x="20" y="234">laporan, video, artikel</text>
+
+  <line class="ln" x1="560" y1="90" x2="560" y2="168"/>
+  <line class="ln" x1="490" y1="205" x2="472" y2="205"/>
+  <line class="ln" x1="330" y1="205" x2="312" y2="205"/>
+  <line class="ln" x1="170" y1="205" x2="152" y2="205"/>
+
+  <!-- iterasi prototipe -->
+  <path class="lnd" d="M 520 170 C 470 130, 430 130, 400 92"/>
+  <text class="tn" x="318" y="125" text-anchor="end">iterasi prototipe</text>
+  <text class="tn" x="318" y="138" text-anchor="end">(umpan balik guru)</text>
+  <path class="lnd" d="M 360 170 C 330 140, 330 120, 370 92"/>
+  <text class="ts" x="10" y="275">Kotak berlatar biru: siklus prototipe iteratif. Garis putus-putus: umpan balik yang memicu perbaikan rancangan.</text>
+</svg>
+
+<!-- Lampiran: Arsitektur -->
+<svg id="arsitektur" width="640" height="340" viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg">
+  <rect class="box" x="10" y="30" width="170" height="150" rx="6"/>
+  <text class="tb" x="22" y="50">Titik presensi gerbang</text>
+  <text class="ts" x="22" y="66">(2 unit + 1 cadangan)</text>
+  <text class="ts" x="22" y="88">• ESP32-S3 + kamera OV2640</text>
+  <text class="ts" x="22" y="104">• Pembaca RFID 13,56 MHz</text>
+  <text class="ts" x="22" y="120">• Layar TFT, buzzer, LED</text>
+  <text class="ts" x="22" y="136">• microSD: antrean luring</text>
+  <text class="ts" x="22" y="152">  bila Wi-Fi terputus</text>
+  <text class="ts" x="22" y="170">Siswa menempelkan kartu</text>
+
+  <rect class="acc" x="235" y="30" width="190" height="230" rx="6"/>
+  <text class="tb" x="247" y="50">Server (VPS, pusat data</text>
+  <text class="tb" x="247" y="65">di Indonesia)</text>
+  <text class="ts" x="247" y="88">• API presensi (HTTPS + token</text>
+  <text class="ts" x="247" y="102">  perangkat)</text>
+  <text class="ts" x="247" y="120">• Basis data siswa, jadwal,</text>
+  <text class="ts" x="247" y="134">  presensi, log audit</text>
+  <text class="ts" x="247" y="152">• Penyimpanan foto (retensi</text>
+  <text class="ts" x="247" y="166">  30 hari, lalu dihapus)</text>
+  <text class="ts" x="247" y="184">• Mesin aturan anomali</text>
+  <text class="ts" x="247" y="202">• Penjadwal notifikasi dan</text>
+  <text class="ts" x="247" y="216">  ringkasan mingguan</text>
+  <text class="ts" x="247" y="234">• Ekspor CSV/Excel</text>
+
+  <rect class="box" x="470" y="20" width="160" height="110" rx="6"/>
+  <text class="tb" x="482" y="40">Aplikasi web</text>
+  <text class="ts" x="482" y="60">• Guru mata pelajaran</text>
+  <text class="ts" x="482" y="76">• Wali kelas dan BK</text>
+  <text class="ts" x="482" y="92">• Kepala sekolah</text>
+  <text class="ts" x="482" y="108">• Admin tata usaha</text>
+  <text class="ts" x="482" y="124">Akses berbasis peran</text>
+
+  <rect class="box" x="470" y="150" width="160" height="80" rx="6"/>
+  <text class="tb" x="482" y="170">Bot Telegram</text>
+  <text class="ts" x="482" y="190">• Notifikasi masuk/pulang</text>
+  <text class="ts" x="482" y="206">• Ringkasan mingguan</text>
+  <text class="ts" x="482" y="222">• Pengajuan izin/sakit</text>
+
+  <rect class="box" x="470" y="260" width="160" height="50" rx="6"/>
+  <text class="tb" x="482" y="282">Orang tua / wali</text>
+  <text class="ts" x="482" y="300">ponsel dengan Telegram</text>
+  <line class="ln" x1="550" y1="230" x2="550" y2="258"/>
+
+  <rect class="soft" x="10" y="220" width="170" height="60" rx="6"/>
+  <text class="tb" x="22" y="242">Sistem informasi sekolah</text>
+  <text class="ts" x="22" y="260">(mis. AIMSIS, rapor)</text>
+  <text class="ts" x="22" y="274">impor berkas rekap</text>
+  <line class="ln" x1="233" y1="245" x2="182" y2="250"/>
+  <text class="ts" x="186" y="238">CSV</text>
+
+  <line class="ln" x1="180" y1="105" x2="233" y2="105"/>
+  <text class="ts" x="186" y="98">UID + foto</text>
+  <line class="ln" x1="233" y1="130" x2="182" y2="130"/>
+  <text class="ts" x="186" y="145">nama,</text>
+  <text class="ts" x="186" y="158">status</text>
+
+  <line class="ln" x1="425" y1="75" x2="468" y2="75"/>
+  <line class="ln" x1="468" y1="95" x2="427" y2="95"/>
+  <line class="ln" x1="425" y1="190" x2="468" y2="190"/>
+  <text class="ts" x="10" y="330">Garis putus-putus: sistem sekolah yang sudah ada; integrasi melalui berkas ekspor.</text>
+</svg>
+
+<!-- Lampiran: Alur presensi berlapis -->
+<svg id="berlapis" width="640" height="330" viewBox="0 0 640 330" xmlns="http://www.w3.org/2000/svg">
+  <rect class="acc" x="10" y="10" width="620" height="68" rx="6"/>
+  <text class="tn" x="22" y="28">LAPIS 1 · GERBANG (pagi)</text>
+  <text class="t" x="22" y="47">Siswa menempelkan kartu → perangkat memotret → server mencatat jam dan status</text>
+  <text class="t" x="22" y="64">(tepat waktu/terlambat) → layar menampilkan nama → orang tua menerima notifikasi</text>
+
+  <rect class="box" x="10" y="88" width="620" height="68" rx="6"/>
+  <text class="tn" x="22" y="106">LAPIS 2 · KELAS (setiap sesi pelajaran)</text>
+  <text class="t" x="22" y="125">Guru membuka sesi → daftar terisi otomatis dari Lapis 1 → guru hanya menandai</text>
+  <text class="t" x="22" y="142">pengecualian (tercatat hadir tapi tidak ada di kelas, dan sebaliknya) → konfirmasi satu kali</text>
+
+  <rect class="box" x="10" y="166" width="620" height="68" rx="6"/>
+  <text class="tn" x="22" y="184">LAPIS 3 · AUDIT (harian, wali kelas/BK)</text>
+  <text class="t" x="22" y="203">Mesin aturan menandai anomali → wali kelas meninjau antrean beserta foto →</text>
+  <text class="t" x="22" y="220">wali kelas menetapkan tindak lanjut; semua perubahan data tersimpan di log audit</text>
+
+  <rect class="box" x="10" y="244" width="620" height="68" rx="6"/>
+  <text class="tn" x="22" y="262">LAPIS 4 · ORANG TUA (mingguan)</text>
+  <text class="t" x="22" y="281">Bot mengirim ringkasan kumulatif (jumlah hadir, terlambat, izin, alpa sejak awal</text>
+  <text class="t" x="22" y="298">semester) → orang tua dapat mengajukan izin/sakit → wali kelas menyetujui</text>
+</svg>
+
+<!-- Lampiran: Blok perangkat keras -->
+<svg id="perangkat" width="640" height="250" viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg">
+  <rect class="acc" x="240" y="70" width="160" height="100" rx="6"/>
+  <text class="tb" x="320" y="105" text-anchor="middle">ESP32-S3</text>
+  <text class="ts" x="320" y="123" text-anchor="middle">Wi-Fi, PSRAM</text>
+  <text class="ts" x="320" y="139" text-anchor="middle">kamera OV2640 (DVP)</text>
+  <text class="ts" x="320" y="155" text-anchor="middle">slot microSD</text>
+
+  <rect class="box" x="10" y="20" width="170" height="50" rx="6"/>
+  <text class="tb" x="22" y="40">Pembaca RFID RC522</text>
+  <text class="ts" x="22" y="58">13,56 MHz, antarmuka SPI</text>
+  <rect class="box" x="10" y="95" width="170" height="50" rx="6"/>
+  <text class="tb" x="22" y="115">Layar TFT 2,4 inci</text>
+  <text class="ts" x="22" y="133">nama dan status, SPI</text>
+  <rect class="box" x="10" y="170" width="170" height="50" rx="6"/>
+  <text class="tb" x="22" y="190">Buzzer dan LED</text>
+  <text class="ts" x="22" y="208">umpan balik, GPIO</text>
+
+  <rect class="box" x="460" y="20" width="170" height="50" rx="6"/>
+  <text class="tb" x="472" y="40">Adaptor 5 V</text>
+  <text class="ts" x="472" y="58">catu daya perangkat</text>
+  <rect class="box" x="460" y="95" width="170" height="50" rx="6"/>
+  <text class="tb" x="472" y="115">Wi-Fi sekolah</text>
+  <text class="ts" x="472" y="133">HTTPS ke server</text>
+  <rect class="soft" x="460" y="170" width="170" height="50" rx="6"/>
+  <text class="tb" x="472" y="190">Antrean luring</text>
+  <text class="ts" x="472" y="208">microSD, kirim ulang</text>
+
+  <line class="ln" x1="180" y1="45" x2="238" y2="85"/>
+  <line class="ln" x1="238" y1="120" x2="182" y2="120"/>
+  <line class="ln" x1="238" y1="155" x2="182" y2="195"/>
+  <line class="ln" x1="458" y1="45" x2="402" y2="85"/>
+  <line class="ln" x1="402" y1="115" x2="458" y2="120"/>
+  <line class="ln" x1="402" y1="150" x2="458" y2="195"/>
+  <text class="ts" x="10" y="243">Semua komponen dipasang dalam casing akrilik yang ditempel di dinding dekat gerbang.</text>
+</svg>
+</body>
+</html>

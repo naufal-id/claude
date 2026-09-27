@@ -9,3 +9,6 @@ eksekusi). Fase desain memakai preview HTML mandiri di
 
 Penamaan berkas mengikuti konvensi `YYYY-MM-DD_nama-berkas_draft-ke-N.md`.
 Seluruh konten dalam Bahasa Indonesia.
+
+Folder `proposal-pkm-presensi/` berisi proposal PKM-KC sistem presensi siswa berlapis
+(lokasi uji coba SMA Santa Maria 1 Bandung). Lihat README di folder tersebut.
