@@ -5,7 +5,8 @@ kerja alih daya di Sumatera Utara.
 
 Isi utama ada di `nusa-era-pradana/`, paket dokumen perencanaan (global, desain,
 eksekusi). Fase desain memakai preview HTML mandiri di
-`nusa-era-pradana/02-desain/preview/`.
+`nusa-era-pradana/02-desain/preview/`. Prototipe teknis ada di
+`nusa-era-pradana/03-eksekusi/`, dimulai dari `prototipe-absen-gps/`.
 
 Penamaan berkas mengikuti konvensi `YYYY-MM-DD_nama-berkas_draft-ke-N.md`.
 Seluruh konten dalam Bahasa Indonesia.

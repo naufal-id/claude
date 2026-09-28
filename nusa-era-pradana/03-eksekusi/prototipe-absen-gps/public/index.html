@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#255F4A">
+  <title>Absen Lapangan</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/css/gaya.css">
+</head>
+<body>
+  <main class="bungkus">
+    <header class="kepala">
+      <h1>Absen Lapangan</h1>
+      <span class="label-kecil">Prototipe uji GPS</span>
+    </header>
+
+    <!-- Diisi absen.js: apakah halaman ini boleh meminta GPS atau tidak. -->
+    <div id="pita-konteks" class="pita" role="status" hidden></div>
+
+    <form id="form-absen" novalidate>
+      <section class="kartu" aria-labelledby="judul-identitas">
+        <h2 id="judul-identitas">1. Identitas</h2>
+        <div class="baris-isian">
+          <label for="id-karyawan">ID karyawan</label>
+          <input id="id-karyawan" name="id_karyawan" type="text" inputmode="text"
+                 autocomplete="off" maxlength="30" placeholder="contoh: NEP-0001" required>
+        </div>
+        <div class="baris-isian">
+          <label for="nama">Nama</label>
+          <input id="nama" name="nama" type="text" autocomplete="name" maxlength="80"
+                 placeholder="Nama lengkap" required>
+        </div>
+        <fieldset class="baris-isian polos">
+          <legend>Jenis absen</legend>
+          <div class="pilihan-grup">
+            <label class="pilihan"><input type="radio" name="jenis" value="masuk"><span>Masuk</span></label>
+            <label class="pilihan"><input type="radio" name="jenis" value="pulang"><span>Pulang</span></label>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="kartu" aria-labelledby="judul-lokasi">
+        <h2 id="judul-lokasi">2. Lokasi</h2>
+        <button type="button" id="tombol-lokasi" class="sekunder penuh">Ambil lokasi saya</button>
+        <div class="meter" aria-hidden="true"><div id="meter-isi"></div></div>
+        <p id="status-lokasi" class="catatan" aria-live="polite">
+          Belum ada lokasi. Browser akan menanyakan izin saat tombol ditekan.
+        </p>
+        <dl id="data-lokasi" class="data-lokasi" hidden>
+          <dt>Lintang</dt><dd id="d-lat"></dd>
+          <dt>Bujur</dt><dd id="d-lon"></dd>
+          <dt>Akurasi</dt><dd id="d-akurasi"></dd>
+          <dt>Ke kantor</dt><dd id="d-jarak"></dd>
+          <dt>Waktu GPS</dt><dd id="d-waktu"></dd>
+          <dt>Peta</dt><dd><a id="d-peta" href="#" target="_blank" rel="noopener">Buka di OpenStreetMap</a></dd>
+        </dl>
+      </section>
+
+      <button type="submit" id="tombol-kirim" class="penuh" disabled>Kirim absen</button>
+      <p id="alasan-kirim" class="catatan">Isi identitas dan ambil lokasi dulu.</p>
+    </form>
+
+    <div id="hasil" class="pita" role="status" aria-live="polite" hidden></div>
+
+    <footer class="kaki">
+      <p>Lokasi hanya diambil saat tombol ditekan, lalu disimpan bersama waktu server,
+        ID, nama, dan jenis perangkat untuk keperluan uji absensi.</p>
+      <p><a href="/rekap">Halaman rekap (admin)</a></p>
+    </footer>
+  </main>
+  <script src="/js/absen.js"></script>
+</body>
+</html>
