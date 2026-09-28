@@ -8,7 +8,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 
 const { bukaDatabase } = require('./lib/db');
-const { jarakMeter, tentukanStatus } = require('./lib/geo');
+const { evaluasi, tentukanStatus, persegi, ringkas } = require('./lib/geo');
 const { validasiLogin, validasiAbsen, validasiPengaturan } = require('./lib/validasi');
 const { buatWa, folderSesiBawaan } = require('./lib/wa');
 
@@ -61,14 +61,25 @@ function bacaKonfigurasi(env = process.env) {
     waNotifAbsen: ['semua', 'bermasalah', 'mati'].includes(env.WA_NOTIF_ABSEN) ? env.WA_NOTIF_ABSEN : 'semua',
     waFolderSesi: env.WA_FOLDER_SESI || folderSesiBawaan(),
     waChromePath: env.WA_CHROME_PATH || '',
-    // Nilai awal lokasi kantor. Setelah database terbentuk, ubah lewat halaman /rekap.
-    pengaturanAwal: {
-      nama_lokasi: env.KANTOR_NAMA || 'Kantor contoh (Lapangan Merdeka, Medan)',
-      lat: angka(env.KANTOR_LAT, 3.5906),
-      lon: angka(env.KANTOR_LON, 98.6779),
-      radius_m: angka(env.KANTOR_RADIUS_M, 100),
-      batas_akurasi_m: angka(env.BATAS_AKURASI_M, 50),
-    },
+    pengaturanAwal: pengaturanAwal(env, angka),
+  };
+}
+
+// Nilai awal lokasi kantor. Setelah database terbentuk, ubah lewat halaman /rekap.
+// Bawaannya persegi dengan sisi 2 x KANTOR_RADIUS_M di sekitar titik kantor.
+function pengaturanAwal(env, angka) {
+  const lat = angka(env.KANTOR_LAT, 3.5906);
+  const lon = angka(env.KANTOR_LON, 98.6779);
+  const radius = angka(env.KANTOR_RADIUS_M, 100);
+  const bentuk = env.KANTOR_BENTUK === 'lingkaran' ? 'lingkaran' : 'poligon';
+  return {
+    nama_lokasi: env.KANTOR_NAMA || 'Kantor contoh (Lapangan Merdeka, Medan)',
+    lat,
+    lon,
+    radius_m: radius,
+    batas_akurasi_m: angka(env.BATAS_AKURASI_M, 50),
+    bentuk,
+    titik: bentuk === 'poligon' ? persegi(lat, lon, radius) : [],
   };
 }
 
@@ -137,7 +148,7 @@ function selCsv(nilai, teksBebas = false) {
 
 function keCsv(baris) {
   const kolom = [
-    'id', 'id_karyawan', 'nama', 'jenis', 'status', 'lat', 'lon', 'akurasi_m', 'jarak_m',
+    'id', 'id_karyawan', 'nama', 'jenis', 'status', 'lat', 'lon', 'akurasi_m', 'jarak_m', 'jarak_luar_m',
     'waktu_server', 'waktu_gps', 'ip', 'perangkat',
   ];
   const teksBebas = new Set(['id_karyawan', 'nama', 'perangkat', 'ip']);
@@ -185,7 +196,8 @@ function pesanAbsenWa(a, p) {
     `${ikon} *Absen ${a.jenis.toUpperCase()}*`,
     `${a.id_karyawan} · ${a.nama}`,
     `Status: ${LABEL_STATUS[a.status] || a.status}`,
-    `Jarak ke ${p.nama_lokasi}: ${formatMeter(a.jarak_m)} (radius ${p.radius_m} m)`,
+    `Posisi: ${a.jarak_luar_m > 0 ? `${formatMeter(a.jarak_luar_m)} di luar batas area` : 'di dalam area'} (${ringkas(p)})`,
+    `Jarak ke titik ${p.nama_lokasi}: ${formatMeter(a.jarak_m)}`,
     `Akurasi GPS: ±${formatMeter(a.akurasi_m)}`,
     `Waktu: ${formatWib(a.waktu_server)}`,
     `Peta: https://www.google.com/maps?q=${a.lat},${a.lon}`,
@@ -351,18 +363,14 @@ function buatAplikasi(konfig, opsi = {}) {
     }
 
     const p = db.ambilPengaturan();
-    const jarak = jarakMeter(d.lat, d.lon, p.lat, p.lon);
-    const status = tentukanStatus({
-      jarak,
-      akurasi: d.akurasi,
-      radius: p.radius_m,
-      batasAkurasi: p.batas_akurasi_m,
-    });
+    const area = evaluasi(p, d.lat, d.lon);
+    const status = tentukanStatus({ diDalam: area.diDalam, akurasi: d.akurasi, batasAkurasi: p.batas_akurasi_m });
 
     const absen = db.simpanAbsen({
       ...d,
       akurasi_m: Math.round(d.akurasi * 10) / 10,
-      jarak_m: Math.round(jarak * 10) / 10,
+      jarak_m: Math.round(area.jarakKantor * 10) / 10,
+      jarak_luar_m: Math.round(area.jarakLuar * 10) / 10,
       status,
       waktu_server: sekarang.toISOString(),
       ip: alamatIp(req, konfig.percayaProxy),

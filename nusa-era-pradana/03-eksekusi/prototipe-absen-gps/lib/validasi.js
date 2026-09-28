@@ -1,5 +1,7 @@
 'use strict';
 
+const { jarakMeter, bersilang } = require('./geo');
+
 const JENIS_ABSEN = ['masuk', 'pulang'];
 
 function angkaDalamRentang(nilai, min, maks) {
@@ -72,6 +74,25 @@ function validasiPengaturan(body) {
   if (!angkaDalamRentang(body.batas_akurasi_m, 5, 5000)) {
     galat.push('batas_akurasi_m harus 5-5000 meter.');
   }
+  const bentuk = body.bentuk === undefined ? 'lingkaran' : body.bentuk;
+  if (!['lingkaran', 'poligon'].includes(bentuk)) galat.push('bentuk harus "lingkaran" atau "poligon".');
+
+  let titik = [];
+  if (bentuk === 'poligon') {
+    const sah = Array.isArray(body.titik) && body.titik.length >= 3 && body.titik.length <= 30 &&
+      body.titik.every((t) => Array.isArray(t) && t.length === 2 &&
+        angkaDalamRentang(t[0], -90, 90) && angkaDalamRentang(t[1], -180, 180));
+    if (!sah) {
+      galat.push('titik harus berisi 3-30 sudut [lintang, bujur].');
+    } else if (galat.length === 0) {
+      titik = body.titik.map(([a, b]) => [Number(a.toFixed(7)), Number(b.toFixed(7))]);
+      if (titik.some(([a, b]) => jarakMeter(a, b, body.lat, body.lon) > 10000)) {
+        galat.push('Semua sudut area harus berada dalam 10 km dari titik kantor.');
+      } else if (bersilang(titik)) {
+        galat.push('Sisi area saling bersilang. Geser sudutnya supaya bentuknya tidak seperti pita.');
+      }
+    }
+  }
   if (galat.length) return { ok: false, galat };
   return {
     ok: true,
@@ -81,6 +102,8 @@ function validasiPengaturan(body) {
       lon: body.lon,
       radius_m: Math.round(body.radius_m),
       batas_akurasi_m: Math.round(body.batas_akurasi_m),
+      bentuk,
+      titik,
     },
   };
 }

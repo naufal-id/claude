@@ -20,8 +20,13 @@ let penandaPerId = new Map();
 let tandaTanganData = '';
 let sudahDipaskan = false;
 let pengaturanServer = null;
-let kantorDraf = null; // perubahan geofence yang belum disimpan
+let kantorDraf = null; // perubahan area yang belum disimpan
 let modeKlikPeta = false;
+let lapisanSudut = null;
+let lapisanGambar = null;
+let sedangGeserSudut = false;
+let modeGambar = false;
+let titikGambar = [];
 
 // ---------- Utilitas ----------
 
@@ -155,19 +160,26 @@ function siapkanPeta(p) {
     'Lingkar akurasi GPS': lapisanAkurasi,
   };
   peta = PetaAbsen.buat('peta-rekap', { pusat: [p.lat, p.lon], zoom: 17, overlay });
+  peta.doubleClickZoom.disable(); // klik dua kali dipakai untuk menghapus sudut
   lapisanAkurasi.addTo(peta);
-  Object.values(lapisanStatus).forEach((g) => g.addTo(peta));
   lapisanGeofence = L.layerGroup().addTo(peta);
+  Object.values(lapisanStatus).forEach((g) => g.addTo(peta));
+  lapisanSudut = L.layerGroup().addTo(peta);
+  lapisanGambar = L.layerGroup().addTo(peta);
 
+  // Menggeser kotak kantor memindahkan seluruh area, termasuk semua sudut poligon.
+  let awalGeser = null;
   penandaKantor = L.marker([p.lat, p.lon], {
-    icon: PetaAbsen.ikonKantor(), draggable: true, zIndexOffset: 2000, title: 'Kantor, geser untuk memindahkan',
+    icon: PetaAbsen.ikonKantor(), draggable: true, zIndexOffset: 2000, title: 'Kantor, geser untuk memindahkan area',
   }).addTo(peta);
-  penandaKantor.on('drag', (e) => ubahDraf({ lat: e.latlng.lat, lon: e.latlng.lng }, false));
-  penandaKantor.on('dragend', () => ubahDraf({}, true));
+  penandaKantor.on('dragstart', () => { awalGeser = { ...kantorAktif() }; });
+  penandaKantor.on('drag', (e) => pindahkanArea(awalGeser, e.latlng.lat, e.latlng.lng, false));
+  penandaKantor.on('dragend', () => { awalGeser = null; ubahDraf({}, { isiForm: true }); });
 
   peta.on('click', (e) => {
+    if (modeGambar) return tambahTitikGambar(e.latlng);
     if (!modeKlikPeta) return;
-    ubahDraf({ lat: e.latlng.lat, lon: e.latlng.lng }, true);
+    pindahkanArea(kantorAktif(), e.latlng.lat, e.latlng.lng, true);
     aturModeKlik(false);
   });
 }
@@ -176,12 +188,77 @@ function kantorAktif() {
   return kantorDraf || pengaturanServer;
 }
 
+function pindahkanArea(asal, lat, lon, isiForm) {
+  const perubahan = { lat, lon };
+  if (Geofence.adalahPoligon(asal)) perubahan.titik = Geofence.geser(asal.titik, lat - asal.lat, lon - asal.lon);
+  ubahDraf(perubahan, { isiForm });
+}
+
 function gambarKantor() {
   const p = kantorAktif();
   if (!peta || !p) return;
   PetaAbsen.gambarGeofence(peta, p, lapisanGeofence);
   penandaKantor.setLatLng([p.lat, p.lon]);
-  penandaKantor.unbindTooltip().bindTooltip(`${p.nama_lokasi}, radius ${p.radius_m} m`);
+  penandaKantor.unbindTooltip().bindTooltip(`${p.nama_lokasi}, ${Geofence.ringkas(p)}`);
+  if (!sedangGeserSudut) gambarSudut(p);
+  perbaruiInfoArea(p);
+}
+
+// Penanda sudut (bernomor, bisa digeser) dan penanda "+" di tengah tiap sisi.
+function gambarSudut(p) {
+  lapisanSudut.clearLayers();
+  if (!Geofence.adalahPoligon(p) || modeGambar) return;
+  const n = p.titik.length;
+  p.titik.forEach((t, i) => {
+    const sudut = L.marker(t, {
+      icon: PetaAbsen.ikonSudut(i + 1), draggable: true, zIndexOffset: 3000,
+      title: `Sudut ${i + 1}: geser untuk mengubah, klik dua kali untuk menghapus`,
+    }).addTo(lapisanSudut);
+    sudut.on('dragstart', () => { sedangGeserSudut = true; });
+    sudut.on('drag', (e) => {
+      const titik = kantorAktif().titik.map((x) => x.slice());
+      titik[i] = [e.latlng.lat, e.latlng.lng];
+      ubahDraf({ titik });
+    });
+    sudut.on('dragend', () => { sedangGeserSudut = false; gambarKantor(); });
+    const hapus = (e) => { L.DomEvent.stop(e); hapusSudut(i); };
+    sudut.on('dblclick', hapus);
+    sudut.on('contextmenu', hapus); // klik kanan, atau tekan lama di HP
+  });
+  p.titik.forEach((t, i) => {
+    const b = p.titik[(i + 1) % n];
+    const tengah = [(t[0] + b[0]) / 2, (t[1] + b[1]) / 2];
+    L.marker(tengah, { icon: PetaAbsen.ikonTengah(), zIndexOffset: 2500, title: 'Klik untuk menambah sudut di sini' })
+      .on('click', (e) => { L.DomEvent.stop(e); tambahSudut(i + 1, tengah); })
+      .addTo(lapisanSudut);
+  });
+}
+
+function tambahSudut(posisi, titikBaru) {
+  const titik = kantorAktif().titik.map((x) => x.slice());
+  if (titik.length >= 30) return tampilkanPesan('waspada', 'Maksimal 30 sudut.');
+  titik.splice(posisi, 0, titikBaru);
+  ubahDraf({ titik });
+}
+
+function hapusSudut(i) {
+  const titik = kantorAktif().titik.map((x) => x.slice());
+  if (titik.length <= 3) return tampilkanPesan('waspada', 'Area minimal punya 3 sudut.');
+  titik.splice(i, 1);
+  ubahDraf({ titik });
+}
+
+function perbaruiInfoArea(p) {
+  const info = el('info-area');
+  if (Geofence.adalahPoligon(p)) {
+    const u = Geofence.ukuran(p.titik);
+    info.textContent = `${p.titik.length} sudut · luas ${Geofence.formatLuas(u.luas_m2)} · keliling ${formatMeter(u.keliling_m)}`;
+    info.classList.toggle('peringatan', Geofence.bersilang(p.titik));
+    if (Geofence.bersilang(p.titik)) info.textContent += ' · SISI BERSILANG, perbaiki sebelum disimpan';
+  } else {
+    info.textContent = `Luas ${Geofence.formatLuas(Math.PI * p.radius_m ** 2)}`;
+    info.classList.remove('peringatan');
+  }
 }
 
 function isiPopup(a) {
@@ -189,7 +266,8 @@ function isiPopup(a) {
   wadah.append(buatElemen('strong', { teks: `#${a.id} ${a.id_karyawan} · ${a.nama}` }));
   const baris = [
     `Absen ${a.jenis}, ${formatWaktu(a.waktu_server)} WIB`,
-    `Jarak ke kantor: ${formatMeter(a.jarak_m)}`,
+    `Posisi: ${teksPosisi(a)}`,
+    `Jarak ke titik kantor: ${formatMeter(a.jarak_m)}`,
     `Akurasi GPS: ± ${formatMeter(a.akurasi_m)}`,
     ringkasPerangkat(a.perangkat || ''),
   ];
@@ -203,6 +281,12 @@ function isiPopup(a) {
   tautan.rel = 'noopener';
   wadah.append(tautan);
   return wadah;
+}
+
+// Absen dari versi lama belum punya jarak_luar_m.
+function teksPosisi(a) {
+  if (a.jarak_luar_m === null || a.jarak_luar_m === undefined) return '-';
+  return a.jarak_luar_m > 0 ? `${formatMeter(a.jarak_luar_m)} di luar` : 'di dalam area';
 }
 
 function gambarTitik(data) {
@@ -230,9 +314,15 @@ function gambarTitik(data) {
   }
 }
 
+function batasArea() {
+  // Salin: getBounds() poligon mengembalikan objek internal Leaflet yang tidak boleh diubah.
+  const b = lapisanGeofence.getLayers()[0].getBounds();
+  return L.latLngBounds(b.getSouthWest(), b.getNorthEast());
+}
+
 function paskanSemua() {
   if (!peta) return;
-  const batas = lapisanGeofence.getLayers()[0].getBounds();
+  const batas = batasArea();
   for (const p of penandaPerId.values()) batas.extend(p.getLatLng());
   peta.fitBounds(batas, { padding: [30, 30], maxZoom: 19 });
 }
@@ -246,7 +336,18 @@ function fokusKeAbsen(id) {
   peta.once('moveend', () => penanda.openPopup());
 }
 
-// ---------- Edit geofence ----------
+// ---------- Edit area absen ----------
+
+const PETUNJUK_AREA = {
+  poligon: 'Geser sudut bernomor atau kotak kantor di peta. Semua perubahan baru berlaku setelah "Simpan area".',
+  lingkaran: 'Geser kotak kantor di peta dan atur radiusnya. Perubahan baru berlaku setelah "Simpan area".',
+};
+
+function tampilkanAlatBentuk(bentuk) {
+  el('alat-poligon').hidden = bentuk !== 'poligon';
+  el('baris-radius').hidden = bentuk === 'poligon';
+  for (const r of document.querySelectorAll('input[name="bentuk"]')) r.checked = r.value === bentuk;
+}
 
 function isiFormKantor(p) {
   el('k-nama').value = p.nama_lokasi;
@@ -254,38 +355,142 @@ function isiFormKantor(p) {
   el('k-lon').value = Number(p.lon).toFixed(6);
   el('k-radius').value = p.radius_m;
   el('k-akurasi').value = p.batas_akurasi_m;
+  tampilkanAlatBentuk(p.bentuk);
+  if (!kantorDraf && !modeGambar) el('status-kantor').textContent = PETUNJUK_AREA[p.bentuk] || '';
 }
 
-function ubahDraf(perubahan, isiForm) {
+function ubahDraf(perubahan, { isiForm = false } = {}) {
   kantorDraf = { ...kantorAktif(), ...perubahan };
   if (isiForm) isiFormKantor(kantorDraf);
   el('tombol-batal-kantor').hidden = false;
-  el('status-kantor').textContent = 'Ada perubahan yang BELUM disimpan. Tekan "Simpan lokasi kantor" untuk menerapkan.';
+  el('status-kantor').textContent = 'Ada perubahan yang BELUM disimpan. Tekan "Simpan area" untuk menerapkan.';
   gambarKantor();
 }
 
 function batalkanDraf() {
   kantorDraf = null;
+  if (modeGambar) bersihkanGambar();
   el('tombol-batal-kantor').hidden = true;
-  el('status-kantor').textContent = 'Geser penanda kantor di peta, atau tekan "Pilih titik di peta" lalu klik lokasinya.';
   if (pengaturanServer) isiFormKantor(pengaturanServer);
   gambarKantor();
 }
 
 function aturModeKlik(aktif) {
+  if (aktif && modeGambar) hentikanGambar();
   modeKlikPeta = aktif;
   el('tombol-klik-peta').setAttribute('aria-pressed', String(aktif));
-  el('tombol-klik-peta').textContent = aktif ? 'Klik lokasi di peta...' : 'Pilih titik di peta';
+  el('tombol-klik-peta').textContent = aktif ? 'Klik lokasi di peta...' : 'Pindahkan ke titik di peta';
   el('peta-rekap').classList.toggle('mode-pilih', aktif);
 }
 
-for (const [id, kolom] of [['k-lat', 'lat'], ['k-lon', 'lon'], ['k-radius', 'radius_m'], ['k-akurasi', 'batas_akurasi_m']]) {
+// Setengah sisi persegi baru: ikut ukuran area sekarang supaya tidak tiba tiba mengecil atau membesar.
+function setengahSisiDariArea(p) {
+  if (Geofence.adalahPoligon(p)) return Math.max(10, Math.round(Math.sqrt(Geofence.ukuran(p.titik).luas_m2) / 2));
+  return p.radius_m;
+}
+
+function pilihBentuk(bentuk) {
+  const p = kantorAktif();
+  if (bentuk === p.bentuk) return;
+  if (bentuk === 'poligon') {
+    const titik = p.titik && p.titik.length >= 3 ? p.titik : Geofence.persegi(p.lat, p.lon, p.radius_m);
+    ubahDraf({ bentuk, titik }, { isiForm: true });
+  } else {
+    ubahDraf({ bentuk, radius_m: setengahSisiDariArea(p) }, { isiForm: true });
+  }
+}
+
+// Mode gambar: klik sudut satu per satu di peta, lalu "Selesai".
+function mulaiGambar() {
+  aturModeKlik(false);
+  modeGambar = true;
+  titikGambar = [];
+  lapisanSudut.clearLayers();
+  el('tombol-gambar-area').setAttribute('aria-pressed', 'true');
+  el('tombol-gambar-area').textContent = 'Batal menggambar';
+  el('tombol-selesai-gambar').hidden = false;
+  el('peta-rekap').classList.add('mode-pilih');
+  perbaruiGambar();
+  el('peta-rekap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function bersihkanGambar() {
+  modeGambar = false;
+  titikGambar = [];
+  lapisanGambar.clearLayers();
+  el('tombol-gambar-area').setAttribute('aria-pressed', 'false');
+  el('tombol-gambar-area').textContent = 'Gambar area baru';
+  el('tombol-selesai-gambar').hidden = true;
+  el('peta-rekap').classList.remove('mode-pilih');
+}
+
+function hentikanGambar() {
+  if (!modeGambar) return;
+  bersihkanGambar();
+  if (kantorDraf) ubahDraf({});
+  else batalkanDraf();
+}
+
+function tambahTitikGambar(latlng) {
+  if (titikGambar.length >= 30) return;
+  titikGambar.push([latlng.lat, latlng.lng]);
+  perbaruiGambar();
+}
+
+function perbaruiGambar() {
+  lapisanGambar.clearLayers();
+  const oker = PetaAbsen.warna('--oker');
+  if (titikGambar.length >= 2) {
+    L.polyline([...titikGambar, titikGambar[0]], { color: oker, weight: 3, dashArray: '4 6', interactive: false })
+      .addTo(lapisanGambar);
+  }
+  titikGambar.forEach((t, i) => L.marker(t, { icon: PetaAbsen.ikonSudut(i + 1), interactive: false }).addTo(lapisanGambar));
+  const n = titikGambar.length;
+  el('tombol-selesai-gambar').disabled = n < 3;
+  el('tombol-selesai-gambar').textContent = `Selesai (${n} sudut)`;
+  el('status-kantor').textContent = n < 3
+    ? `Klik sudut area satu per satu di peta, berurutan mengelilingi area. Sudah ${n}, minimal 3.`
+    : `${n} sudut. Tambah lagi, atau tekan "Selesai".`;
+}
+
+function selesaiGambar() {
+  if (titikGambar.length < 3) return;
+  const titik = titikGambar.map(([a, b]) => [Number(a.toFixed(7)), Number(b.toFixed(7))]);
+  const p = kantorAktif();
+  const perubahan = { bentuk: 'poligon', titik };
+  // Kalau titik kantor tertinggal di luar area baru, pindahkan ke tengah area.
+  if (!Geofence.dalamPoligon(p.lat, p.lon, titik)) {
+    perubahan.lat = titik.reduce((s, t) => s + t[0], 0) / titik.length;
+    perubahan.lon = titik.reduce((s, t) => s + t[1], 0) / titik.length;
+  }
+  bersihkanGambar();
+  ubahDraf(perubahan, { isiForm: true });
+}
+
+for (const r of document.querySelectorAll('input[name="bentuk"]')) {
+  r.addEventListener('change', () => pilihBentuk(r.value));
+}
+el('k-lat').addEventListener('input', () => {
+  const lat = Number(el('k-lat').value);
+  if (el('k-lat').value !== '' && Number.isFinite(lat)) pindahkanArea(kantorAktif(), lat, kantorAktif().lon, false);
+});
+el('k-lon').addEventListener('input', () => {
+  const lon = Number(el('k-lon').value);
+  if (el('k-lon').value !== '' && Number.isFinite(lon)) pindahkanArea(kantorAktif(), kantorAktif().lat, lon, false);
+});
+for (const [id, kolom] of [['k-radius', 'radius_m'], ['k-akurasi', 'batas_akurasi_m']]) {
   el(id).addEventListener('input', () => {
     const nilai = Number(el(id).value);
-    if (el(id).value !== '' && Number.isFinite(nilai)) ubahDraf({ [kolom]: nilai }, false);
+    if (el(id).value !== '' && Number.isFinite(nilai)) ubahDraf({ [kolom]: nilai });
   });
 }
-el('k-nama').addEventListener('input', () => ubahDraf({ nama_lokasi: el('k-nama').value }, false));
+el('k-nama').addEventListener('input', () => ubahDraf({ nama_lokasi: el('k-nama').value }));
+el('tombol-gambar-area').addEventListener('click', () => (modeGambar ? hentikanGambar() : mulaiGambar()));
+el('tombol-selesai-gambar').addEventListener('click', selesaiGambar);
+el('tombol-reset-persegi').addEventListener('click', () => {
+  const p = kantorAktif();
+  ubahDraf({ bentuk: 'poligon', titik: Geofence.persegi(p.lat, p.lon, setengahSisiDariArea(p)) }, { isiForm: true });
+});
 el('tombol-klik-peta').addEventListener('click', () => {
   aturModeKlik(!modeKlikPeta);
   if (modeKlikPeta) el('peta-rekap').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -293,12 +498,17 @@ el('tombol-klik-peta').addEventListener('click', () => {
 el('tombol-batal-kantor').addEventListener('click', batalkanDraf);
 el('tombol-semua-titik').addEventListener('click', paskanSemua);
 el('tombol-ke-kantor').addEventListener('click', () => {
-  const p = kantorAktif();
-  if (peta && p) peta.flyTo([p.lat, p.lon], 18, { duration: 0.6 });
+  if (peta && kantorAktif()) peta.flyToBounds(batasArea(), { padding: [40, 40], maxZoom: 19, duration: 0.6 });
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (modeGambar) hentikanGambar();
+  if (modeKlikPeta) aturModeKlik(false);
 });
 
 el('tombol-lokasi-saya').addEventListener('click', () => {
   const tombol = el('tombol-lokasi-saya');
+  const teksAsli = tombol.textContent;
   if (!window.isSecureContext || !('geolocation' in navigator)) {
     tampilkanPesan('bahaya', 'GPS tidak tersedia di halaman ini.', 'Buka rekap lewat localhost atau HTTPS.');
     return;
@@ -307,17 +517,17 @@ el('tombol-lokasi-saya').addEventListener('click', () => {
   tombol.textContent = 'Mencari lokasi...';
   navigator.geolocation.getCurrentPosition(
     (pos) => {
-      ubahDraf({ lat: pos.coords.latitude, lon: pos.coords.longitude }, true);
+      pindahkanArea(kantorAktif(), pos.coords.latitude, pos.coords.longitude, true);
       if (peta) peta.flyTo([pos.coords.latitude, pos.coords.longitude], 18, { duration: 0.6 });
-      tampilkanPesan('aman', `Lokasimu terisi (akurasi ± ${Math.round(pos.coords.accuracy)} m).`,
-        'Tekan "Simpan lokasi kantor" untuk menerapkan.');
+      tampilkanPesan('aman', `Area dipindah ke lokasimu (akurasi ± ${Math.round(pos.coords.accuracy)} m).`,
+        'Tekan "Simpan area" untuk menerapkan.');
       tombol.disabled = false;
-      tombol.textContent = 'Pakai lokasi saya';
+      tombol.textContent = teksAsli;
     },
     (err) => {
       tampilkanPesan('bahaya', 'Gagal mengambil lokasi.', err.message);
       tombol.disabled = false;
-      tombol.textContent = 'Pakai lokasi saya';
+      tombol.textContent = teksAsli;
     },
     { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 }
   );
@@ -325,12 +535,19 @@ el('tombol-lokasi-saya').addEventListener('click', () => {
 
 el('form-kantor').addEventListener('submit', async (e) => {
   e.preventDefault();
+  const p = kantorAktif();
+  if (Geofence.adalahPoligon(p) && Geofence.bersilang(p.titik)) {
+    tampilkanPesan('bahaya', 'Sisi area saling bersilang.', 'Geser sudutnya supaya bentuknya tidak seperti pita, lalu simpan lagi.');
+    return;
+  }
   const body = {
     nama_lokasi: el('k-nama').value,
     lat: Number(el('k-lat').value),
     lon: Number(el('k-lon').value),
     radius_m: Number(el('k-radius').value),
     batas_akurasi_m: Number(el('k-akurasi').value),
+    bentuk: p.bentuk,
+    titik: p.bentuk === 'poligon' ? p.titik : [],
   };
   try {
     const res = await api('/api/pengaturan', {
@@ -345,8 +562,8 @@ el('form-kantor').addEventListener('submit', async (e) => {
     }
     pengaturanServer = json.pengaturan;
     batalkanDraf();
-    tampilkanPesan('aman', 'Lokasi kantor disimpan.',
-      `${json.pengaturan.nama_lokasi}, radius ${json.pengaturan.radius_m} m. Berlaku untuk absen berikutnya.`);
+    tampilkanPesan('aman', 'Area absen disimpan.',
+      `${json.pengaturan.nama_lokasi}, ${Geofence.ringkas(json.pengaturan)}. Berlaku untuk absen berikutnya.`);
   } catch { /* pesan 401 sudah tampil */ }
 });
 
@@ -370,6 +587,7 @@ function isiTabel(data, total) {
     const tdStatus = sel();
     tdStatus.append(lencanaStatus(a.status));
     tr.append(tdStatus);
+    tr.append(sel(teksPosisi(a), 'tanpa-putus'));
     tr.append(sel(formatMeter(a.jarak_m), 'angka'));
     tr.append(sel(`± ${formatMeter(a.akurasi_m)}`, 'angka'));
     const tdKoordinat = sel(undefined, 'angka');

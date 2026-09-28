@@ -7,8 +7,8 @@ koordinat ke server, lalu menyimpannya di database SQLite sementara. Ada dua hal
   lokasi (tampil di peta satelit bersama area kantor), kirim. Logout dari perangkat butuh kode
   6 angka dari admin.
 - `/rekap` halaman admin dengan empat tab:
-  - **Peta & Data**: peta satelit semua titik absen, geofence kantor yang bisa digeser langsung
-    di peta, tabel, unduh CSV, hapus data.
+  - **Peta & Data**: peta satelit semua titik absen, area absen berbentuk persegi/poligon
+    (sudutnya digeser langsung di peta) atau lingkaran, tabel, unduh CSV, hapus data.
   - **Kode Logout**: kode logout yang sedang diminta karyawan.
   - **Perangkat Login**: siapa login di perangkat mana, dengan tombol paksa logout.
   - **WhatsApp**: status koneksi, QR login, pesan tes, dan riwayat notifikasi.
@@ -123,17 +123,17 @@ Izinkan untuk jaringan *Private* kalau ingin dibuka dari HP. Kalau hanya localho
 2. Login dengan ID karyawan (misal `NEP-0001`) dan nama.
 3. Masuk atau Pulang terpilih otomatis sesuai jam. Tekan **Ambil lokasi saya**, lalu pilih
    **Izinkan** di dialog browser.
-4. Tunggu sampai muncul "Lokasi terkunci". Titik biru di peta satelit adalah posisimu, lingkaran
-   hijau putus putus adalah area kantor.
+4. Tunggu sampai muncul "Lokasi terkunci". Titik biru di peta satelit adalah posisimu, persegi
+   hijau putus putus adalah area absen.
 5. Tekan **Kirim absen**. Kotak hasil menampilkan nomor absen dan statusnya.
 6. Buka `http://localhost:3000/rekap`, masukkan kunci admin dari terminal.
 7. Coba logout: di halaman absen tekan **Logout**, lalu ambil kodenya dari tab **Kode Logout**
    di halaman rekap dan ketik di HP.
 
 **Absen dari rumah pasti berstatus "di luar area"**, karena lokasi kantor bawaan adalah contoh
-(Lapangan Merdeka, Medan). Supaya bisa menguji status "valid": di halaman rekap geser penanda
-kantor ke tempatmu, atau tekan **Pakai lokasi saya**, lalu **Simpan lokasi kantor**. Absen
-berikutnya dari tempat yang sama akan masuk radius.
+(Lapangan Merdeka, Medan). Supaya bisa menguji status "valid": di halaman rekap geser kotak
+kantor ke tempatmu (seluruh area ikut pindah), atau tekan **Pindahkan ke lokasi saya**, lalu
+**Simpan area**. Absen berikutnya dari tempat yang sama akan masuk area.
 
 Di laptop, akurasi sering ratusan meter atau lebih sehingga statusnya "akurasi rendah". Itu normal
 (lihat bagian 11.3). Untuk uji di laptop, naikkan **Batas akurasi** di halaman rekap, misal ke 2000 m.
@@ -147,7 +147,7 @@ Chrome dan Edge punya simulator lokasi:
 3. Di bagian **Location**, pilih kota yang tersedia atau **Other...** lalu isi lintang dan bujur sendiri.
 4. Tekan **Ambil lokasi saya** lagi.
 
-Dengan cara ini kamu bisa mencoba titik di dalam dan di luar radius. Cara yang sama bisa dipakai
+Dengan cara ini kamu bisa mencoba titik di dalam dan di luar area. Cara yang sama bisa dipakai
 orang untuk curang, dan itu dibahas di bagian 11.1.
 
 ### 3.5 Perintah lain
@@ -285,7 +285,11 @@ dengan PostgreSQL atau MySQL, jadi saat pindah ke database sungguhan yang beruba
 | `ip` | Alamat IP pengirim |
 | `perangkat` | User-Agent browser (dipotong 200 karakter) |
 
-Tabel `pengaturan` menyimpan satu baris JSON berisi nama lokasi, lintang, bujur, radius, dan
+Kolom `jarak_luar_m` berisi berapa meter posisi berada di luar batas area (0 kalau di dalam).
+Absen dari versi sebelumnya berisi kosong di kolom ini.
+
+Tabel `pengaturan` menyimpan satu baris JSON berisi nama lokasi, lintang, bujur, bentuk area,
+daftar sudut (untuk poligon), radius (untuk lingkaran), dan
 batas akurasi kantor.
 
 ---
@@ -306,16 +310,49 @@ Ganti lapisan lewat tombol tumpukan di pojok kanan atas peta. Di halaman rekap, 
 juga bisa menyembunyikan titik per status (Valid, Di luar area, Akurasi rendah) dan lingkar akurasi.
 
 **Halaman absen** menampilkan titik biru (posisi karyawan), lingkaran biru tipis (radius akurasi
-GPS), kotak gelap (kantor), dan lingkaran hijau putus putus (area absen).
+GPS), kotak gelap (kantor), dan area absen bergaris hijau putus putus.
 
 **Halaman rekap, tab Peta & Data:**
 
 - Setiap absen jadi titik berwarna sesuai status. Klik titik untuk detail dan tautan Google Maps.
 - Klik baris di tabel untuk terbang ke titiknya.
-- **Mengatur geofence langsung di peta**: geser kotak kantor, atau tekan **Pilih titik di peta**
-  lalu klik lokasinya. Ubah radius di formulir dan lingkarannya ikut berubah. Tidak ada yang
-  tersimpan sebelum **Simpan lokasi kantor** ditekan, dan **Batalkan perubahan** mengembalikan
-  posisi lama.
+- Mengatur area absen langsung di peta, lihat bagian 6.1.
+
+### 6.1 Area absen: persegi, poligon, atau lingkaran
+
+Lingkaran (titik + radius) paling sederhana, tapi kantor, gudang, atau lokasi proyek jarang
+berbentuk bulat. Lingkaran yang cukup besar untuk menutup pojok gedung pasti ikut menutup
+jalan atau bangunan tetangga. Karena itu area bawaan sekarang **persegi**, dan sudutnya bisa
+diatur sampai pas dengan batas lokasi di citra satelit.
+
+Di tab **Peta & Data**, bagian **Area absen**:
+
+| Ingin | Caranya |
+|---|---|
+| Mengubah bentuk | Geser **sudut bernomor** (bulat oranye) |
+| Menambah sudut | Klik tanda **+** di tengah sisi, lalu geser sudut barunya |
+| Menghapus sudut | Klik dua kali sudutnya (di HP: tekan lama). Minimal 3 sudut |
+| Memindahkan seluruh area | Geser **kotak kantor**, atau **Pindahkan ke titik di peta** / **ke lokasi saya** |
+| Memetakan batas dari nol | **Gambar area baru**, klik sudut satu per satu mengelilingi lokasi, lalu **Selesai** |
+| Kembali ke persegi rapi | **Atur ulang jadi persegi** (ukurannya mengikuti luas area sekarang) |
+| Memakai lingkaran | Pilih **Lingkaran** di Bentuk area, lalu atur radius |
+
+Luas dan keliling tampil di atas tombol dan ikut berubah saat sudut digeser. Semua perubahan
+baru berlaku setelah **Simpan area**. **Batalkan perubahan** mengembalikan area tersimpan.
+
+Beberapa aturan:
+
+- Sisi yang saling bersilang (bentuk seperti pita atau angka 8) ditolak, karena "di dalam" jadi
+  tidak jelas. Peringatan merah muncul sebelum disimpan.
+- Bentuk cekung seperti huruf L atau U boleh. Lekukannya dihitung sebagai di luar area.
+- Semua sudut harus dalam 10 km dari titik kantor, maksimal 30 sudut.
+- Titik kantor (kotak) hanya acuan jarak "ke kantor" dan pusat peta. Status valid ditentukan
+  oleh area, bukan oleh jarak ke kotak.
+- Database dari versi sebelumnya tetap memakai lingkaran sampai Anda memilih **Persegi / poligon**
+  lalu menyimpan.
+
+Rumus di dalam/di luar ada di `public/js/geofence.js` dan dipakai oleh server dan browser, jadi
+pratinjau di HP selalu sama dengan keputusan server.
 
 Catatan penggunaan: citra Esri dipakai tanpa kunci API dan wajib mencantumkan atribusi (sudah
 tampil di pojok kanan bawah peta). Untuk pemakaian produksi dengan banyak pengguna, daftarkan akun
@@ -361,7 +398,8 @@ Contoh pesan absen:
 ✅ Absen MASUK
 NEP-0001 · Budi Santoso
 Status: Valid, di dalam area
-Jarak ke Kantor contoh (Lapangan Merdeka, Medan): 31 m (radius 100 m)
+Posisi: di dalam area (area 4 sudut, luas 4 ha)
+Jarak ke titik Kantor contoh (Lapangan Merdeka, Medan): 31 m
 Akurasi GPS: ±12 m
 Waktu: 28 Sep 2026, 10.35 WIB
 Peta: https://www.google.com/maps?q=3.5908,98.6781
@@ -419,7 +457,7 @@ mengganti nomor pengirim.
 | Metode dan jalur | Akses | Fungsi |
 |---|---|---|
 | `GET /api/status` | Publik | Cek server hidup |
-| `GET /api/pengaturan` | Publik | Lokasi kantor, radius, batas akurasi |
+| `GET /api/pengaturan` | Publik | Lokasi kantor, bentuk area, sudut atau radius, batas akurasi |
 | `POST /api/sesi` | Publik | Login karyawan, balas `token` |
 | `GET /api/sesi` | Karyawan | Data sesi dan status permintaan logout |
 | `POST /api/absen` | Karyawan | Simpan absen |
@@ -470,7 +508,8 @@ Semua diatur lewat `.env` (salin dari `contoh.env`). Semuanya opsional.
 | `DB_FILE` | `data/absensi.db` | Lokasi berkas database, atau `:memory:` |
 | `KUNCI_ADMIN` | acak | Kunci halaman rekap. Kalau kosong, dibuat acak dan berganti tiap server dijalankan ulang |
 | `KANTOR_NAMA`, `KANTOR_LAT`, `KANTOR_LON` | Lapangan Merdeka, Medan | Titik kantor awal. Hanya dipakai saat database baru dibuat |
-| `KANTOR_RADIUS_M` | `100` | Radius geofence awal |
+| `KANTOR_BENTUK` | `poligon` | Bentuk area awal: `poligon` (persegi) atau `lingkaran` |
+| `KANTOR_RADIUS_M` | `100` | Radius lingkaran awal, atau setengah sisi persegi awal |
 | `BATAS_AKURASI_M` | `50` | Akurasi terburuk yang masih diterima sebagai valid |
 | `JEDA_ABSEN_GANDA_DETIK` | `60` | Jeda minimal absen jenis sama oleh ID yang sama |
 | `TRUST_PROXY` | kosong | Isi `1` kalau di belakang tunnel atau reverse proxy |
@@ -527,14 +566,16 @@ dengan kata sandi per karyawan dan per admin.
 | Laptop tanpa Wi-Fi (hanya IP) | Bisa meleset ke kota lain |
 | HP dengan lokasi "perkiraan" | Sekitar beberapa km |
 
-Karena itu radius kantor sebaiknya 50 sampai 150 m, bukan 10 m. Di dalam gedung GPS memantul dan
+Karena itu batas area sebaiknya diberi kelonggaran 20 sampai 50 m dari dinding gedung,
+bukan dipasang tepat di dinding. Di dalam gedung GPS memantul dan
 posisi bisa bergeser puluhan meter walau orangnya diam. Peta satelit di halaman rekap membantu
 melihat pola ini: titik yang berkumpul di satu sisi gedung biasanya tanda pantulan sinyal.
 
 Aturan status yang dipakai (`lib/geo.js`):
 
 1. Akurasi lebih buruk dari batas: `akurasi_rendah`.
-2. Kalau akurasi cukup tapi jarak ke kantor lebih dari radius: `di_luar_area`.
+2. Kalau akurasi cukup tapi posisi di luar area (di luar poligon, atau lebih jauh dari radius
+   untuk lingkaran): `di_luar_area`.
 3. Selain itu: `valid`.
 
 Absen tetap disimpan apa pun statusnya, supaya admin bisa menilai sendiri. Tidak ada absen yang
@@ -583,9 +624,10 @@ prototipe-absen-gps/
 │   ├── rekap.html        Halaman admin (empat tab)
 │   ├── css/gaya.css      Gaya bersama (palet 1c proyek NEP, font sistem)
 │   ├── js/
-│   │   ├── peta.js       Lapisan peta satelit/jalan, penanda, lingkaran geofence
+│   │   ├── geofence.js   Rumus area: di dalam poligon, jarak ke batas, luas (dipakai server juga)
+│   │   ├── peta.js       Lapisan peta satelit/jalan, penanda, gambar area
 │   │   ├── absen.js      Login, logout dengan kode, izin lokasi, kirim absen
-│   │   └── rekap.js      Tab rekap, peta titik absen, edit geofence, kode logout, WhatsApp
+│   │   └── rekap.js      Tab rekap, peta titik absen, edit sudut area, kode logout, WhatsApp
 │   └── vendor/leaflet/   Leaflet 1.9.4 (lisensi BSD-2, lihat LICENSE di folder itu)
 ├── test/                 Tes otomatis (node:test)
 ├── contoh.env            Contoh konfigurasi
@@ -608,7 +650,9 @@ Semua skrip dan gaya disajikan dari server sendiri. Yang diambil dari internet h
 | "Waktu habis sebelum lokasi didapat" | Sinyal GPS lemah di dalam ruangan. Coba dekat jendela atau di luar |
 | Peta abu abu tanpa gambar | Tidak ada internet, atau jaringan kantor memblokir `server.arcgisonline.com`. Coba lapisan "Peta jalan" |
 | Citra satelit bertulisan "Map data not yet available" | Zoom terlalu dekat untuk daerah itu. Perkecil zoom |
-| Semua absen "di luar area" | Titik kantor masih contoh. Geser penanda kantor di tab Peta & Data, lalu simpan |
+| Semua absen "di luar area" | Area masih contoh. Geser kotak kantor di tab Peta & Data (seluruh area ikut), lalu Simpan area |
+| Tidak bisa menyimpan area, "sisi bersilang" | Dua sisi area saling potong. Geser sudut sampai garisnya tidak menyilang, atau Atur ulang jadi persegi |
+| Sudut sulit digeser di HP | Perbesar peta dulu (zoom), lalu tekan dan tahan sudutnya sebelum menggeser |
 | Karyawan tidak bisa logout karena kode hilang | Admin buka tab Kode Logout. Kalau sudah kedaluwarsa, karyawan tekan Logout lagi. Atau admin pakai Paksa logout |
 | Tab WhatsApp: "Paket belum dipasang" | Jalankan `npm install`, lalu jalankan ulang server |
 | QR WhatsApp tidak muncul, status "Gagal" | Baca pesan di tab WhatsApp. Coba isi `WA_CHROME_PATH`, atau hapus `data/wa-sesi/` lalu jalankan ulang |
@@ -622,14 +666,18 @@ Semua skrip dan gaya disajikan dari server sendiri. Yang diambil dari internet h
 
 ## 15. Yang sudah diuji
 
-- `npm test`: 26 tes lulus. Mencakup rumus jarak, tiga jenis status, validasi, login, absen
+- `npm test`: 32 tes lulus. Mencakup rumus jarak, area persegi dan bentuk L (cekung), jarak ke
+  sisi terdekat, deteksi sisi bersilang, tiga jenis status, validasi, login, absen
   dengan identitas dari sesi, logout dengan kode (salah, benar, terkunci setelah 5 kali salah,
   kode tidak bocor ke karyawan), paksa logout, notifikasi WhatsApp dengan klien tiruan (termasuk
   mode "bermasalah"), CSV, perubahan lokasi kantor, dan upaya membaca berkas di luar `public`.
 - Chromium lewat Playwright dengan lokasi tiruan: login, peta di halaman absen, absen valid dan di
   luar area, minta kode logout, kode tampil di tab admin, kode salah lalu benar, klik baris tabel
-  membuka popup di peta, memindah kantor dengan klik peta lalu membatalkan, tab perangkat dan
-  WhatsApp. Lebar 390 px dan 1366 px tanpa scroll horizontal, tanpa galat di konsol.
+  membuka popup di peta, tab perangkat dan WhatsApp. Area: menggeser sudut, menambah sudut lewat
+  tanda +, menghapus sudut dengan klik dua kali, menolak sisi bersilang, menggambar area bentuk L
+  6 sudut lalu menyimpannya, berpindah lingkaran dan poligon, dan absen di pojok persegi (di luar
+  jangkauan lingkaran tapi di dalam persegi) tercatat valid.
+- Database versi sebelumnya dibuka versi ini: area lama tetap lingkaran, absen lama tetap tampil. Lebar 390 px dan 1366 px tanpa scroll horizontal, tanpa galat di konsol.
 - Paket whatsapp-web.js 1.34.7 asli terpasang dan server berhasil menjalankannya sampai membuka
   Chromium.
 
@@ -644,7 +692,7 @@ Belum diuji:
 ## 16. Langkah berikutnya
 
 1. Uji di HP fisik lewat tunnel, di dalam dan di luar gedung, catat akurasi yang didapat.
-2. Tentukan radius dan batas akurasi dari hasil uji itu, dengan bantuan peta satelit.
+2. Petakan batas area tiap lokasi di citra satelit, lalu tentukan batas akurasi dari hasil uji.
 3. Ganti login ID dan nama dengan kata sandi per karyawan, dan akun per admin.
 4. Tambah foto selfie saat absen.
 5. Kalau WhatsApp akan dipakai sungguhan, pindah ke WhatsApp Cloud API resmi.

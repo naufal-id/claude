@@ -72,46 +72,69 @@
               <span><i class="t-valid"></i>Valid</span>
               <span><i class="t-luar"></i>Di luar area</span>
               <span><i class="t-akurasi"></i>Akurasi rendah</span>
-              <span><i class="t-kantor"></i>Kantor (bisa digeser)</span>
+              <span><i class="t-kantor"></i>Kantor</span>
+              <span><i class="t-sudut"></i>Sudut area</span>
             </div>
             <p class="catatan">Ganti tampilan satelit atau jalan dan saring status lewat tombol lapisan di pojok kanan atas peta.
               Klik titik untuk detail. Klik baris tabel untuk terbang ke titiknya.</p>
           </section>
 
           <section class="kartu" aria-labelledby="judul-kantor">
-            <h2 id="judul-kantor">Lokasi kantor (geofence)</h2>
+            <h2 id="judul-kantor">Area absen (geofence)</h2>
             <form id="form-kantor" class="isian-grid" novalidate>
               <div class="lebar-penuh">
                 <label for="k-nama">Nama lokasi</label>
                 <input id="k-nama" type="text" maxlength="80" required>
               </div>
+              <fieldset class="lebar-penuh polos">
+                <legend>Bentuk area</legend>
+                <div class="pilihan-grup">
+                  <label class="pilihan"><input type="radio" name="bentuk" value="poligon"><span>Persegi / poligon</span></label>
+                  <label class="pilihan"><input type="radio" name="bentuk" value="lingkaran"><span>Lingkaran</span></label>
+                </div>
+              </fieldset>
               <div>
-                <label for="k-lat">Lintang</label>
+                <label for="k-lat">Lintang kantor</label>
                 <input id="k-lat" type="number" step="any" inputmode="decimal" required>
               </div>
               <div>
-                <label for="k-lon">Bujur</label>
+                <label for="k-lon">Bujur kantor</label>
                 <input id="k-lon" type="number" step="any" inputmode="decimal" required>
               </div>
-              <div>
-                <label for="k-radius">Radius (meter)</label>
+              <div id="baris-radius">
+                <label for="k-radius" id="label-radius">Radius (meter)</label>
                 <input id="k-radius" type="number" min="10" max="5000" step="1" required>
               </div>
               <div>
                 <label for="k-akurasi">Batas akurasi (meter)</label>
                 <input id="k-akurasi" type="number" min="5" max="5000" step="1" required>
               </div>
+
+              <div id="alat-poligon" class="lebar-penuh alat-poligon">
+                <p id="info-area" class="info-area"></p>
+                <div class="deret-tombol">
+                  <button type="button" id="tombol-gambar-area" class="sekunder" aria-pressed="false">Gambar area baru</button>
+                  <button type="button" id="tombol-selesai-gambar" hidden>Selesai</button>
+                  <button type="button" id="tombol-reset-persegi" class="sekunder">Atur ulang jadi persegi</button>
+                </div>
+                <ul class="catatan petunjuk">
+                  <li>Geser <b>sudut bernomor</b> untuk mengubah bentuk.</li>
+                  <li>Klik tanda <b>+</b> di tengah sisi untuk menambah sudut.</li>
+                  <li>Klik dua kali (di HP: tekan lama) sudut untuk menghapusnya.</li>
+                  <li>Geser <b>kotak kantor</b> untuk memindahkan seluruh area.</li>
+                </ul>
+              </div>
+
               <div class="lebar-penuh deret-tombol">
-                <button type="button" id="tombol-klik-peta" class="sekunder" aria-pressed="false">Pilih titik di peta</button>
-                <button type="button" id="tombol-lokasi-saya" class="sekunder">Pakai lokasi saya</button>
+                <button type="button" id="tombol-klik-peta" class="sekunder" aria-pressed="false">Pindahkan ke titik di peta</button>
+                <button type="button" id="tombol-lokasi-saya" class="sekunder">Pindahkan ke lokasi saya</button>
               </div>
               <div class="lebar-penuh deret-tombol">
-                <button type="submit">Simpan lokasi kantor</button>
+                <button type="submit">Simpan area</button>
                 <button type="button" id="tombol-batal-kantor" class="sekunder" hidden>Batalkan perubahan</button>
               </div>
             </form>
-            <p id="status-kantor" class="catatan">Geser penanda kantor di peta, atau tekan "Pilih titik di peta"
-              lalu klik lokasinya. Lingkaran radius ikut berubah sebelum disimpan.</p>
+            <p id="status-kantor" class="catatan" aria-live="polite"></p>
           </section>
         </div>
 
@@ -128,7 +151,7 @@
               <thead>
                 <tr>
                   <th>#</th><th>Waktu server (WIB)</th><th>ID</th><th>Nama</th><th>Jenis</th><th>Status</th>
-                  <th>Jarak</th><th>Akurasi</th><th>Koordinat</th><th>IP</th><th>Perangkat</th>
+                  <th>Posisi</th><th>Ke kantor</th><th>Akurasi</th><th>Koordinat</th><th>IP</th><th>Perangkat</th>
                 </tr>
               </thead>
               <tbody id="isi-tabel"></tbody>
@@ -202,6 +225,7 @@
     </div>
   </main>
   <script src="/vendor/leaflet/leaflet.js"></script>
+  <script src="/js/geofence.js"></script>
   <script src="/js/peta.js"></script>
   <script src="/js/rekap.js"></script>
 </body>

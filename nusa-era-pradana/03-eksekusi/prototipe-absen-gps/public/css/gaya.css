@@ -293,6 +293,26 @@ tr.bisa-diklik { cursor: pointer; }
 .riwayat-wa li { border-bottom: 1px solid var(--garis); padding-bottom: 8px; }
 .teks-pesan { white-space: pre-line; font-size: 0.85rem; margin-top: 4px; overflow-wrap: anywhere; }
 
+/* Sudut area (poligon) */
+.penanda-sudut span {
+  display: flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--oker); color: #FFFFFF; font: 700 12px/1 var(--huruf);
+  border: 3px solid #FFFFFF; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55); cursor: grab;
+}
+.penanda-tengah span {
+  display: flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85); color: var(--teks); font: 700 14px/1 var(--huruf);
+  border: 2px solid var(--oker); cursor: copy;
+}
+.legenda i.t-sudut { background: var(--oker); border: 2px solid #FFFFFF; box-shadow: 0 0 0 1px var(--oker); }
+.alat-poligon { border: 1px dashed var(--garis); border-radius: 8px; padding: 10px 12px; background: var(--latar); }
+.info-area { margin: 0 0 8px; font-weight: 700; font-size: 0.9rem; }
+.info-area.peringatan { color: var(--terakota); }
+ul.petunjuk { margin: 8px 0 0; padding-left: 18px; }
+ul.petunjuk li { margin: 2px 0; }
+
 /* Harus di akhir berkas supaya menimpa aturan tata letak di atas. */
 @media (max-width: 760px) {
   .ringkasan { grid-template-columns: repeat(2, minmax(0, 1fr)); }

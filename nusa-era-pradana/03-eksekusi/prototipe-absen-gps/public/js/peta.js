@@ -50,20 +50,34 @@ window.PetaAbsen = (function () {
     return L.divIcon({ className: 'penanda-saya', html: '<span></span>', iconSize: [18, 18], iconAnchor: [9, 9] });
   }
 
+  function ikonSudut(nomor) {
+    return L.divIcon({ className: 'penanda-sudut', html: `<span>${nomor}</span>`, iconSize: [26, 26], iconAnchor: [13, 13] });
+  }
+  function ikonTengah() {
+    return L.divIcon({ className: 'penanda-tengah', html: '<span>+</span>', iconSize: [20, 20], iconAnchor: [10, 10] });
+  }
+
+  // Menggambar area absen: lingkaran atau poligon. Garis putih tebal di bawah garis hijau
+  // supaya batasnya tetap terlihat di atas citra satelit yang gelap maupun terang.
   function gambarGeofence(peta, p, lapisan) {
     const grup = lapisan || L.layerGroup().addTo(peta);
     grup.clearLayers();
     const hijau = warna('--utama');
-    const lingkar = L.circle([p.lat, p.lon], {
-      radius: p.radius_m, color: '#FFFFFF', weight: 3, opacity: 0.9, fill: false, interactive: false,
-    });
-    const isi = L.circle([p.lat, p.lon], {
-      radius: p.radius_m, color: hijau, weight: 2, fillColor: hijau, fillOpacity: 0.18, dashArray: '6 4',
-    });
-    grup.addLayer(lingkar);
+    const gayaLatar = { color: '#FFFFFF', weight: 4, opacity: 0.9, fill: false, interactive: false };
+    const gayaIsi = { color: hijau, weight: 2, fillColor: hijau, fillOpacity: 0.18, dashArray: '6 4', interactive: false };
+    let latar;
+    let isi;
+    if (Geofence.adalahPoligon(p)) {
+      latar = L.polygon(p.titik, gayaLatar);
+      isi = L.polygon(p.titik, gayaIsi);
+    } else {
+      latar = L.circle([p.lat, p.lon], { ...gayaLatar, radius: p.radius_m });
+      isi = L.circle([p.lat, p.lon], { ...gayaIsi, radius: p.radius_m });
+    }
+    grup.addLayer(latar);
     grup.addLayer(isi);
-    return { grup, lingkar, isi };
+    return { grup, latar, isi };
   }
 
-  return { buat, warna, ikonKantor, ikonSaya, gambarGeofence };
+  return { buat, warna, ikonKantor, ikonSaya, ikonSudut, ikonTengah, gambarGeofence };
 })();

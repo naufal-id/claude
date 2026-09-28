@@ -67,13 +67,16 @@ function bukaDatabase(lokasi, pengaturanAwal) {
   const db = new DatabaseSync(lokasi);
   if (lokasi !== ':memory:') db.exec('PRAGMA journal_mode = WAL;');
   db.exec(SKEMA);
+  // Migrasi untuk database dari versi sebelumnya.
+  const kolomAbsensi = db.prepare('PRAGMA table_info(absensi)').all().map((k) => k.name);
+  if (!kolomAbsensi.includes('jarak_luar_m')) db.exec('ALTER TABLE absensi ADD COLUMN jarak_luar_m REAL');
 
   const stmt = {
     sisip: db.prepare(`
       INSERT INTO absensi
-        (id_karyawan, nama, jenis, lat, lon, akurasi_m, jarak_m, status,
+        (id_karyawan, nama, jenis, lat, lon, akurasi_m, jarak_m, jarak_luar_m, status,
          waktu_server, waktu_gps, ip, perangkat)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `),
     ambilSatu: db.prepare('SELECT * FROM absensi WHERE id = ?'),
     terakhir: db.prepare(`
@@ -122,7 +125,7 @@ function bukaDatabase(lokasi, pengaturanAwal) {
   return {
     simpanAbsen(r) {
       const hasil = stmt.sisip.run(
-        r.id_karyawan, r.nama, r.jenis, r.lat, r.lon, r.akurasi_m, r.jarak_m,
+        r.id_karyawan, r.nama, r.jenis, r.lat, r.lon, r.akurasi_m, r.jarak_m, r.jarak_luar_m,
         r.status, r.waktu_server, r.waktu_gps, r.ip, r.perangkat
       );
       return { ...stmt.ambilSatu.get(hasil.lastInsertRowid) };
@@ -141,7 +144,8 @@ function bukaDatabase(lokasi, pengaturanAwal) {
       return Number(stmt.hapusSemua.run().changes);
     },
     ambilPengaturan() {
-      return JSON.parse(stmt.ambilPengaturan.get().nilai);
+      // Pengaturan lama (sebelum ada poligon) dianggap lingkaran.
+      return { bentuk: 'lingkaran', titik: [], ...JSON.parse(stmt.ambilPengaturan.get().nilai) };
     },
     simpanPengaturan(p) {
       stmt.simpanPengaturan.run(JSON.stringify(p));

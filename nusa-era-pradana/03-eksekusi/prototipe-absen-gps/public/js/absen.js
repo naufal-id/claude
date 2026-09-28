@@ -38,14 +38,6 @@ function bacaLokal(kunci) {
   try { return localStorage.getItem(kunci) || ''; } catch { return ''; }
 }
 
-// Sama dengan lib/geo.js di server. Di sini hanya untuk pratinjau.
-function jarakMeter(lat1, lon1, lat2, lon2) {
-  const r = (d) => (d * Math.PI) / 180;
-  const a = Math.sin(r(lat2 - lat1) / 2) ** 2 +
-    Math.cos(r(lat1)) * Math.cos(r(lat2)) * Math.sin(r(lon2 - lon1) / 2) ** 2;
-  return 2 * 6371008.8 * Math.asin(Math.min(1, Math.sqrt(a)));
-}
-
 function formatMeter(m) {
   if (m < 1000) return `${Math.round(m)} m`;
   return `${(m / 1000).toLocaleString('id-ID', { maximumFractionDigits: 2 })} km`;
@@ -263,7 +255,7 @@ function gambarPosisiSaya(pos) {
   penandaSaya.bindTooltip(`Kamu, akurasi ± ${formatMeter(pos.coords.accuracy)}`);
 
   // Kalau dekat kantor, tampilkan keduanya. Kalau jauh, fokus ke posisi sendiri.
-  const jarak = pengaturan ? jarakMeter(titik[0], titik[1], pengaturan.lat, pengaturan.lon) : Infinity;
+  const jarak = pengaturan ? Geofence.evaluasi(pengaturan, titik[0], titik[1]).jarakLuar : Infinity;
   if (jarak < 3000) {
     const batas = lingkarAkurasi.getBounds().extend(lapisanGeofence.getLayers()[0].getBounds());
     peta.fitBounds(batas, { padding: [24, 24], maxZoom: 19 });
@@ -282,10 +274,11 @@ function perbaruiTampilanPosisi(pos) {
   el('d-akurasi').textContent = `± ${formatMeter(accuracy)}`;
   el('d-waktu').textContent = formatWaktu(pos.timestamp);
   if (pengaturan) {
-    const jarak = jarakMeter(lat, lon, pengaturan.lat, pengaturan.lon);
-    const di = jarak <= pengaturan.radius_m ? 'di dalam' : 'di luar';
-    el('d-jarak').textContent =
-      `${formatMeter(jarak)} (perkiraan ${di} radius ${pengaturan.radius_m} m dari ${pengaturan.nama_lokasi})`;
+    // Rumus sama dengan server (geofence.js), tapi keputusan akhir tetap di server.
+    const area = Geofence.evaluasi(pengaturan, lat, lon);
+    el('d-jarak').textContent = area.diDalam
+      ? `Perkiraan DI DALAM area ${pengaturan.nama_lokasi} (${Geofence.ringkas(pengaturan)})`
+      : `Perkiraan ${formatMeter(area.jarakLuar)} DI LUAR batas area ${pengaturan.nama_lokasi}`;
   } else {
     el('d-jarak').textContent = 'lokasi kantor belum termuat';
   }
@@ -427,7 +420,9 @@ async function kirimAbsen(e) {
     const a = json.absen;
     tampilkanPita(hasil, a.status === 'valid' ? 'aman' : 'waspada', `Absen ${a.jenis} tercatat (#${a.id})`, [
       `Status: ${LABEL_STATUS[a.status] || a.status}`,
-      `Jarak ke ${json.lokasi_kantor.nama_lokasi}: ${formatMeter(a.jarak_m)} (radius ${json.lokasi_kantor.radius_m} m)`,
+      a.jarak_luar_m > 0
+        ? `Posisi: ${formatMeter(a.jarak_luar_m)} di luar batas area ${json.lokasi_kantor.nama_lokasi}`
+        : `Posisi: di dalam area ${json.lokasi_kantor.nama_lokasi}`,
       `Akurasi: ± ${formatMeter(a.akurasi_m)}`,
       `Waktu server: ${formatWaktu(a.waktu_server)}`,
     ]);

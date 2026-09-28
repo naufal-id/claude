@@ -56,6 +56,12 @@ test('alur absen lengkap', async (t) => {
   t.after(tutup);
   const token = {};
 
+  await t.test('area bawaan database baru adalah persegi', async () => {
+    const p = (await (await kirim(dasar, '/api/pengaturan')).json()).pengaturan;
+    assert.equal(p.bentuk, 'poligon');
+    assert.equal(p.titik.length, 4);
+  });
+
   await t.test('halaman, peta lokal, dan header keamanan', async () => {
     for (const jalur of ['/', '/rekap', '/js/absen.js', '/js/peta.js', '/css/gaya.css', '/vendor/leaflet/leaflet.js']) {
       const res = await kirim(dasar, jalur);
@@ -241,9 +247,33 @@ test('alur absen lengkap', async (t) => {
     assert.equal((await res.json()).absen.status, 'valid');
   });
 
+  await t.test('area poligon: pojok persegi valid, sisi bersilang ditolak', async () => {
+    const m = (x, y) => [3.5906 + y / 110574, 98.6779 + x / (111320 * Math.cos((3.5906 * Math.PI) / 180))];
+    const bersilang = await kirim(dasar, '/api/pengaturan', {
+      method: 'PUT', admin: true,
+      body: { nama_lokasi: 'Pita', lat: 3.5906, lon: 98.6779, radius_m: 100, batas_akurasi_m: 50,
+        bentuk: 'poligon', titik: [m(0, 0), m(100, 100), m(100, 0), m(0, 100)] },
+    });
+    assert.equal(bersilang.status, 422);
+    assert.match((await bersilang.json()).galat[0], /bersilang/);
+
+    const put = await kirim(dasar, '/api/pengaturan', {
+      method: 'PUT', admin: true,
+      body: { nama_lokasi: 'Gudang', lat: 3.5906, lon: 98.6779, radius_m: 100, batas_akurasi_m: 50,
+        bentuk: 'poligon', titik: [m(-100, -100), m(100, -100), m(100, 100), m(-100, 100)] },
+    });
+    assert.equal(put.status, 200);
+    const tokenPojok = await login(dasar, 'NEP-0006', 'Pojok');
+    const [lat, lon] = m(90, 90);
+    const res = await (await kirim(dasar, '/api/absen', { method: 'POST', token: tokenPojok, body: { ...posisiDekat, lat, lon } })).json();
+    assert.equal(res.absen.status, 'valid');
+    assert.equal(res.absen.jarak_luar_m, 0);
+    assert.ok(res.absen.jarak_m > 120);
+  });
+
   await t.test('hapus semua data absen', async () => {
     const res = await kirim(dasar, '/api/absen', { method: 'DELETE', admin: true });
-    assert.equal((await res.json()).terhapus, 5);
+    assert.equal((await res.json()).terhapus, 6);
     const cek = await (await kirim(dasar, '/api/absen', { admin: true })).json();
     assert.equal(cek.total, 0);
   });
