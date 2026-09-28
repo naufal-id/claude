@@ -36,6 +36,28 @@ const SKEMA = `
     kunci TEXT PRIMARY KEY,
     nilai TEXT NOT NULL
   );
+  -- Satu baris = satu perangkat yang sedang login sebagai karyawan.
+  CREATE TABLE IF NOT EXISTS sesi (
+    token        TEXT PRIMARY KEY,
+    id_karyawan  TEXT NOT NULL,
+    nama         TEXT NOT NULL,
+    dibuat       TEXT NOT NULL,
+    perangkat    TEXT,
+    ip           TEXT
+  );
+  -- Logout karyawan butuh kode yang hanya dilihat admin.
+  CREATE TABLE IF NOT EXISTS permintaan_logout (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    token_sesi   TEXT    NOT NULL,
+    id_karyawan  TEXT    NOT NULL,
+    nama         TEXT    NOT NULL,
+    kode         TEXT    NOT NULL,
+    dibuat       TEXT    NOT NULL,
+    kedaluwarsa  TEXT    NOT NULL,
+    percobaan    INTEGER NOT NULL DEFAULT 0,
+    status       TEXT    NOT NULL DEFAULT 'menunggu'
+  );
+  CREATE INDEX IF NOT EXISTS idx_logout_sesi ON permintaan_logout (token_sesi, status);
 `;
 
 function bukaDatabase(lokasi, pengaturanAwal) {
@@ -67,7 +89,31 @@ function bukaDatabase(lokasi, pengaturanAwal) {
       INSERT INTO pengaturan (kunci, nilai) VALUES ('lokasi_kantor', ?)
       ON CONFLICT (kunci) DO UPDATE SET nilai = excluded.nilai
     `),
+    sisipSesi: db.prepare(
+      'INSERT INTO sesi (token, id_karyawan, nama, dibuat, perangkat, ip) VALUES (?, ?, ?, ?, ?, ?)'
+    ),
+    ambilSesi: db.prepare('SELECT * FROM sesi WHERE token = ?'),
+    daftarSesi: db.prepare('SELECT * FROM sesi ORDER BY dibuat DESC'),
+    hapusSesi: db.prepare('DELETE FROM sesi WHERE token = ?'),
+    batalkanLogoutLama: db.prepare(
+      "UPDATE permintaan_logout SET status = 'diganti' WHERE token_sesi = ? AND status = 'menunggu'"
+    ),
+    sisipLogout: db.prepare(`
+      INSERT INTO permintaan_logout (token_sesi, id_karyawan, nama, kode, dibuat, kedaluwarsa)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `),
+    ambilLogout: db.prepare('SELECT * FROM permintaan_logout WHERE id = ?'),
+    logoutAktif: db.prepare(`
+      SELECT * FROM permintaan_logout
+      WHERE token_sesi = ? AND status = 'menunggu'
+      ORDER BY id DESC LIMIT 1
+    `),
+    tambahPercobaan: db.prepare('UPDATE permintaan_logout SET percobaan = percobaan + 1 WHERE id = ?'),
+    ubahStatusLogout: db.prepare('UPDATE permintaan_logout SET status = ? WHERE id = ?'),
+    daftarLogout: db.prepare('SELECT * FROM permintaan_logout ORDER BY id DESC LIMIT ?'),
   };
+
+  const salin = (baris) => (baris ? { ...baris } : null);
 
   if (!stmt.ambilPengaturan.get()) {
     stmt.simpanPengaturan.run(JSON.stringify(pengaturanAwal));
@@ -100,6 +146,39 @@ function bukaDatabase(lokasi, pengaturanAwal) {
     simpanPengaturan(p) {
       stmt.simpanPengaturan.run(JSON.stringify(p));
       return p;
+    },
+    buatSesi(s) {
+      stmt.sisipSesi.run(s.token, s.id_karyawan, s.nama, s.dibuat, s.perangkat, s.ip);
+      return salin(stmt.ambilSesi.get(s.token));
+    },
+    ambilSesi(token) {
+      return salin(stmt.ambilSesi.get(token));
+    },
+    daftarSesi() {
+      return stmt.daftarSesi.all().map(salin);
+    },
+    hapusSesi(token) {
+      return Number(stmt.hapusSesi.run(token).changes);
+    },
+    buatPermintaanLogout(p) {
+      stmt.batalkanLogoutLama.run(p.token_sesi);
+      const hasil = stmt.sisipLogout.run(
+        p.token_sesi, p.id_karyawan, p.nama, p.kode, p.dibuat, p.kedaluwarsa
+      );
+      return salin(stmt.ambilLogout.get(hasil.lastInsertRowid));
+    },
+    permintaanLogoutAktif(token) {
+      return salin(stmt.logoutAktif.get(token));
+    },
+    tambahPercobaanLogout(id) {
+      stmt.tambahPercobaan.run(id);
+      return salin(stmt.ambilLogout.get(id));
+    },
+    ubahStatusLogout(id, status) {
+      stmt.ubahStatusLogout.run(status, id);
+    },
+    daftarPermintaanLogout(batas) {
+      return stmt.daftarLogout.all(batas).map(salin);
     },
     tutup() {
       db.close();

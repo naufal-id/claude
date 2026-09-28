@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#255F4A">
   <title>Absen Lapangan</title>
   <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="/css/gaya.css">
 </head>
 <body>
@@ -18,48 +19,84 @@
     <!-- Diisi absen.js: apakah halaman ini boleh meminta GPS atau tidak. -->
     <div id="pita-konteks" class="pita" role="status" hidden></div>
 
-    <form id="form-absen" novalidate>
-      <section class="kartu" aria-labelledby="judul-identitas">
-        <h2 id="judul-identitas">1. Identitas</h2>
+    <section id="panel-login" class="kartu" aria-labelledby="judul-login" hidden>
+      <h2 id="judul-login">Login karyawan</h2>
+      <form id="form-login" novalidate>
         <div class="baris-isian">
           <label for="id-karyawan">ID karyawan</label>
-          <input id="id-karyawan" name="id_karyawan" type="text" inputmode="text"
-                 autocomplete="off" maxlength="30" placeholder="contoh: NEP-0001" required>
+          <input id="id-karyawan" type="text" autocomplete="off" maxlength="30"
+                 placeholder="contoh: NEP-0001" required>
         </div>
         <div class="baris-isian">
           <label for="nama">Nama</label>
-          <input id="nama" name="nama" type="text" autocomplete="name" maxlength="80"
-                 placeholder="Nama lengkap" required>
+          <input id="nama" type="text" autocomplete="name" maxlength="80" placeholder="Nama lengkap" required>
         </div>
-        <fieldset class="baris-isian polos">
-          <legend>Jenis absen</legend>
+        <button type="submit" class="penuh">Login</button>
+        <p class="catatan">Setelah login, perangkat ini terkunci untuk ID tersebut.
+          Logout hanya bisa dengan kode dari admin.</p>
+      </form>
+    </section>
+
+    <div id="panel-absen" hidden>
+      <section class="kartu identitas" aria-label="Akun yang sedang login">
+        <div>
+          <div class="label-kecil">Login sebagai</div>
+          <div class="nama-login"><span id="login-id"></span> · <span id="login-nama"></span></div>
+        </div>
+        <button type="button" id="tombol-logout" class="sekunder kecil">Logout</button>
+      </section>
+
+      <section id="panel-logout" class="kartu kartu-logout" aria-labelledby="judul-logout" hidden>
+        <h2 id="judul-logout">Logout butuh kode admin</h2>
+        <p class="catatan-besar">Kode 6 angka sudah dikirim ke admin (tab <b>Kode Logout</b> di halaman rekap,
+          dan WhatsApp admin kalau aktif). Minta kodenya ke admin, lalu ketik di bawah.</p>
+        <p class="catatan" id="batas-kode"></p>
+        <form id="form-kode" novalidate>
+          <label for="kode-logout">Kode dari admin</label>
+          <input id="kode-logout" class="input-kode" type="text" inputmode="numeric" autocomplete="one-time-code"
+                 maxlength="6" pattern="[0-9]{6}" placeholder="••••••" required>
+          <div class="deret-tombol jarak-atas">
+            <button type="submit">Konfirmasi logout</button>
+            <button type="button" id="tombol-batal-logout" class="sekunder">Batal</button>
+          </div>
+        </form>
+      </section>
+
+      <form id="form-absen" novalidate>
+        <section class="kartu" aria-labelledby="judul-jenis">
+          <h2 id="judul-jenis">1. Jenis absen</h2>
           <div class="pilihan-grup">
             <label class="pilihan"><input type="radio" name="jenis" value="masuk"><span>Masuk</span></label>
             <label class="pilihan"><input type="radio" name="jenis" value="pulang"><span>Pulang</span></label>
           </div>
-        </fieldset>
-      </section>
+        </section>
 
-      <section class="kartu" aria-labelledby="judul-lokasi">
-        <h2 id="judul-lokasi">2. Lokasi</h2>
-        <button type="button" id="tombol-lokasi" class="sekunder penuh">Ambil lokasi saya</button>
-        <div class="meter" aria-hidden="true"><div id="meter-isi"></div></div>
-        <p id="status-lokasi" class="catatan" aria-live="polite">
-          Belum ada lokasi. Browser akan menanyakan izin saat tombol ditekan.
-        </p>
-        <dl id="data-lokasi" class="data-lokasi" hidden>
-          <dt>Lintang</dt><dd id="d-lat"></dd>
-          <dt>Bujur</dt><dd id="d-lon"></dd>
-          <dt>Akurasi</dt><dd id="d-akurasi"></dd>
-          <dt>Ke kantor</dt><dd id="d-jarak"></dd>
-          <dt>Waktu GPS</dt><dd id="d-waktu"></dd>
-          <dt>Peta</dt><dd><a id="d-peta" href="#" target="_blank" rel="noopener">Buka di OpenStreetMap</a></dd>
-        </dl>
-      </section>
+        <section class="kartu" aria-labelledby="judul-lokasi">
+          <h2 id="judul-lokasi">2. Lokasi</h2>
+          <div id="peta-absen" class="peta-leaflet peta-kecil" role="region" aria-label="Peta satelit posisi kamu dan area kantor"></div>
+          <div class="legenda">
+            <span><i class="t-saya"></i>Posisi kamu</span>
+            <span><i class="t-kantor"></i>Kantor</span>
+            <span><i class="t-area"></i>Area absen</span>
+          </div>
+          <button type="button" id="tombol-lokasi" class="sekunder penuh jarak-atas">Ambil lokasi saya</button>
+          <div class="meter" aria-hidden="true"><div id="meter-isi"></div></div>
+          <p id="status-lokasi" class="catatan" aria-live="polite">
+            Belum ada lokasi. Browser akan menanyakan izin saat tombol ditekan.
+          </p>
+          <dl id="data-lokasi" class="data-lokasi" hidden>
+            <dt>Lintang</dt><dd id="d-lat"></dd>
+            <dt>Bujur</dt><dd id="d-lon"></dd>
+            <dt>Akurasi</dt><dd id="d-akurasi"></dd>
+            <dt>Ke kantor</dt><dd id="d-jarak"></dd>
+            <dt>Waktu GPS</dt><dd id="d-waktu"></dd>
+          </dl>
+        </section>
 
-      <button type="submit" id="tombol-kirim" class="penuh" disabled>Kirim absen</button>
-      <p id="alasan-kirim" class="catatan">Isi identitas dan ambil lokasi dulu.</p>
-    </form>
+        <button type="submit" id="tombol-kirim" class="penuh" disabled>Kirim absen</button>
+        <p id="alasan-kirim" class="catatan">Ambil lokasi dulu.</p>
+      </form>
+    </div>
 
     <div id="hasil" class="pita" role="status" aria-live="polite" hidden></div>
 
@@ -69,6 +106,8 @@
       <p><a href="/rekap">Halaman rekap (admin)</a></p>
     </footer>
   </main>
+  <script src="/vendor/leaflet/leaflet.js"></script>
+  <script src="/js/peta.js"></script>
   <script src="/js/absen.js"></script>
 </body>
 </html>

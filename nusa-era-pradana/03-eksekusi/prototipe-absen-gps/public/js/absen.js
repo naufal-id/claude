@@ -4,22 +4,35 @@
 // (akurasi paling kecil) disimpan. Berhenti lebih cepat kalau akurasi sudah
 // memenuhi batas dari server.
 const LAMA_TUNGGU_MS = 20000;
+const KUNCI_TOKEN = 'absen.token_sesi';
 
 const el = (id) => document.getElementById(id);
-const form = el('form-absen');
+const formAbsen = el('form-absen');
 const tombolLokasi = el('tombol-lokasi');
 const tombolKirim = el('tombol-kirim');
 const statusLokasi = el('status-lokasi');
 const meterIsi = el('meter-isi');
 const hasil = el('hasil');
 
+let token = '';
 let pengaturan = null; // lokasi kantor dari server
 let posisiTerbaik = null;
 let idPantau = null;
 let pewaktu = null;
+let gpsDiizinkan = true;
+
+// Peta
+let peta = null;
+let lapisanGeofence = null;
+let penandaKantor = null;
+let penandaSaya = null;
+let lingkarAkurasi = null;
 
 function simpanLokal(kunci, nilai) {
-  try { localStorage.setItem(kunci, nilai); } catch { /* mode privat */ }
+  try {
+    if (nilai) localStorage.setItem(kunci, nilai);
+    else localStorage.removeItem(kunci);
+  } catch { /* mode privat */ }
 }
 function bacaLokal(kunci) {
   try { return localStorage.getItem(kunci) || ''; } catch { return ''; }
@@ -38,9 +51,9 @@ function formatMeter(m) {
   return `${(m / 1000).toLocaleString('id-ID', { maximumFractionDigits: 2 })} km`;
 }
 
-function formatWaktu(iso) {
+function formatWaktu(iso, gaya = 'medium') {
   return new Date(iso).toLocaleString('id-ID', {
-    timeZone: 'Asia/Jakarta', dateStyle: 'medium', timeStyle: 'medium',
+    timeZone: 'Asia/Jakarta', dateStyle: gaya === 'jam' ? undefined : 'medium', timeStyle: gaya === 'jam' ? 'short' : 'medium',
   }) + ' WIB';
 }
 
@@ -58,20 +71,34 @@ function tampilkanPita(node, jenis, judul, isi) {
   node.hidden = false;
 }
 
-// 1. Cek konteks aman. Geolocation API hanya jalan di HTTPS atau localhost.
+async function panggil(jalur, { method = 'GET', body } = {}) {
+  const res = await fetch(jalur, {
+    method,
+    headers: {
+      ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+      ...(token ? { 'X-Token-Sesi': token } : {}),
+    },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+  const json = await res.json().catch(() => ({}));
+  return { res, json };
+}
+
+// ---------- 1. Konteks aman ----------
+
 function periksaKonteks() {
   const pita = el('pita-konteks');
   if (!('geolocation' in navigator)) {
     tampilkanPita(pita, 'bahaya', 'Browser ini tidak mendukung Geolocation API.');
-    tombolLokasi.disabled = true;
+    gpsDiizinkan = false;
     return;
   }
   if (!window.isSecureContext) {
     tampilkanPita(pita, 'bahaya', 'GPS diblokir: halaman dibuka lewat HTTP biasa.', [
       `Alamat sekarang: ${location.origin}. Browser hanya mengizinkan lokasi di https:// atau http://localhost.`,
-      'Solusi: pakai tunnel HTTPS (cloudflared), port forwarding USB, atau hosting. Lihat README bagian 4.',
+      'Solusi: pakai tunnel HTTPS (cloudflared atau Ports di VS Code), port forwarding USB, atau hosting. Lihat README bagian 4.',
     ]);
-    tombolLokasi.disabled = true;
+    gpsDiizinkan = false;
     return;
   }
   const penjelasan = location.protocol === 'https:'
@@ -96,15 +123,156 @@ function periksaKonteks() {
   }
 }
 
+// ---------- 2. Login dan logout dengan kode admin ----------
+
+function tampilkanLogin() {
+  el('panel-login').hidden = false;
+  el('panel-absen').hidden = true;
+  el('panel-logout').hidden = true;
+  el('id-karyawan').value = bacaLokal('absen.id_karyawan');
+  el('nama').value = bacaLokal('absen.nama');
+}
+
+function tampilkanAbsen(sesi) {
+  el('panel-login').hidden = true;
+  el('panel-absen').hidden = false;
+  el('login-id').textContent = sesi.id_karyawan;
+  el('login-nama').textContent = sesi.nama;
+  if (sesi.logout_menunggu) tampilkanFormKode(sesi.logout_menunggu.kedaluwarsa);
+  siapkanPeta();
+  perbaruiTombolKirim();
+}
+
+function sesiBerakhir(pesan) {
+  token = '';
+  simpanLokal(KUNCI_TOKEN, '');
+  hentikanPantau();
+  posisiTerbaik = null;
+  tampilkanLogin();
+  if (pesan) tampilkanPita(hasil, 'waspada', pesan);
+}
+
+async function cekSesi() {
+  token = bacaLokal(KUNCI_TOKEN);
+  if (!token) return tampilkanLogin();
+  try {
+    const { res, json } = await panggil('/api/sesi');
+    if (res.status === 401) return sesiBerakhir('Sesi login kamu sudah diakhiri admin. Silakan login lagi.');
+    tampilkanAbsen(json.sesi);
+  } catch {
+    tampilkanPita(hasil, 'bahaya', 'Tidak bisa menghubungi server.');
+  }
+}
+
+el('form-login').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const body = { id_karyawan: el('id-karyawan').value.trim(), nama: el('nama').value.trim() };
+  try {
+    const { res, json } = await panggil('/api/sesi', { method: 'POST', body });
+    if (!res.ok) return tampilkanPita(hasil, 'bahaya', json.pesan || 'Login gagal.', json.galat);
+    token = json.token;
+    simpanLokal(KUNCI_TOKEN, token);
+    simpanLokal('absen.id_karyawan', json.sesi.id_karyawan);
+    simpanLokal('absen.nama', json.sesi.nama);
+    hasil.hidden = true;
+    tampilkanAbsen(json.sesi);
+  } catch {
+    tampilkanPita(hasil, 'bahaya', 'Tidak bisa menghubungi server.');
+  }
+});
+
+function tampilkanFormKode(kedaluwarsa) {
+  el('panel-logout').hidden = false;
+  el('batas-kode').textContent = `Kode berlaku sampai ${formatWaktu(kedaluwarsa, 'jam')}.`;
+  el('kode-logout').value = '';
+  el('kode-logout').focus();
+}
+
+el('tombol-logout').addEventListener('click', async () => {
+  try {
+    const { res, json } = await panggil('/api/sesi/logout', { method: 'POST', body: {} });
+    if (res.status === 401) return sesiBerakhir('Sesi sudah berakhir.');
+    if (!res.ok) return tampilkanPita(hasil, 'bahaya', json.pesan || 'Gagal meminta kode.');
+    hasil.hidden = true;
+    tampilkanFormKode(json.kedaluwarsa);
+  } catch {
+    tampilkanPita(hasil, 'bahaya', 'Tidak bisa menghubungi server.');
+  }
+});
+
+el('tombol-batal-logout').addEventListener('click', () => {
+  el('panel-logout').hidden = true;
+});
+
+el('kode-logout').addEventListener('input', (e) => {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+});
+
+el('form-kode').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const kode = el('kode-logout').value.trim();
+  if (!/^\d{6}$/.test(kode)) return tampilkanPita(hasil, 'bahaya', 'Kode harus 6 angka.');
+  try {
+    const { res, json } = await panggil('/api/sesi/logout/konfirmasi', { method: 'POST', body: { kode } });
+    if (res.ok) return sesiBerakhir('Logout berhasil. Perangkat ini bisa dipakai login lagi.');
+    if (res.status === 401) return sesiBerakhir('Sesi sudah berakhir.');
+    tampilkanPita(hasil, 'bahaya', json.pesan || 'Kode ditolak.');
+    if (res.status === 410 || res.status === 429 || res.status === 404) el('panel-logout').hidden = true;
+  } catch {
+    tampilkanPita(hasil, 'bahaya', 'Tidak bisa menghubungi server.');
+  }
+});
+
+// ---------- 3. Peta ----------
+
 async function muatPengaturan() {
   try {
     const res = await fetch('/api/pengaturan');
-    const json = await res.json();
-    pengaturan = json.pengaturan;
+    pengaturan = (await res.json()).pengaturan;
   } catch {
     pengaturan = null;
   }
 }
+
+function siapkanPeta() {
+  if (typeof L === 'undefined' || !pengaturan) return;
+  if (!peta) {
+    peta = PetaAbsen.buat('peta-absen', { pusat: [pengaturan.lat, pengaturan.lon], zoom: 17 });
+    penandaKantor = L.marker([pengaturan.lat, pengaturan.lon], { icon: PetaAbsen.ikonKantor(), keyboard: false })
+      .bindTooltip(pengaturan.nama_lokasi)
+      .addTo(peta);
+    lapisanGeofence = PetaAbsen.gambarGeofence(peta, pengaturan).grup;
+  }
+  // Leaflet perlu tahu ukuran wadah setelah panel yang tadinya tersembunyi ditampilkan.
+  setTimeout(() => peta.invalidateSize(), 0);
+}
+
+function gambarPosisiSaya(pos) {
+  if (!peta) return;
+  const titik = [pos.coords.latitude, pos.coords.longitude];
+  if (!penandaSaya) {
+    penandaSaya = L.marker(titik, { icon: PetaAbsen.ikonSaya(), keyboard: false, zIndexOffset: 1000 }).addTo(peta);
+    lingkarAkurasi = L.circle(titik, {
+      radius: pos.coords.accuracy, color: '#2F6FD6', weight: 1, fillColor: '#2F6FD6', fillOpacity: 0.15,
+      interactive: false,
+    }).addTo(peta);
+  } else {
+    penandaSaya.setLatLng(titik);
+    lingkarAkurasi.setLatLng(titik).setRadius(pos.coords.accuracy);
+  }
+  penandaSaya.bindTooltip(`Kamu, akurasi ± ${formatMeter(pos.coords.accuracy)}`);
+
+  // Kalau dekat kantor, tampilkan keduanya. Kalau jauh, fokus ke posisi sendiri.
+  const jarak = pengaturan ? jarakMeter(titik[0], titik[1], pengaturan.lat, pengaturan.lon) : Infinity;
+  if (jarak < 3000) {
+    const batas = lingkarAkurasi.getBounds().extend(lapisanGeofence.getLayers()[0].getBounds());
+    peta.fitBounds(batas, { padding: [24, 24], maxZoom: 19 });
+  } else {
+    peta.fitBounds(lingkarAkurasi.getBounds(), { padding: [24, 24], maxZoom: 18 });
+  }
+}
+
+// ---------- 4. Ambil lokasi ----------
 
 function perbaruiTampilanPosisi(pos) {
   const { latitude: lat, longitude: lon, accuracy } = pos.coords;
@@ -113,7 +281,6 @@ function perbaruiTampilanPosisi(pos) {
   el('d-lon').textContent = lon.toFixed(6);
   el('d-akurasi').textContent = `± ${formatMeter(accuracy)}`;
   el('d-waktu').textContent = formatWaktu(pos.timestamp);
-  el('d-peta').href = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`;
   if (pengaturan) {
     const jarak = jarakMeter(lat, lon, pengaturan.lat, pengaturan.lon);
     const di = jarak <= pengaturan.radius_m ? 'di dalam' : 'di luar';
@@ -122,6 +289,7 @@ function perbaruiTampilanPosisi(pos) {
   } else {
     el('d-jarak').textContent = 'lokasi kantor belum termuat';
   }
+  gambarPosisiSaya(pos);
 }
 
 function hentikanPantau() {
@@ -129,7 +297,7 @@ function hentikanPantau() {
   idPantau = null;
   clearTimeout(pewaktu);
   pewaktu = null;
-  tombolLokasi.disabled = false;
+  tombolLokasi.disabled = !gpsDiizinkan;
   tombolLokasi.textContent = posisiTerbaik ? 'Ambil ulang lokasi' : 'Ambil lokasi saya';
 }
 
@@ -211,22 +379,16 @@ function ambilLokasi() {
   }, LAMA_TUNGGU_MS);
 }
 
-function dataForm() {
-  const jenis = form.querySelector('input[name="jenis"]:checked');
-  return {
-    id_karyawan: el('id-karyawan').value.trim(),
-    nama: el('nama').value.trim(),
-    jenis: jenis ? jenis.value : '',
-  };
+// ---------- 5. Kirim absen ----------
+
+function jenisTerpilih() {
+  const jenis = formAbsen.querySelector('input[name="jenis"]:checked');
+  return jenis ? jenis.value : '';
 }
 
 function perbaruiTombolKirim() {
-  const d = dataForm();
   let alasan = '';
-  if (!d.id_karyawan) alasan = 'Isi ID karyawan.';
-  else if (!/^[A-Za-z0-9._-]+$/.test(d.id_karyawan)) alasan = 'ID hanya boleh huruf, angka, titik, strip, garis bawah.';
-  else if (!d.nama) alasan = 'Isi nama.';
-  else if (!d.jenis) alasan = 'Pilih Masuk atau Pulang.';
+  if (!jenisTerpilih()) alasan = 'Pilih Masuk atau Pulang.';
   else if (!posisiTerbaik) alasan = 'Ambil lokasi dulu.';
   else if (idPantau !== null) alasan = 'Tunggu pencarian lokasi selesai.';
   tombolKirim.disabled = Boolean(alasan);
@@ -244,25 +406,20 @@ async function kirimAbsen(e) {
   perbaruiTombolKirim();
   if (tombolKirim.disabled) return;
 
-  const d = dataForm();
-  simpanLokal('absen.id_karyawan', d.id_karyawan);
-  simpanLokal('absen.nama', d.nama);
-
   tombolKirim.disabled = true;
   tombolKirim.textContent = 'Mengirim...';
   try {
-    const res = await fetch('/api/absen', {
+    const { res, json } = await panggil('/api/absen', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...d,
+      body: {
+        jenis: jenisTerpilih(),
         lat: posisiTerbaik.coords.latitude,
         lon: posisiTerbaik.coords.longitude,
         akurasi: posisiTerbaik.coords.accuracy,
         waktu_gps: posisiTerbaik.timestamp,
-      }),
+      },
     });
-    const json = await res.json();
+    if (res.status === 401) return sesiBerakhir('Sesi login kamu sudah diakhiri admin. Silakan login lagi.');
     if (!res.ok) {
       tampilkanPita(hasil, 'bahaya', json.pesan || `Gagal (HTTP ${res.status}).`, json.galat);
       return;
@@ -283,16 +440,14 @@ async function kirimAbsen(e) {
   }
 }
 
-// Isi otomatis dari kunjungan sebelumnya, dan tebak jenis absen dari jam.
-el('id-karyawan').value = bacaLokal('absen.id_karyawan');
-el('nama').value = bacaLokal('absen.nama');
+// Tebak jenis absen dari jam WIB.
 const jamWib = Number(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta', hour: 'numeric', hour12: false }));
-form.querySelector(`input[name="jenis"][value="${jamWib < 12 ? 'masuk' : 'pulang'}"]`).checked = true;
+formAbsen.querySelector(`input[name="jenis"][value="${jamWib < 12 ? 'masuk' : 'pulang'}"]`).checked = true;
 
-form.addEventListener('input', perbaruiTombolKirim);
-form.addEventListener('submit', kirimAbsen);
+formAbsen.addEventListener('input', perbaruiTombolKirim);
+formAbsen.addEventListener('submit', kirimAbsen);
 tombolLokasi.addEventListener('click', ambilLokasi);
 
 periksaKonteks();
-muatPengaturan();
-perbaruiTombolKirim();
+tombolLokasi.disabled = !gpsDiizinkan;
+muatPengaturan().then(cekSesi);

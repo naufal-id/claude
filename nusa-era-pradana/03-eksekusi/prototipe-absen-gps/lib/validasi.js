@@ -13,24 +13,30 @@ function teksBersih(nilai, maks) {
   return hasil;
 }
 
-function validasiAbsen(body) {
-  const galat = [];
+function validasiLogin(body) {
   if (!body || typeof body !== 'object') {
     return { ok: false, galat: ['Body harus berupa objek JSON.'] };
   }
-
+  const galat = [];
   const idKaryawan = teksBersih(body.id_karyawan, 30);
   if (!idKaryawan || !/^[A-Za-z0-9._-]+$/.test(idKaryawan)) {
     galat.push('id_karyawan wajib, 1-30 karakter, hanya huruf, angka, titik, strip, garis bawah.');
   }
-
   const nama = teksBersih(body.nama, 80);
   if (!nama) galat.push('nama wajib, 1-80 karakter.');
+  if (galat.length) return { ok: false, galat };
+  return { ok: true, data: { id_karyawan: idKaryawan.toUpperCase(), nama } };
+}
 
+// Identitas karyawan tidak dikirim di sini: server mengambilnya dari sesi login.
+function validasiAbsen(body) {
+  if (!body || typeof body !== 'object') {
+    return { ok: false, galat: ['Body harus berupa objek JSON.'] };
+  }
+  const galat = [];
   if (!JENIS_ABSEN.includes(body.jenis)) {
     galat.push('jenis harus "masuk" atau "pulang".');
   }
-
   if (!angkaDalamRentang(body.lat, -90, 90)) galat.push('lat harus angka antara -90 dan 90.');
   if (!angkaDalamRentang(body.lon, -180, 180)) galat.push('lon harus angka antara -180 dan 180.');
   if (!angkaDalamRentang(body.akurasi, 0, 100000) || body.akurasi === 0) {
@@ -49,15 +55,7 @@ function validasiAbsen(body) {
   if (galat.length) return { ok: false, galat };
   return {
     ok: true,
-    data: {
-      id_karyawan: idKaryawan.toUpperCase(),
-      nama,
-      jenis: body.jenis,
-      lat: body.lat,
-      lon: body.lon,
-      akurasi: body.akurasi,
-      waktu_gps: waktuGps,
-    },
+    data: { jenis: body.jenis, lat: body.lat, lon: body.lon, akurasi: body.akurasi, waktu_gps: waktuGps },
   };
 }
 
@@ -87,4 +85,4 @@ function validasiPengaturan(body) {
   };
 }
 
-module.exports = { validasiAbsen, validasiPengaturan, JENIS_ABSEN };
+module.exports = { validasiLogin, validasiAbsen, validasiPengaturan, JENIS_ABSEN };

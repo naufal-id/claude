@@ -9,10 +9,13 @@ const crypto = require('node:crypto');
 
 const { bukaDatabase } = require('./lib/db');
 const { jarakMeter, tentukanStatus } = require('./lib/geo');
-const { validasiAbsen, validasiPengaturan } = require('./lib/validasi');
+const { validasiLogin, validasiAbsen, validasiPengaturan } = require('./lib/validasi');
+const { buatWa, folderSesiBawaan } = require('./lib/wa');
 
 const FOLDER_PUBLIK = path.join(__dirname, 'public');
 const BATAS_BODY_BYTE = 10 * 1024;
+const MASA_BERLAKU_KODE_MENIT = 10;
+const BATAS_SALAH_KODE = 5;
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -35,9 +38,11 @@ const HEADER_KEAMANAN = {
   'Referrer-Policy': 'no-referrer',
   // Hanya halaman dari origin ini yang boleh meminta lokasi.
   'Permissions-Policy': 'geolocation=(self), camera=(), microphone=()',
+  // img-src membuka dua server ubin peta: citra satelit Esri dan peta jalan OpenStreetMap.
   'Content-Security-Policy':
-    "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; " +
-    "connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+    "default-src 'self'; img-src 'self' data: https://server.arcgisonline.com https://tile.openstreetmap.org; " +
+    "style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'; " +
+    "frame-ancestors 'none'",
 };
 
 function bacaKonfigurasi(env = process.env) {
@@ -51,6 +56,11 @@ function bacaKonfigurasi(env = process.env) {
     sslCert: env.SSL_CERT || '',
     percayaProxy: env.TRUST_PROXY === '1',
     jedaAbsenGandaDetik: angka(env.JEDA_ABSEN_GANDA_DETIK, 60),
+    waAktif: env.WA_AKTIF === '1',
+    waTujuan: (env.WA_NOMOR_ADMIN || '').split(',').filter((t) => t.trim()),
+    waNotifAbsen: ['semua', 'bermasalah', 'mati'].includes(env.WA_NOTIF_ABSEN) ? env.WA_NOTIF_ABSEN : 'semua',
+    waFolderSesi: env.WA_FOLDER_SESI || folderSesiBawaan(),
+    waChromePath: env.WA_CHROME_PATH || '',
     // Nilai awal lokasi kantor. Setelah database terbentuk, ubah lewat halaman /rekap.
     pengaturanAwal: {
       nama_lokasi: env.KANTOR_NAMA || 'Kantor contoh (Lapangan Merdeka, Medan)',
@@ -153,12 +163,53 @@ function kirimBerkasStatis(res, namaBerkas) {
   return true;
 }
 
-function buatAplikasi(konfig) {
+function formatWib(tanggal) {
+  return new Date(tanggal).toLocaleString('id-ID', {
+    timeZone: 'Asia/Jakarta', dateStyle: 'medium', timeStyle: 'short',
+  }) + ' WIB';
+}
+
+function formatMeter(m) {
+  return m >= 1000 ? `${(m / 1000).toFixed(2).replace('.', ',')} km` : `${Math.round(m)} m`;
+}
+
+const LABEL_STATUS = {
+  valid: 'Valid, di dalam area',
+  di_luar_area: 'DI LUAR AREA',
+  akurasi_rendah: 'AKURASI RENDAH',
+};
+
+function pesanAbsenWa(a, p) {
+  const ikon = a.status === 'valid' ? '✅' : '⚠️';
+  return [
+    `${ikon} *Absen ${a.jenis.toUpperCase()}*`,
+    `${a.id_karyawan} · ${a.nama}`,
+    `Status: ${LABEL_STATUS[a.status] || a.status}`,
+    `Jarak ke ${p.nama_lokasi}: ${formatMeter(a.jarak_m)} (radius ${p.radius_m} m)`,
+    `Akurasi GPS: ±${formatMeter(a.akurasi_m)}`,
+    `Waktu: ${formatWib(a.waktu_server)}`,
+    `Peta: https://www.google.com/maps?q=${a.lat},${a.lon}`,
+  ].join('\n');
+}
+
+function buatAplikasi(konfig, opsi = {}) {
   const db = bukaDatabase(konfig.dbFile, konfig.pengaturanAwal);
+  const wa = opsi.wa || buatWa(konfig);
 
   function adminSah(req) {
     const kunci = req.headers['x-kunci-admin'];
     return Boolean(kunci) && samaAman(kunci, konfig.kunciAdmin);
+  }
+
+  function sesiDariRequest(req) {
+    const token = req.headers['x-token-sesi'];
+    if (!token || typeof token !== 'string' || token.length > 100) return null;
+    return db.ambilSesi(token);
+  }
+
+  // Kirim notifikasi tanpa menunggu, supaya balasan ke karyawan tidak tertahan WhatsApp.
+  function beritahuAdmin(teks) {
+    wa.kirimKeAdmin(teks).catch((err) => console.error('[WA]', err));
   }
 
   async function tanganiApi(req, res, url) {
@@ -177,52 +228,153 @@ function buatAplikasi(konfig) {
       return kirimJson(res, 200, { ok: true, pengaturan: db.ambilPengaturan() });
     }
 
-    if (rute === 'POST /api/absen') {
-      const body = await bacaBodyJson(req);
-      const hasil = validasiAbsen(body);
-      if (!hasil.ok) return kirimGalat(res, 422, 'Data absen tidak valid.', hasil.galat);
-      const d = hasil.data;
-
-      const sekarang = new Date();
-      const sebelumnya = db.absenTerakhir(d.id_karyawan, d.jenis);
-      if (sebelumnya) {
-        const selisihDetik = (sekarang - new Date(sebelumnya.waktu_server)) / 1000;
-        if (selisihDetik < konfig.jedaAbsenGandaDetik) {
-          return kirimGalat(
-            res,
-            409,
-            `Absen ${d.jenis} untuk ${d.id_karyawan} sudah tercatat ${Math.round(selisihDetik)} detik lalu. ` +
-              `Tunggu ${Math.ceil(konfig.jedaAbsenGandaDetik - selisihDetik)} detik lagi.`
-          );
-        }
+    if (rute === 'POST /api/sesi') {
+      if (sesiDariRequest(req)) {
+        return kirimGalat(res, 409, 'Perangkat ini sudah login. Logout dulu dengan kode dari admin.');
       }
-
-      const p = db.ambilPengaturan();
-      const jarak = jarakMeter(d.lat, d.lon, p.lat, p.lon);
-      const status = tentukanStatus({
-        jarak,
-        akurasi: d.akurasi,
-        radius: p.radius_m,
-        batasAkurasi: p.batas_akurasi_m,
-      });
-
-      const absen = db.simpanAbsen({
-        ...d,
-        akurasi_m: Math.round(d.akurasi * 10) / 10,
-        jarak_m: Math.round(jarak * 10) / 10,
-        status,
-        waktu_server: sekarang.toISOString(),
-        ip: alamatIp(req, konfig.percayaProxy),
+      const hasil = validasiLogin(await bacaBodyJson(req));
+      if (!hasil.ok) return kirimGalat(res, 422, 'Data login tidak valid.', hasil.galat);
+      const sesi = db.buatSesi({
+        ...hasil.data,
+        token: crypto.randomBytes(24).toString('base64url'),
+        dibuat: new Date().toISOString(),
         perangkat: String(req.headers['user-agent'] || '').slice(0, 200),
+        ip: alamatIp(req, konfig.percayaProxy),
       });
-      return kirimJson(res, 201, { ok: true, absen, lokasi_kantor: p });
+      return kirimJson(res, 201, { ok: true, token: sesi.token, sesi: infoSesi(sesi) });
+    }
+
+    if (url.pathname.startsWith('/api/sesi') || rute === 'POST /api/absen') {
+      const sesi = sesiDariRequest(req);
+      if (!sesi) return kirimGalat(res, 401, 'Belum login atau sesi sudah diakhiri admin.');
+      return tanganiRuteKaryawan(req, res, rute, sesi);
     }
 
     // Semua rute di bawah ini khusus admin.
     if (!adminSah(req)) {
       return kirimGalat(res, 401, 'Kunci admin salah atau belum diisi.');
     }
+    return tanganiRuteAdmin(req, res, rute, url);
+  }
 
+  function infoSesi(sesi) {
+    const menunggu = db.permintaanLogoutAktif(sesi.token);
+    const masihBerlaku = menunggu && new Date(menunggu.kedaluwarsa) > new Date();
+    return {
+      id_karyawan: sesi.id_karyawan,
+      nama: sesi.nama,
+      dibuat: sesi.dibuat,
+      logout_menunggu: masihBerlaku ? { kedaluwarsa: menunggu.kedaluwarsa } : null,
+    };
+  }
+
+  async function tanganiRuteKaryawan(req, res, rute, sesi) {
+    if (rute === 'GET /api/sesi') {
+      return kirimJson(res, 200, { ok: true, sesi: infoSesi(sesi) });
+    }
+
+    // Langkah 1 logout: buat kode. Kodenya TIDAK dikirim ke karyawan, hanya ke admin.
+    if (rute === 'POST /api/sesi/logout') {
+      const sekarang = new Date();
+      const lama = db.permintaanLogoutAktif(sesi.token);
+      if (lama && new Date(lama.kedaluwarsa) > sekarang) {
+        return kirimJson(res, 200, { ok: true, baru: false, kedaluwarsa: lama.kedaluwarsa });
+      }
+      const permintaan = db.buatPermintaanLogout({
+        token_sesi: sesi.token,
+        id_karyawan: sesi.id_karyawan,
+        nama: sesi.nama,
+        kode: String(crypto.randomInt(0, 1_000_000)).padStart(6, '0'),
+        dibuat: sekarang.toISOString(),
+        kedaluwarsa: new Date(sekarang.getTime() + MASA_BERLAKU_KODE_MENIT * 60_000).toISOString(),
+      });
+      beritahuAdmin([
+        '🔑 *Permintaan logout*',
+        `${sesi.id_karyawan} · ${sesi.nama}`,
+        `Kode: *${permintaan.kode}*`,
+        `Berlaku sampai ${formatWib(permintaan.kedaluwarsa)}.`,
+        'Berikan kode ini hanya kalau karyawan memang boleh logout dari perangkatnya.',
+      ].join('\n'));
+      return kirimJson(res, 201, { ok: true, baru: true, kedaluwarsa: permintaan.kedaluwarsa });
+    }
+
+    // Langkah 2 logout: karyawan mengetik kode yang didapat dari admin.
+    if (rute === 'POST /api/sesi/logout/konfirmasi') {
+      const body = await bacaBodyJson(req);
+      const kode = body && typeof body.kode === 'string' ? body.kode.trim() : '';
+      const permintaan = db.permintaanLogoutAktif(sesi.token);
+      if (!permintaan) return kirimGalat(res, 404, 'Belum ada permintaan logout. Tekan Logout dulu.');
+      if (new Date(permintaan.kedaluwarsa) <= new Date()) {
+        db.ubahStatusLogout(permintaan.id, 'kedaluwarsa');
+        return kirimGalat(res, 410, 'Kode sudah kedaluwarsa. Minta kode baru.');
+      }
+      if (!/^\d{6}$/.test(kode) || !samaAman(kode, permintaan.kode)) {
+        const terbaru = db.tambahPercobaanLogout(permintaan.id);
+        const sisa = BATAS_SALAH_KODE - terbaru.percobaan;
+        if (sisa <= 0) {
+          db.ubahStatusLogout(permintaan.id, 'diblokir');
+          return kirimGalat(res, 429, 'Terlalu banyak kode salah. Minta kode baru ke admin.');
+        }
+        return kirimGalat(res, 403, `Kode salah. Sisa percobaan: ${sisa}.`);
+      }
+      db.ubahStatusLogout(permintaan.id, 'dipakai');
+      db.hapusSesi(sesi.token);
+      beritahuAdmin(`🚪 ${sesi.id_karyawan} · ${sesi.nama} sudah logout (${formatWib(new Date())}).`);
+      return kirimJson(res, 200, { ok: true });
+    }
+
+    if (rute === 'POST /api/absen') {
+      return simpanAbsen(req, res, sesi);
+    }
+
+    return kirimGalat(res, 404, 'Rute API tidak ditemukan.');
+  }
+
+  async function simpanAbsen(req, res, sesi) {
+    const body = await bacaBodyJson(req);
+    const hasil = validasiAbsen(body);
+    if (!hasil.ok) return kirimGalat(res, 422, 'Data absen tidak valid.', hasil.galat);
+    const d = { ...hasil.data, id_karyawan: sesi.id_karyawan, nama: sesi.nama };
+
+    const sekarang = new Date();
+    const sebelumnya = db.absenTerakhir(d.id_karyawan, d.jenis);
+    if (sebelumnya) {
+      const selisihDetik = (sekarang - new Date(sebelumnya.waktu_server)) / 1000;
+      if (selisihDetik < konfig.jedaAbsenGandaDetik) {
+        return kirimGalat(
+          res,
+          409,
+          `Absen ${d.jenis} untuk ${d.id_karyawan} sudah tercatat ${Math.round(selisihDetik)} detik lalu. ` +
+            `Tunggu ${Math.ceil(konfig.jedaAbsenGandaDetik - selisihDetik)} detik lagi.`
+        );
+      }
+    }
+
+    const p = db.ambilPengaturan();
+    const jarak = jarakMeter(d.lat, d.lon, p.lat, p.lon);
+    const status = tentukanStatus({
+      jarak,
+      akurasi: d.akurasi,
+      radius: p.radius_m,
+      batasAkurasi: p.batas_akurasi_m,
+    });
+
+    const absen = db.simpanAbsen({
+      ...d,
+      akurasi_m: Math.round(d.akurasi * 10) / 10,
+      jarak_m: Math.round(jarak * 10) / 10,
+      status,
+      waktu_server: sekarang.toISOString(),
+      ip: alamatIp(req, konfig.percayaProxy),
+      perangkat: String(req.headers['user-agent'] || '').slice(0, 200),
+    });
+    const kirimWa = konfig.waNotifAbsen === 'semua' ||
+      (konfig.waNotifAbsen === 'bermasalah' && absen.status !== 'valid');
+    if (kirimWa) beritahuAdmin(pesanAbsenWa(absen, p));
+    return kirimJson(res, 201, { ok: true, absen, lokasi_kantor: p });
+  }
+
+  async function tanganiRuteAdmin(req, res, rute, url) {
     if (rute === 'GET /api/absen') {
       const batas = Math.min(Math.max(Number(url.searchParams.get('batas')) || 200, 1), 5000);
       return kirimJson(res, 200, {
@@ -255,6 +407,43 @@ function buatAplikasi(konfig) {
       return kirimJson(res, 200, { ok: true, pengaturan: db.simpanPengaturan(hasil.data) });
     }
 
+    if (rute === 'GET /api/admin/logout') {
+      const sekarang = new Date();
+      const semua = db.daftarPermintaanLogout(50).map((p) => ({
+        ...p,
+        token_sesi: undefined,
+        status: p.status === 'menunggu' && new Date(p.kedaluwarsa) <= sekarang ? 'kedaluwarsa' : p.status,
+      }));
+      return kirimJson(res, 200, {
+        ok: true,
+        waktu_server: sekarang.toISOString(),
+        menunggu: semua.filter((p) => p.status === 'menunggu'),
+        riwayat: semua.filter((p) => p.status !== 'menunggu').slice(0, 20),
+      });
+    }
+
+    if (rute === 'GET /api/admin/sesi') {
+      return kirimJson(res, 200, { ok: true, data: db.daftarSesi() });
+    }
+
+    if (rute === 'DELETE /api/admin/sesi') {
+      const token = url.searchParams.get('token') || '';
+      const aktif = db.permintaanLogoutAktif(token);
+      if (aktif) db.ubahStatusLogout(aktif.id, 'dipaksa_admin');
+      const terhapus = db.hapusSesi(token);
+      if (!terhapus) return kirimGalat(res, 404, 'Sesi tidak ditemukan.');
+      return kirimJson(res, 200, { ok: true });
+    }
+
+    if (rute === 'GET /api/admin/wa') {
+      return kirimJson(res, 200, { ok: true, wa: wa.status(), mode_notif_absen: konfig.waNotifAbsen });
+    }
+
+    if (rute === 'POST /api/admin/wa/tes') {
+      const hasil = await wa.kirimKeAdmin(`🧪 Tes notifikasi Absen GPS, ${formatWib(new Date())}.`);
+      return kirimJson(res, 200, { ok: true, ...hasil, wa: wa.status() });
+    }
+
     return kirimGalat(res, 404, 'Rute API tidak ditemukan.');
   }
 
@@ -281,7 +470,7 @@ function buatAplikasi(konfig) {
     }
   }
 
-  return { tangani, db };
+  return { tangani, db, wa };
 }
 
 function alamatJaringanLokal() {
@@ -299,7 +488,8 @@ function mulai() {
     kunciDibuatOtomatis = true;
   }
 
-  const { tangani, db } = buatAplikasi(konfig);
+  const { tangani, db, wa } = buatAplikasi(konfig);
+  wa.mulai();
   const pakaiHttps = Boolean(konfig.sslKey && konfig.sslCert);
   const server = pakaiHttps
     ? https.createServer(
@@ -317,6 +507,7 @@ function mulai() {
       `  Halaman rekap : ${skema}://localhost:${konfig.port}/rekap`,
       `  Database      : ${konfig.dbFile}`,
       `  Kunci admin   : ${konfig.kunciAdmin}${kunciDibuatOtomatis ? '  (acak, berganti tiap server dijalankan ulang; atur KUNCI_ADMIN di .env agar tetap)' : ''}`,
+      `  WhatsApp      : ${konfig.waAktif ? `aktif, notifikasi ke ${konfig.waTujuan.join(', ') || '(WA_NOMOR_ADMIN kosong)'}` : 'mati (WA_AKTIF=1 untuk menyalakan)'}`,
     ];
     if (konfig.host === '0.0.0.0') {
       for (const ip of alamatJaringanLokal()) {
@@ -330,8 +521,9 @@ function mulai() {
     console.log(baris.join('\n'));
   });
 
-  const berhenti = () => {
+  const berhenti = async () => {
     server.close();
+    await wa.tutup();
     db.tutup();
     process.exit(0);
   };

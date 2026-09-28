@@ -6,6 +6,7 @@
   <meta name="robots" content="noindex">
   <title>Rekap Absen</title>
   <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="/css/gaya.css">
 </head>
 <body>
@@ -29,86 +30,179 @@
     <div id="pesan" class="pita" role="status" aria-live="polite" hidden></div>
 
     <div id="panel-utama" hidden>
-      <div class="kartu deret-tombol">
-        <button type="button" id="tombol-muat" class="sekunder">Muat ulang</button>
-        <button type="button" id="tombol-csv" class="sekunder">Unduh CSV</button>
-        <button type="button" id="tombol-hapus" class="bahaya">Hapus semua data</button>
-        <button type="button" id="tombol-keluar" class="sekunder">Keluar</button>
-        <label class="pilihan-otomatis catatan">
-          <input type="checkbox" id="otomatis" checked> Muat ulang otomatis tiap 10 detik
-        </label>
-      </div>
-
-      <div class="ringkasan">
-        <div class="kartu"><div class="label-kecil">Total tersimpan</div><div class="angka" id="r-total">0</div></div>
-        <div class="kartu"><div class="label-kecil">Valid</div><div class="angka" id="r-valid">0</div></div>
-        <div class="kartu"><div class="label-kecil">Di luar area</div><div class="angka" id="r-luar">0</div></div>
-        <div class="kartu"><div class="label-kecil">Akurasi rendah</div><div class="angka" id="r-akurasi">0</div></div>
-      </div>
-
-      <div class="dua-kolom">
-        <section class="kartu peta" aria-labelledby="judul-peta">
-          <h2 id="judul-peta">Sebaran titik terhadap kantor</h2>
-          <svg id="peta" viewBox="0 0 400 400" role="img" aria-label="Posisi absen relatif terhadap titik kantor"></svg>
-          <div class="legenda">
-            <span><i class="t-valid"></i>Valid</span>
-            <span><i class="t-luar"></i>Di luar area</span>
-            <span><i class="t-akurasi"></i>Akurasi rendah</span>
-            <span id="skala-peta"></span>
-          </div>
-          <p class="catatan">Utara di atas. Titik yang lebih jauh dari tepi gambar ditempel di tepi sebagai lingkaran kosong.</p>
-        </section>
-
-        <section class="kartu" aria-labelledby="judul-kantor">
-          <h2 id="judul-kantor">Lokasi kantor (geofence)</h2>
-          <form id="form-kantor" class="isian-grid" novalidate>
-            <div class="lebar-penuh">
-              <label for="k-nama">Nama lokasi</label>
-              <input id="k-nama" type="text" maxlength="80" required>
-            </div>
-            <div>
-              <label for="k-lat">Lintang</label>
-              <input id="k-lat" type="number" step="any" inputmode="decimal" required>
-            </div>
-            <div>
-              <label for="k-lon">Bujur</label>
-              <input id="k-lon" type="number" step="any" inputmode="decimal" required>
-            </div>
-            <div>
-              <label for="k-radius">Radius (meter)</label>
-              <input id="k-radius" type="number" min="10" max="5000" step="1" required>
-            </div>
-            <div>
-              <label for="k-akurasi">Batas akurasi (meter)</label>
-              <input id="k-akurasi" type="number" min="5" max="5000" step="1" required>
-            </div>
-            <div class="lebar-penuh deret-tombol">
-              <button type="button" id="tombol-lokasi-saya" class="sekunder">Pakai lokasi saya sekarang</button>
-              <button type="submit">Simpan lokasi kantor</button>
-            </div>
-          </form>
-          <p class="catatan">Untuk uji di rumah: tekan "Pakai lokasi saya sekarang" lalu Simpan, supaya absen dari
-            tempatmu masuk radius. Perubahan hanya berlaku untuk absen berikutnya, data lama tidak dihitung ulang.</p>
-        </section>
-      </div>
-
-      <section class="kartu" aria-labelledby="judul-tabel">
-        <h2 id="judul-tabel">Data absen <span class="label-kecil" id="keterangan-tabel"></span></h2>
-        <div class="gulung-tabel">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th><th>Waktu server (WIB)</th><th>ID</th><th>Nama</th><th>Jenis</th><th>Status</th>
-                <th>Jarak</th><th>Akurasi</th><th>Koordinat</th><th>IP</th><th>Perangkat</th>
-              </tr>
-            </thead>
-            <tbody id="isi-tabel"></tbody>
-          </table>
+      <div class="kartu bar-atas">
+        <nav class="tab" role="tablist" aria-label="Bagian rekap">
+          <button type="button" role="tab" id="tab-peta" data-tab="peta" aria-controls="isi-peta">Peta &amp; Data</button>
+          <button type="button" role="tab" id="tab-logout" data-tab="logout" aria-controls="isi-logout">
+            Kode Logout <span id="lencana-logout" class="hitungan" hidden>0</span>
+          </button>
+          <button type="button" role="tab" id="tab-sesi" data-tab="sesi" aria-controls="isi-sesi">
+            Perangkat Login <span id="lencana-sesi" class="hitungan netral">0</span>
+          </button>
+          <button type="button" role="tab" id="tab-wa" data-tab="wa" aria-controls="isi-wa">
+            WhatsApp <span id="titik-wa" class="titik-status" aria-hidden="true"></span>
+          </button>
+        </nav>
+        <div class="deret-tombol">
+          <button type="button" id="tombol-muat" class="sekunder kecil">Muat ulang</button>
+          <button type="button" id="tombol-keluar" class="sekunder kecil">Keluar</button>
         </div>
-        <p id="tabel-kosong" class="catatan" hidden>Belum ada data. Buka halaman absen lalu kirim satu absen.</p>
+      </div>
+
+      <!-- TAB 1: PETA & DATA -->
+      <section id="isi-peta" role="tabpanel" aria-labelledby="tab-peta" class="isi-tab">
+        <div class="ringkasan">
+          <div class="kartu"><div class="label-kecil">Total tersimpan</div><div class="angka" id="r-total">0</div></div>
+          <div class="kartu"><div class="label-kecil">Valid</div><div class="angka" id="r-valid">0</div></div>
+          <div class="kartu"><div class="label-kecil">Di luar area</div><div class="angka" id="r-luar">0</div></div>
+          <div class="kartu"><div class="label-kecil">Akurasi rendah</div><div class="angka" id="r-akurasi">0</div></div>
+        </div>
+
+        <div class="dua-kolom peta-dan-form">
+          <section class="kartu" aria-labelledby="judul-peta">
+            <div class="judul-baris">
+              <h2 id="judul-peta">Peta absen</h2>
+              <div class="deret-tombol">
+                <button type="button" id="tombol-semua-titik" class="sekunder kecil">Tampilkan semua titik</button>
+                <button type="button" id="tombol-ke-kantor" class="sekunder kecil">Ke kantor</button>
+              </div>
+            </div>
+            <div id="peta-rekap" class="peta-leaflet peta-besar" role="region" aria-label="Peta satelit titik absen"></div>
+            <div class="legenda">
+              <span><i class="t-valid"></i>Valid</span>
+              <span><i class="t-luar"></i>Di luar area</span>
+              <span><i class="t-akurasi"></i>Akurasi rendah</span>
+              <span><i class="t-kantor"></i>Kantor (bisa digeser)</span>
+            </div>
+            <p class="catatan">Ganti tampilan satelit atau jalan dan saring status lewat tombol lapisan di pojok kanan atas peta.
+              Klik titik untuk detail. Klik baris tabel untuk terbang ke titiknya.</p>
+          </section>
+
+          <section class="kartu" aria-labelledby="judul-kantor">
+            <h2 id="judul-kantor">Lokasi kantor (geofence)</h2>
+            <form id="form-kantor" class="isian-grid" novalidate>
+              <div class="lebar-penuh">
+                <label for="k-nama">Nama lokasi</label>
+                <input id="k-nama" type="text" maxlength="80" required>
+              </div>
+              <div>
+                <label for="k-lat">Lintang</label>
+                <input id="k-lat" type="number" step="any" inputmode="decimal" required>
+              </div>
+              <div>
+                <label for="k-lon">Bujur</label>
+                <input id="k-lon" type="number" step="any" inputmode="decimal" required>
+              </div>
+              <div>
+                <label for="k-radius">Radius (meter)</label>
+                <input id="k-radius" type="number" min="10" max="5000" step="1" required>
+              </div>
+              <div>
+                <label for="k-akurasi">Batas akurasi (meter)</label>
+                <input id="k-akurasi" type="number" min="5" max="5000" step="1" required>
+              </div>
+              <div class="lebar-penuh deret-tombol">
+                <button type="button" id="tombol-klik-peta" class="sekunder" aria-pressed="false">Pilih titik di peta</button>
+                <button type="button" id="tombol-lokasi-saya" class="sekunder">Pakai lokasi saya</button>
+              </div>
+              <div class="lebar-penuh deret-tombol">
+                <button type="submit">Simpan lokasi kantor</button>
+                <button type="button" id="tombol-batal-kantor" class="sekunder" hidden>Batalkan perubahan</button>
+              </div>
+            </form>
+            <p id="status-kantor" class="catatan">Geser penanda kantor di peta, atau tekan "Pilih titik di peta"
+              lalu klik lokasinya. Lingkaran radius ikut berubah sebelum disimpan.</p>
+          </section>
+        </div>
+
+        <section class="kartu" aria-labelledby="judul-tabel">
+          <div class="judul-baris">
+            <h2 id="judul-tabel">Data absen <span class="label-kecil" id="keterangan-tabel"></span></h2>
+            <div class="deret-tombol">
+              <button type="button" id="tombol-csv" class="sekunder kecil">Unduh CSV</button>
+              <button type="button" id="tombol-hapus" class="bahaya kecil">Hapus semua data</button>
+            </div>
+          </div>
+          <div class="gulung-tabel">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th><th>Waktu server (WIB)</th><th>ID</th><th>Nama</th><th>Jenis</th><th>Status</th>
+                  <th>Jarak</th><th>Akurasi</th><th>Koordinat</th><th>IP</th><th>Perangkat</th>
+                </tr>
+              </thead>
+              <tbody id="isi-tabel"></tbody>
+            </table>
+          </div>
+          <p id="tabel-kosong" class="catatan" hidden>Belum ada data. Buka halaman absen, login, lalu kirim satu absen.</p>
+        </section>
+      </section>
+
+      <!-- TAB 2: KODE LOGOUT -->
+      <section id="isi-logout" role="tabpanel" aria-labelledby="tab-logout" class="isi-tab" hidden>
+        <section class="kartu">
+          <h2>Kode logout yang menunggu</h2>
+          <p class="catatan">Karyawan yang menekan Logout di HP-nya muncul di sini beserta kodenya.
+            Berikan kode hanya setelah yakin orangnya memang boleh logout. Kode berlaku 10 menit dan
+            terkunci setelah 5 kali salah.</p>
+          <div id="daftar-kode" class="daftar-kode"></div>
+          <p id="kode-kosong" class="catatan">Tidak ada permintaan logout saat ini.</p>
+        </section>
+        <section class="kartu">
+          <h2>Riwayat</h2>
+          <div class="gulung-tabel">
+            <table>
+              <thead><tr><th>Diminta (WIB)</th><th>ID</th><th>Nama</th><th>Kode</th><th>Salah</th><th>Hasil</th></tr></thead>
+              <tbody id="isi-riwayat-logout"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- TAB 3: PERANGKAT LOGIN -->
+      <section id="isi-sesi" role="tabpanel" aria-labelledby="tab-sesi" class="isi-tab" hidden>
+        <section class="kartu">
+          <h2>Perangkat yang sedang login</h2>
+          <p class="catatan">Satu baris = satu browser/HP. ID yang login di lebih dari satu perangkat ditandai.
+            "Paksa logout" mengakhiri sesi tanpa kode, misalnya kalau HP karyawan hilang.</p>
+          <div class="gulung-tabel">
+            <table>
+              <thead><tr><th>ID</th><th>Nama</th><th>Login sejak (WIB)</th><th>Perangkat</th><th>IP</th><th></th></tr></thead>
+              <tbody id="isi-sesi-tabel"></tbody>
+            </table>
+          </div>
+          <p id="sesi-kosong" class="catatan" hidden>Belum ada perangkat yang login.</p>
+        </section>
+      </section>
+
+      <!-- TAB 4: WHATSAPP -->
+      <section id="isi-wa" role="tabpanel" aria-labelledby="tab-wa" class="isi-tab" hidden>
+        <div class="dua-kolom">
+          <section class="kartu">
+            <h2>Status WhatsApp</h2>
+            <p><span id="wa-status" class="lencana"></span></p>
+            <p id="wa-pesan" class="catatan"></p>
+            <img id="wa-qr" class="qr-wa" alt="QR login WhatsApp Web" hidden>
+            <dl class="data-lokasi">
+              <dt>Nomor pengirim</dt><dd id="wa-nomor">-</dd>
+              <dt>Tujuan notifikasi</dt><dd id="wa-tujuan">-</dd>
+              <dt>Notifikasi absen</dt><dd id="wa-mode">-</dd>
+            </dl>
+            <div class="deret-tombol jarak-atas">
+              <button type="button" id="tombol-tes-wa" class="sekunder">Kirim pesan tes</button>
+            </div>
+          </section>
+          <section class="kartu">
+            <h2>Pesan terakhir</h2>
+            <ul id="wa-riwayat" class="riwayat-wa"></ul>
+            <p id="wa-riwayat-kosong" class="catatan">Belum ada pesan.</p>
+          </section>
+        </div>
       </section>
     </div>
   </main>
+  <script src="/vendor/leaflet/leaflet.js"></script>
+  <script src="/js/peta.js"></script>
   <script src="/js/rekap.js"></script>
 </body>
 </html>
