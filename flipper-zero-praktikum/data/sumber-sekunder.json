@@ -1,0 +1,122 @@
+{
+  "_meta": {
+    "deskripsi": "Klaim yang bukan berasal dari kode firmware. Halaman asli banyak yang tidak bisa dibuka dari lingkungan riset ini (proxy egress memblokir domain pabrikan, Wikipedia, media, dan jurnal). Klaim di sini datang dari ringkasan hasil pencarian atau dari halaman GitHub yang dibaca lewat WebFetch (ringkasan model kecil).",
+    "tanggal_riset": "2026-09-29",
+    "arti_status": {
+      "dibaca_langsung_kode": "isi berkas dibaca dan dikutip baris aslinya",
+      "dibaca_lewat_webfetch": "halaman dibuka, isi diringkas model kecil, belum dicek kata per kata",
+      "hanya_ringkasan_pencarian": "halaman asli tidak bisa dibuka, klaim berasal dari ringkasan hasil pencarian; verifikasi ke sumber asli sebelum dikutip di laporan akhir"
+    }
+  },
+  "klaim": [
+    {
+      "id": "cc1101_spesifikasi",
+      "klaim": "CC1101: laju data 0,6 sampai 500 kBaud, sensitivitas -116 dBm pada 0,6 kBaud dan 433 MHz, daya keluaran maksimum +12 dBm, modulasi 2-FSK, 4-FSK, GFSK, MSK, OOK, pita ISM/SRD 315, 433, 868, 915 MHz",
+      "status": "hanya_ringkasan_pencarian",
+      "url": "https://www.ti.com/lit/ds/symlink/cc1101.pdf",
+      "catatan": "Beberapa halaman turunan lembar data muncul dengan angka sama. Konsisten dengan komentar tabel daya di kode firmware (12 dBm dan 10 dBm)."
+    },
+    {
+      "id": "stm32wb55_spesifikasi",
+      "klaim": "STM32WB55RG: Cortex-M4 untuk aplikasi, Cortex-M0+ untuk subsistem radio 2,4 GHz, sesuai spesifikasi Bluetooth LE 5.4 dan IEEE 802.15.4",
+      "status": "hanya_ringkasan_pencarian",
+      "url": "https://www.st.com/en/microcontrollers-microprocessors/stm32wb55rg.html",
+      "catatan": "Kode firmware mengonfirmasi dua inti (furi_hal_bt.c menyebut koprosesor Core2, ble_glue/hw_ipcc.c) dan clock 64 MHz. Versi BLE 5.4 belum terkonfirmasi dari kode. Sensitivitas dan daya TX maksimum chip tidak dikutip karena belum terverifikasi."
+    },
+    {
+      "id": "esp32s2_spesifikasi",
+      "klaim": "ESP32-S2: Wi-Fi 802.11 b/g/n 2,4 GHz sampai 150 Mbit/s, tanpa Bluetooth",
+      "status": "hanya_ringkasan_pencarian",
+      "url": "https://documentation.espressif.com/esp32-s2_datasheet_en.html",
+      "catatan": "Dokumen resmi devboard di repo firmware menyatakan jaringan 5 GHz tidak didukung (dibaca langsung)."
+    },
+    {
+      "id": "ble_kanal",
+      "klaim": "BLE memakai 40 kanal berjarak 2 MHz dari 2402 sampai 2480 MHz. Kanal iklan 37, 38, 39 berada di 2402, 2426, 2480 MHz dan dipilih agar menjauhi Wi-Fi kanal 1, 6, 11",
+      "status": "hanya_ringkasan_pencarian",
+      "url": "https://www.electronics-notes.com/articles/connectivity/bluetooth/bluetooth-low-energy-le-frequency-channels.php",
+      "catatan": "Konsisten dengan pengetahuan umum tentang Bluetooth Core Specification. Spesifikasi asli (bluetooth.com) tidak bisa dibuka."
+    },
+    {
+      "id": "ble_phy",
+      "klaim": "PHY BLE: LE 1M 1 Mbit/s, LE 2M 2 Mbit/s, LE Coded 125 dan 500 kbit/s",
+      "status": "hanya_ringkasan_pencarian",
+      "url": "https://www.bluetooth.com/specifications/specs/core-specification/",
+      "catatan": "Tidak dikonfirmasi lewat pencarian di sesi ini. Berasal dari pengetahuan umum; verifikasi sebelum dikutip."
+    },
+    {
+      "id": "marauder_wiki",
+      "klaim": "ESP32 Marauder adalah toolkit analisis Wi-Fi dan Bluetooth untuk ESP32. Wiki memuat pernyataan: 'Use Marauder only on systems and radio environments you own or are explicitly authorized to assess.' Flipper terhubung lewat UART ke papan ESP32, papan menjalankan Marauder, Flipper menjadi antarmuka",
+      "status": "dibaca_lewat_webfetch",
+      "url": "https://github.com/justcallmekoko/ESP32Marauder/wiki",
+      "catatan": "Halaman Flipper Zero di wiki yang sama: https://github.com/justcallmekoko/ESP32Marauder/wiki/flipper-zero"
+    },
+    {
+      "id": "ble_spam_riset",
+      "klaim": "Peneliti dengan nama pengguna Techryptic memperlihatkan pada September 2023 bahwa Flipper Zero dengan firmware pihak ketiga dapat membanjiri iPhone dengan pop-up Bluetooth lewat paket iklan BLE yang meniru perangkat Apple. Apple menambal lewat iOS 17.2 (Desember 2023), CVE-2023-42941",
+      "status": "hanya_ringkasan_pencarian",
+      "url": "https://techcrunch.com/2023/09/05/flipper-zero-hacking-iphone-flood-popups/",
+      "catatan": "Pendukung: https://gizmodo.com/apple-fixes-flipper-zero-shutting-down-iphones-1851102972 , https://ecto-1a.github.io/AppleJuice_CVE/ , https://www.bitdefender.com/en-us/blog/hotforsecurity/flipper-zero-exploit-allows-bluetooth-spamming-of-apple-devices . Hitungan kata kunci di kode firmware resmi (commit 7f0b6e1) untuk 'ble spam', 'continuity', 'swift pair', 'fast pair' menghasilkan nol temuan, dibaca langsung."
+    },
+    {
+      "id": "riset_mdpi",
+      "klaim": "Makalah 'Exploring the Real Capabilities of the Flipper Zero' (Februari 2026, MDPI) menguji tiga platform SDR dengan metodologi offensive security. Protokol kode tetap rentan replay, sedangkan rolling code menutup replay dan brute force pada pengujian mereka",
+      "status": "hanya_ringkasan_pencarian",
+      "url": "https://www.mdpi.com/2673-4591/123/1/6",
+      "catatan": "Halaman tidak bisa dibuka. Nama penulis, DOI, dan angka hasil belum diketahui. Buka sendiri sebelum dikutip."
+    },
+    {
+      "id": "uu_telekomunikasi",
+      "klaim": "UU 36/1999 tentang Telekomunikasi: Pasal 38 melarang perbuatan yang menimbulkan gangguan fisik dan elektromagnetik terhadap penyelenggaraan telekomunikasi. Pasal 55 mengancam pidana penjara paling lama 6 tahun dan/atau denda paling banyak Rp600.000.000",
+      "status": "hanya_ringkasan_pencarian",
+      "url": "https://jdih.kemenkeu.go.id/dok/uu-36-tahun-1999/view",
+      "catatan": "Cek versi terkini setelah perubahan lewat UU Cipta Kerja. Nomor pasal 38 dan 55 muncul konsisten di beberapa hasil."
+    },
+    {
+      "id": "uu_ite",
+      "klaim": "UU ITE (UU 11/2008 jo. UU 19/2016 jo. UU 1/2024): Pasal 30 ayat 1 sampai 3 melarang akses tanpa hak ke komputer atau sistem elektronik milik orang lain",
+      "status": "hanya_ringkasan_pencarian",
+      "url": "https://jdih.komdigi.go.id/index.php/produk_hukum/view/id/884/t/undangundang+nomor+1+tahun+2024",
+      "catatan": "Pasal 31 (intersepsi) dan Pasal 33 (gangguan sistem) tidak terkonfirmasi lewat pencarian di sesi ini. Ringkasan pencarian untuk Pasal 32 keliru menggambarkan isinya, jadi tidak dipakai."
+    },
+    {
+      "id": "spektrum_indonesia",
+      "klaim": "Pita 433,05-434,79 MHz dipakai perangkat jarak dekat berdasarkan izin kelas dengan daya sampai 10 mW. Rujukan: Permen Komdigi 2/2025 tentang Penggunaan Spektrum Frekuensi Radio Berdasarkan Izin Kelas dan Kepmen Kominfo 260/2024 tentang standar teknis SRD",
+      "status": "hanya_ringkasan_pencarian",
+      "url": "https://sertifikatsdppi.id/2025/02/11/peraturan-menteri-komunikasi-dan-digital-no-2-tahun-2025-tentang-penggunaan-spektrum-frekuensi-radio-berdasarkan-izin-kelas/",
+      "catatan": "Sumber ini situs jasa sertifikasi, bukan naskah resmi. Salinan resmi Permen Kominfo 2/2023 (pendahulu): https://jdih.komdigi.go.id/storage/files/1683195383-Salinan_PM_Kominfo_Nomor_2_Tahun_2023_Tanpa_Paraf_TTE.pdf . Batas daya (EIRP atau ERP) harus dicek langsung di naskah."
+    }
+  ],
+  "angka_yang_bertentangan": [
+    {
+      "topik": "Daya TX Sub-GHz Flipper Zero menurut ringkasan pencarian",
+      "temuan": "Satu ringkasan menyebut 0 dBm (iFixit), ringkasan lain menyebut 20 dBm (dokumentasi resmi), sementara kode firmware mengonfigurasi tabel daya 10 dBm (FSK) dan 12 dBm (OOK) dengan batas region 12 dBm.",
+      "keputusan": "Laporan memakai nilai dari kode firmware dan menandainya sebagai konfigurasi register, bukan daya terukur. Daya nyata perlu diukur."
+    },
+    {
+      "topik": "Kapasitas baterai",
+      "temuan": "Ringkasan pencarian menyebut 2000 mAh dan 2100 mAh.",
+      "keputusan": "Angka baterai tidak dipakai di laporan."
+    }
+  ],
+  "tidak_bisa_dibuka": [
+    "docs.flipper.net",
+    "flipper.net",
+    "developer.flipper.net",
+    "www.st.com",
+    "www.ti.com",
+    "docs.espressif.com",
+    "www.bluetooth.com",
+    "en.wikipedia.org",
+    "www.mdpi.com",
+    "bastille.net",
+    "techcrunch.com",
+    "www.bitdefender.com",
+    "fieldeffect.com",
+    "www.lrqa.com",
+    "securitum.com",
+    "arxiv.org",
+    "pasal.id",
+    "jdih.komdigi.go.id"
+  ]
+}

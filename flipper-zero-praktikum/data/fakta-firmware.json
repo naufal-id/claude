@@ -1,0 +1,410 @@
+{
+  "_meta": {
+    "deskripsi": "Fakta teknis yang dibaca dari kode firmware resmi Flipper Zero. Nilai adalah konfigurasi firmware, bukan hasil pengukuran.",
+    "repositori": "https://github.com/flipperdevices/flipperzero-firmware",
+    "cabang": "dev (klon dangkal)",
+    "commit": "7f0b6e1c14431708cfde75ae1ba13df59e868041",
+    "tanggal_commit": "2026-09-04",
+    "dibuat_oleh": "scripts/collect_firmware_facts.py"
+  },
+  "fakta": [
+    {
+      "id": "subghz_band_valid",
+      "pernyataan": "Tiga band frekuensi yang diterima radio (Hz)",
+      "nilai": [
+        [
+          299999755,
+          348000335
+        ],
+        [
+          386999938,
+          464000000
+        ],
+        [
+          778999847,
+          928000000
+        ]
+      ],
+      "berkas": "targets/f7/furi_hal/furi_hal_subghz.c",
+      "baris": 339,
+      "kutipan": "if(!(value >= 299999755 && value <= 348000335) &&"
+    },
+    {
+      "id": "region_bands",
+      "pernyataan": "Band transmisi yang diizinkan per region statis",
+      "nilai": {
+        "00": [
+          {
+            "start_hz": 0,
+            "end_hz": 1000000000,
+            "power_limit_dbm": 12,
+            "duty_cycle_persen": 50
+          }
+        ],
+        "EU": [
+          {
+            "start_hz": 433050000,
+            "end_hz": 434790000,
+            "power_limit_dbm": 12,
+            "duty_cycle_persen": 50
+          },
+          {
+            "start_hz": 868150000,
+            "end_hz": 868550000,
+            "power_limit_dbm": 12,
+            "duty_cycle_persen": 50
+          }
+        ],
+        "US": [
+          {
+            "start_hz": 304100000,
+            "end_hz": 321950000,
+            "power_limit_dbm": 12,
+            "duty_cycle_persen": 50
+          },
+          {
+            "start_hz": 433050000,
+            "end_hz": 434790000,
+            "power_limit_dbm": 12,
+            "duty_cycle_persen": 50
+          },
+          {
+            "start_hz": 915000000,
+            "end_hz": 928000000,
+            "power_limit_dbm": 12,
+            "duty_cycle_persen": 50
+          }
+        ],
+        "JP": [
+          {
+            "start_hz": 312000000,
+            "end_hz": 315250000,
+            "power_limit_dbm": 12,
+            "duty_cycle_persen": 50
+          },
+          {
+            "start_hz": 920500000,
+            "end_hz": 923500000,
+            "power_limit_dbm": 12,
+            "duty_cycle_persen": 50
+          }
+        ]
+      },
+      "berkas": "targets/f7/furi_hal/furi_hal_region.c",
+      "baris": 5,
+      "kutipan": "struktur FuriHalRegion (country_code, bands[start,end,power_limit,duty_cycle])"
+    },
+    {
+      "id": "region_tx_gate",
+      "pernyataan": "Frekuensi di luar band region membuat radio hanya menerima (RX only)",
+      "nilai": "SubGhzRegulationOnlyRx",
+      "berkas": "targets/f7/furi_hal/furi_hal_subghz.c",
+      "baris": 366,
+      "kutipan": "furi_hal_subghz.regulation = SubGhzRegulationOnlyRx;"
+    },
+    {
+      "id": "subghz_default_frequencies",
+      "pernyataan": "Daftar frekuensi bawaan aplikasi Sub-GHz dan frekuensi default",
+      "nilai": {
+        "daftar_hz": [
+          300000000,
+          303875000,
+          304250000,
+          310000000,
+          315000000,
+          318000000,
+          390000000,
+          418000000,
+          433075000,
+          433420000,
+          433920000,
+          434420000,
+          434775000,
+          438900000,
+          868350000,
+          915000000,
+          925000000
+        ],
+        "default_hz": 433920000
+      },
+      "berkas": "lib/subghz/subghz_setting.c",
+      "baris": 17,
+      "kutipan": "subghz_frequency_list[]"
+    },
+    {
+      "id": "ble_tx_power",
+      "pernyataan": "Daya TX BLE diset ke 0 dBm",
+      "nilai": 0,
+      "berkas": "targets/f7/ble_glue/gap.c",
+      "baris": 353,
+      "kutipan": "aci_hal_set_tx_power_level(1, 0x19);"
+    },
+    {
+      "id": "ble_adv_fast_min",
+      "pernyataan": "Interval advertising cepat, minimum (ms, sesuai komentar kode)",
+      "nilai": 80,
+      "berkas": "targets/f7/ble_glue/gap.c",
+      "baris": 431,
+      "kutipan": "min_interval = 0x80; // 80 ms"
+    },
+    {
+      "id": "ble_adv_fast_max",
+      "pernyataan": "Interval advertising cepat, maksimum (ms)",
+      "nilai": 100,
+      "berkas": "targets/f7/ble_glue/gap.c",
+      "baris": 432,
+      "kutipan": "max_interval = 0xa0; // 100 ms"
+    },
+    {
+      "id": "ble_adv_low_min",
+      "pernyataan": "Interval advertising hemat daya, minimum (ms)",
+      "nilai": 1000,
+      "berkas": "targets/f7/ble_glue/gap.c",
+      "baris": 434,
+      "kutipan": "min_interval = 0x0640; // 1 s"
+    },
+    {
+      "id": "ble_adv_low_max",
+      "pernyataan": "Interval advertising hemat daya, maksimum (ms)",
+      "nilai": 2500,
+      "berkas": "targets/f7/ble_glue/gap.c",
+      "baris": 435,
+      "kutipan": "max_interval = 0x0fa0; // 2.5 s"
+    },
+    {
+      "id": "ble_adv_switch",
+      "pernyataan": "Pindah ke mode hemat daya setelah (ms)",
+      "nilai": 60000,
+      "berkas": "targets/f7/ble_glue/gap.c",
+      "baris": 15,
+      "kutipan": "#define INITIAL_ADV_TIMEOUT 60000"
+    },
+    {
+      "id": "ble_role",
+      "pernyataan": "Flipper berperan sebagai GAP Peripheral",
+      "nilai": "GAP_PERIPHERAL_ROLE",
+      "berkas": "targets/f7/ble_glue/gap.c",
+      "baris": 360,
+      "kutipan": "GAP_PERIPHERAL_ROLE,"
+    },
+    {
+      "id": "ble_adv_type",
+      "pernyataan": "Advertising connectable undirected",
+      "nilai": "ADV_IND",
+      "berkas": "targets/f7/ble_glue/gap.c",
+      "baris": 457,
+      "kutipan": "ADV_IND,"
+    },
+    {
+      "id": "ble_sc",
+      "pernyataan": "LE Secure Connections opsional",
+      "nilai": "SC_PAIRING_OPTIONAL",
+      "berkas": "targets/f7/ble_glue/app_conf.h",
+      "baris": 23,
+      "kutipan": "#define CFG_SC_SUPPORT SC_PAIRING_OPTIONAL"
+    },
+    {
+      "id": "ble_key_size_min",
+      "pernyataan": "Ukuran kunci enkripsi minimum (byte)",
+      "nilai": 8,
+      "berkas": "targets/f7/ble_glue/app_conf.h",
+      "baris": 13,
+      "kutipan": "#define CFG_ENCRYPTION_KEY_SIZE_MIN (8)"
+    },
+    {
+      "id": "ble_key_size_max",
+      "pernyataan": "Ukuran kunci enkripsi maksimum (byte)",
+      "nilai": 16,
+      "berkas": "targets/f7/ble_glue/app_conf.h",
+      "baris": 12,
+      "kutipan": "#define CFG_ENCRYPTION_KEY_SIZE_MAX (16)"
+    },
+    {
+      "id": "ble_max_links",
+      "pernyataan": "Jumlah tautan BLE maksimum",
+      "nilai": 2,
+      "berkas": "targets/f7/ble_glue/app_conf.h",
+      "baris": 43,
+      "kutipan": "#define CFG_BLE_NUM_LINK 2"
+    },
+    {
+      "id": "ble_hid_pairing",
+      "pernyataan": "Pairing profil HID memakai konfirmasi Yes/No (numeric comparison)",
+      "nilai": "GapPairingPinCodeVerifyYesNo",
+      "berkas": "lib/ble_profile/extra_profiles/hid_profile.c",
+      "baris": 389,
+      "kutipan": ".pairing_method = GapPairingPinCodeVerifyYesNo,"
+    },
+    {
+      "id": "ble_serial_pairing",
+      "pernyataan": "Pairing profil Serial (aplikasi seluler) menampilkan passkey di Flipper",
+      "nilai": "GapPairingPinCodeShow",
+      "berkas": "targets/f7/ble_glue/profiles/serial_profile.c",
+      "baris": 58,
+      "kutipan": ".pairing_method = GapPairingPinCodeShow,"
+    },
+    {
+      "id": "ble_hid_bonding",
+      "pernyataan": "Profil HID memakai bonding",
+      "nilai": true,
+      "berkas": "lib/ble_profile/extra_profiles/hid_profile.c",
+      "baris": 388,
+      "kutipan": ".bonding_mode = true,"
+    },
+    {
+      "id": "ble_hid_name_prefix",
+      "pernyataan": "Awalan nama iklan profil HID bawaan",
+      "nilai": "Control",
+      "berkas": "lib/ble_profile/extra_profiles/hid_profile.c",
+      "baris": 418,
+      "kutipan": "const char* clicker_str = \"Control\";"
+    },
+    {
+      "id": "ble_badusb_name_prefix",
+      "pernyataan": "Awalan nama iklan Bad USB lewat BLE",
+      "nilai": "BadUSB",
+      "berkas": "applications/main/bad_usb/helpers/bad_usb_hid.c",
+      "baris": 115,
+      "kutipan": ".device_name_prefix = \"BadUSB\","
+    },
+    {
+      "id": "hid_kb_max_keys",
+      "pernyataan": "Tombol keyboard bersamaan dalam satu report",
+      "nilai": 6,
+      "berkas": "lib/ble_profile/extra_profiles/hid_profile.c",
+      "baris": 17,
+      "kutipan": "#define BLE_PROFILE_HID_KB_MAX_KEYS (6)"
+    },
+    {
+      "id": "hid_consumer_max_keys",
+      "pernyataan": "Tombol consumer control per report",
+      "nilai": 1,
+      "berkas": "lib/ble_profile/extra_profiles/hid_profile.c",
+      "baris": 18,
+      "kutipan": "#define BLE_PROFILE_CONSUMER_MAX_KEYS (1)"
+    },
+    {
+      "id": "hid_report_ids",
+      "pernyataan": "Report ID keyboard=1, mouse=2, consumer=3",
+      "nilai": {
+        "keyboard": 1,
+        "mouse": 2,
+        "consumer": 3
+      },
+      "berkas": "lib/ble_profile/extra_profiles/hid_profile.c",
+      "baris": 22,
+      "kutipan": "ReportIdKeyboard = 1,"
+    },
+    {
+      "id": "hid_service_uuid",
+      "pernyataan": "Layanan HID memakai UUID standar HUMAN_INTERFACE_DEVICE_SERVICE_UUID",
+      "nilai": "0x1812 (Bluetooth Assigned Numbers)",
+      "berkas": "lib/ble_profile/extra_profiles/hid_profile.c",
+      "baris": 385,
+      "kutipan": ".Service_UUID_16 = HUMAN_INTERFACE_DEVICE_SERVICE_UUID,"
+    },
+    {
+      "id": "badusb_ble_interface",
+      "pernyataan": "Bad USB di firmware resmi punya antarmuka BLE",
+      "nilai": "BadUsbHidInterfaceBle",
+      "berkas": "applications/main/bad_usb/helpers/bad_usb_hid.h",
+      "baris": 12,
+      "kutipan": "BadUsbHidInterfaceBle,"
+    },
+    {
+      "id": "cc1101_pa_ook",
+      "pernyataan": "Komentar tabel daya CC1101 untuk preset OOK: 0xC0 = 12 dBm",
+      "nilai": 12,
+      "berkas": "lib/subghz/devices/cc1101_configs.c",
+      "baris": 67,
+      "kutipan": "0xC0, // 12dBm 0xC0, 10dBm 0xC5, 7dBm 0xCD, 5dBm 0x86, 0dBm 0x50, -6dBm 0x37, -10dBm 0x26, -15dBm 0x1D, -20dBm 0x17, -30dBm 0x03"
+    },
+    {
+      "id": "cc1101_pa_fsk",
+      "pernyataan": "Komentar tabel daya CC1101 untuk preset FSK/MSK/GFSK: 0xC0 = 10 dBm",
+      "nilai": 10,
+      "berkas": "lib/subghz/devices/cc1101_configs.c",
+      "baris": 213,
+      "kutipan": "0xC0, // 10dBm 0xC0, 7dBm 0xC8, 5dBm 0x84, 0dBm 0x60, -10dBm 0x34, -15dBm 0x1D, -20dBm 0x0E, -30dBm 0x12"
+    },
+    {
+      "id": "flash_size",
+      "pernyataan": "Flash pada linker script",
+      "nilai": "1024K",
+      "berkas": "targets/f7/stm32wb55xx_flash.ld",
+      "baris": 9,
+      "kutipan": "FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 1024K"
+    },
+    {
+      "id": "cpu_clock_pll",
+      "pernyataan": "Clock CPU aplikasi (Hz)",
+      "nilai": 64000000,
+      "berkas": "targets/f7/furi_hal/furi_hal_clock.c",
+      "baris": 19,
+      "kutipan": "#define CPU_CLOCK_PLL_HZ   64000000"
+    },
+    {
+      "id": "expansion_uart_usart",
+      "pernyataan": "Pin UART ekspansi: USART TX=13, RX=14",
+      "nilai": {
+        "tx": 13,
+        "rx": 14
+      },
+      "berkas": "documentation/ExpansionModules.md",
+      "baris": 27,
+      "kutipan": "| USART  | 13     | 14     |"
+    },
+    {
+      "id": "devboard_default_ssid",
+      "pernyataan": "Devboard WiFi bawaan (mode AP) memakai SSID blackmagic",
+      "nilai": "blackmagic",
+      "berkas": "documentation/devboard/Wi-Fi connection to the Devboard.md",
+      "baris": 25,
+      "kutipan": "Name: `blackmagic`"
+    },
+    {
+      "id": "devboard_default_password",
+      "pernyataan": "Kata sandi bawaan devboard tertulis publik di dokumentasi resmi",
+      "nilai": "iamwitcher",
+      "berkas": "documentation/devboard/Wi-Fi connection to the Devboard.md",
+      "baris": 26,
+      "kutipan": "Password: `iamwitcher`"
+    },
+    {
+      "id": "devboard_no_5ghz",
+      "pernyataan": "Devboard tidak mendukung jaringan 5 GHz",
+      "nilai": true,
+      "berkas": "documentation/devboard/Wi-Fi connection to the Devboard.md",
+      "baris": 54,
+      "kutipan": "4. Select the **STA** mode and enter your network's **SSID** (name) and **password**. For convenience, you can click the **+** button to see the list of nearby 2.4 GHz networks (5 GHz networks aren't supported)."
+    },
+    {
+      "id": "subghz_protocol_types",
+      "pernyataan": "Hitungan definisi protokol Sub-GHz menurut tipe",
+      "nilai": {
+        "static": 37,
+        "dynamic": 15,
+        "raw": 1
+      },
+      "berkas": "lib/subghz/protocols/*.c",
+      "baris": null,
+      "kutipan": ".type = SubGhzProtocolType{Static,Dynamic,RAW}"
+    },
+    {
+      "id": "cc1101_presets",
+      "pernyataan": "Set register preset modulasi CC1101 di firmware",
+      "nilai": [
+        "ook_270khz_async",
+        "ook_650khz_async",
+        "2fsk_dev2_38khz_async",
+        "2fsk_dev12khz_async",
+        "2fsk_dev47_6khz_async",
+        "msk_99_97kb_async",
+        "gfsk_9_99kb_async"
+      ],
+      "berkas": "lib/subghz/devices/cc1101_configs.c",
+      "baris": null,
+      "kutipan": "subghz_device_cc1101_preset_*_regs[]"
+    }
+  ]
+}
